@@ -7,6 +7,8 @@ import EventDetails from "./Components/EventDetails"
 import ContactUs from "./Pages/ContactUs"
 import EditProfile from "./Pages/EditProfile"
 import SignUp from "./Pages/SignUp"
+import DashboardAdmin from "./Pages/DashboardAdmin"
+import CreateEvent from "./Pages/CreateEvent"
 
 function App() {
 
@@ -21,6 +23,8 @@ function App() {
         <Route path="/contact" element={<ContactUs/>}/>
         <Route path="/editProfile" element={<EditProfile/>}/>
         <Route path="/signup" element={<SignUp/>}/>
+        <Route path="/admin" element={<DashboardAdmin/>}/>
+        <Route path="/admin/add-event" element={<CreateEvent/>}/>
       </Routes>
     </>
   )

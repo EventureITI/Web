@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import EyeIcon from "../Components/EyeIcon";
-import EyeSlashIcon from "../Components/EyeSlashIcon";
+import EyeIcon from "../Components/Icons/EyeIcon";
+import EyeSlashIcon from "../Components/Icons/EyeSlashIcon";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
@@ -45,7 +45,7 @@ export default function SignUp() {
                   id="fname"
                   placeholder="First name"
                   style={{ caretColor: "#4FE0D2" }}
-                  className="mt-1 rounded-lg bg-input p-2 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
+                  className="mt-1 rounded-lg bg-input p-3 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
                 />
               </div>
 
@@ -61,7 +61,7 @@ export default function SignUp() {
                   id="lname"
                   placeholder="Last name"
                   style={{ caretColor: "#4FE0D2" }}
-                  className="mt-1 rounded-lg bg-input p-2 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
+                  className="mt-1 rounded-lg bg-input p-3 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
                 />
               </div>
             </div>
@@ -77,7 +77,7 @@ export default function SignUp() {
                 id="email"
                 placeholder="Enter your email"
                 style={{ caretColor: "#4FE0D2" }}
-                className="mt-1 rounded-lg bg-input p-2 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
+                className="mt-1 rounded-lg bg-input p-3 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
               />
             </div>
             <div className="relative">
@@ -92,7 +92,7 @@ export default function SignUp() {
                 id="password"
                 placeholder="Enter your password"
                 style={{ caretColor: "#4FE0D2" }}
-                className="mt-1 rounded-lg bg-input p-2 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
+                className="mt-1 rounded-lg bg-input p-3 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
               />
               <div
                 className="absolute inset-y-0 top-7 right-0 pr-3 flex items-center cursor-pointer"
@@ -113,7 +113,7 @@ export default function SignUp() {
                 id="password"
                 placeholder="Enter your password"
                 style={{ caretColor: "#4FE0D2" }}
-                className="mt-1 rounded-lg bg-input p-2 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
+                className="mt-1 rounded-lg bg-input p-3 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
               />
               <div
                 className="absolute inset-y-0 top-7 right-0 pr-3 flex items-center cursor-pointer"
@@ -123,7 +123,7 @@ export default function SignUp() {
               </div>
             </div>
             <div>
-              <button className="bg-main-color p-2 w-full rounded-lg text-white font-600">
+              <button className="bg-main-color p-3 w-full rounded-lg text-white font-600">
                 Sign Up
               </button>
             </div>
