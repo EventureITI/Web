@@ -7,7 +7,7 @@ export default function EventDetails() {
     <>
       <div className="w-full bg-[#1A1A1A]">
         <div className="hidden md:block">
-          <div className="px-8 w-3/12 h-2/6 bg-[#292929] fixed z-30 right-10 top-40 rounded-lg shadow-lg flex flex-col justify-evenly min-w-72">
+          <div className="px-8 w-3/12 h-2/6 bg-[#292929] fixed z-10 right-10 top-40 rounded-lg shadow-lg flex flex-col justify-evenly min-w-72">
             <p className="text-white text-xl font-bold">Book a Ticket</p>
             <div>
               <p className="capitalize text-[#909090]">
@@ -22,8 +22,8 @@ export default function EventDetails() {
         <div>
           {" "}
           {/*hero*/}
-          <div className=" w-full h-[500px] z-10 bg-[url('/images/cover.jfif')] bg-no-repeat bg-cover bg-top">
-            <div className="bg-custom-gradient absolute z-20 w-full h-[500px] flex justify-center items-center ">
+          <div className=" w-full h-[500px] z-1 bg-[url('/images/cover.jfif')] bg-no-repeat bg-cover bg-top">
+            <div className="bg-custom-gradient absolute z-2 w-full h-[500px] flex justify-center items-center ">
               <div className="flex flex-col justify-around h-full w-[90%]">
                 <div className="bg-[#4FE0D2] p-2  w-28 rounded-lg cursor-pointer hover:bg-teal-500">
                   <div className="flex items-center justify-center">
