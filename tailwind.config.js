@@ -23,8 +23,9 @@ export default {
         "main-color":'#4FE0D2',
         "sec-color":"#1F1F1F80",
         "bg-main":"#1A1A1A",
-        customGray: '#333333',
-        placeholde:'#858585'
+        'customGray': '#333333',
+        'placeholder':'#858585',
+        'errColor':'#DD4949'
       },
       boxShadow: {
         'custom-shadow': '0px 0px 2px 0px rgba(0, 0, 0, 0.25)',

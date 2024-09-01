@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import Main from '../Components/Home/Main'
 import Events from '../Components/Home/Events'
 import Footer from '../Components/Footer'
