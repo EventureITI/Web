@@ -61,7 +61,7 @@ export default function DashboardAdmin() {
   console.log(filteredSearchEvents);
   // if (loading) return <TableSkeleton />;
   return (
-    <div className="bg-[#1A1A1A] px-6 pt-16 pb-4">
+    <div className="bg-[#1A1A1A] px-6 pt-16 pb-4 min-h-screen">
       <div className="self-stretch justify-between items-center gap-4 flex p-10 overflow-x-auto whitespace-nowrap">
         <div className="grow shrink basis-0 text-white text-[32px] font-semibold ">
           Event List

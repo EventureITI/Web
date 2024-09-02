@@ -4,7 +4,7 @@ export default function DeleteConfirmationModal({ isOpen, onClose, onDelete }) {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-customGray p-6 rounded-lg shadow-lg">
+      <div className="bg-customGray p-6 rounded-lg shadow-lg text-white">
         <h2 className="text-lg font-bold mb-4">Confirm Deletion</h2>
         <p className="mb-6">Are you sure you want to delete this item?</p>
         <div className="flex justify-end space-x-4">
