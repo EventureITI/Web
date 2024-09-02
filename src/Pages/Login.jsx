@@ -59,14 +59,14 @@ export default function Login() {
               </div>
             </div>
             <div>
-              <button className="bg-main-color p-3 w-full rounded-lg text-white font-600">
+              <button className="bg-main-color hover:bg-main-hover transition duration-300 ease-in-out p-3 w-full rounded-lg text-white font-600">
                 Sign In
               </button>
             </div>
             <div className="md:hidden -mt-4 font-300 text-white">
               Don’t have an account?
               <Link to="/signup" className="pl-1 w-full">
-                <span className="hover:underline transition duration-500 ease-in-out text-main-color cursor-pointer">
+                <span className="hover:underline transition duration-300 ease-in-out text-main-color cursor-pointer">
                   Sign Up
                 </span>
               </Link>
@@ -82,7 +82,7 @@ export default function Login() {
             </p>
             <Link to="/signup" className="block w-full">
               <button className="p-2 w-full rounded-lg text-white font-600 relative border border-main-color">
-                <div className="absolute inset-0 bg-sec-color hover:opacity-100 transition duration-500 ease-in-out opacity-50 rounded-lg"></div>
+                <div className="absolute inset-0 bg-sec-color hover:opacity-100 transition duration-300 ease-in-out opacity-50 rounded-lg"></div>
                 <span className="relative z-10">Sign Up</span>
               </button>
             </Link>

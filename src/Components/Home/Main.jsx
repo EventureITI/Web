@@ -1,17 +1,21 @@
 import React from 'react'
-import SmallButton from './SmallButton'
+import CategoryBtn from '../CategoryBtn'
 import BookButton from './BookButton'
 
 export default function Main() {
   return (
-    <div className='relative flex justify-center w-full overflow-hidden' style={{maxHeight:"650px"}} >
-      <div className='w-full h-full overflow-hidden' >
-        <img className='w-full' src="/images/a85ed3aca34aadef77d9fa540d0a4d5e.jpeg" alt="eventImg" />
+    <div className='relative flex justify-center w-full overflow-hidden' style={{maxHeight:"650px",minHeight:"350px"}} >
+      <div className='w-full h-full overflow-hidden ' >
+        <img className='w-full object-cover' style={{minHeight:"350px"}} src="/images/a85ed3aca34aadef77d9fa540d0a4d5e.jpeg" alt="eventImg" />
       </div>
       <div className='absolute bottom-0 w-full h-80 ' style={{background: "linear-gradient(360deg, rgba(26, 26, 26, 0.99) 30%, rgba(26, 26, 26, 0.90) 50%, rgba(26, 26, 26, 0.00) 100%)"}}></div>
       <div className='absolute bottom-0 w-full px-6  sm:container sm:mx-auto sm:px-4'>
-        <div className='md-4 md:mb-6'>
-            <SmallButton/>
+        <div className='mb-4 md:mb-6 w-12'>
+        <CategoryBtn
+              category={"Comedy"}
+              path={"/events-page/comedy"}
+              classes={"text-xs sm:text-sm"}
+            />       
         </div>
         <div className='flex justify-between md:flex-col'>
           <div>

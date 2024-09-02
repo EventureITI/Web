@@ -14,3 +14,14 @@ input::placeholder {
   color: white;
 }
 
+.topBtn:hover{
+  animation: move 1s infinite ease-in-out;
+}
+@keyframes move {
+  0%{
+    transform: translateY(5px);
+  }
+  100%{
+    transform: translateY(-5px);
+  }
+}

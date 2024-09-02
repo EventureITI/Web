@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { AddOutline, SearchOutline } from "react-ionicons";
 import EditIcon from "../Components/Icons/EditIcon";
 import DeleteIcon from "../Components/Icons/DeleteIcon";
 import { Link, useNavigate } from "react-router-dom";
@@ -9,7 +8,6 @@ import DeleteConfirmationModal from "../Components/DeleteConfirmationModal";
 import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import { toast } from "react-toastify";
-import TableSkeleton from "../Components/TableSkeleton";
 
 export default function DashboardAdmin() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,37 +59,40 @@ export default function DashboardAdmin() {
   console.log(filteredSearchEvents);
   // if (loading) return <TableSkeleton />;
   return (
-    <div className="bg-[#1A1A1A] px-6 pt-16 pb-4 min-h-screen">
-      <div className="self-stretch justify-between items-center gap-4 flex p-10 overflow-x-auto whitespace-nowrap">
+    <div className="bg-bg-main px-4 pt-16 pb-4">
+      <div className="self-stretch md:justify-between md:items-center gap-4 flex flex-col md:flex-row p-10 overflow-x-auto whitespace-nowrap">
         <div className="grow shrink basis-0 text-white text-[32px] font-semibold ">
           Event List
         </div>
-        <div className="relative w-[346px]">
-          <input
-            value={searchKey}
-            onChange={(e) => {
-              handleSearchKeyChanges(e.target.value);
-            }}
-            type="search"
-            style={{ caretColor: "#4FE0D2" }}
-            className="w-full h-[43px] px-6 py-3 text-white bg-[#c9c9c9]/20 rounded-lg focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color"
-            placeholder="Search"
-          />
-          <button className="absolute inset-y-0 right-3 flex items-center pr-3">
-            <SearchOutline color={"#ffffff"} height="24px" width="24px" />
+        <div className="flex gap-2 md:gap-4 w-full md:justify-end">
+          <div className="relative w-[480px] md:w-[346px] flex items-center">
+            <input
+              value={searchKey}
+              onChange={(e) => {
+                handleSearchKeyChanges(e.target.value);
+              }}
+              type="search"
+              className="w-full h-[43px] px-4 py-2 text-white bg-[#c9c9c9]/20 rounded-lg outline-none focus:outline-offset-0 focus:outline-main-color "
+              style={{ caretColor: "#4FE0D2" }}
+              placeholder="Search"
+            />
+            <button className="absolute right-3 flex items-center mr-3 hover:scale-125">
+              <img src="/images/Search.svg" alt="searchIcon" />
+            </button>
+          </div>
+          <button
+            className="h-10 min-w-10 sm:w-fit sm:px-5 py-0 sm:py-2 bg-main-color transition duration-300 ease-in-out hover:bg-main-hover rounded-full sm:rounded-lg justify-center items-center sm:gap-2 inline-flex"
+            onClick={() => navigate("/admin/event/new")}
+          >
+            <img src="/images/addIcon.svg" alt="addIcon" />
+            <div className="text-center text-white text-base font-normal hidden sm:block ">
+              Add Event
+            </div>
           </button>
         </div>
-        <button
-          className="h-10 px-8 py-2 bg-[#4fdfd1] rounded-lg justify-center items-center gap-2 inline-flex"
-          onClick={() => navigate("/admin/event/new")}
-        >
-          <AddOutline color={"#ffffff"} height="24px" width="24px" />
-          <div className="text-center text-white text-base font-normal">
-            Add Event
-          </div>
-        </button>
       </div>
 
+      {/* <div className="justify-center items-end gap-8 flex mb-10"> */}
       <div className="overflow-x-auto  px-10">
         {filteredSearchEvents.length > 0 ? (
           <>
@@ -99,7 +100,17 @@ export default function DashboardAdmin() {
               <thead className=" text-white">
                 <tr>
                   {tableHeaders.map((header, index) => (
-                    <th key={index} scope="col" className="px-6">
+                    <th
+                      key={index}
+                      scope="col"
+                      className={`px-6 border-r-2 border-opacity-60 border-input ${
+                        header == "Host" || header == "Date"
+                          ? "hidden lg:table-cell"
+                          : ""
+                      } ${header == "Time" && "hidden xl:table-cell"} ${
+                        header == "Price" && "hidden sm:table-cell"
+                      } ${header == "Tickets" && "hidden md:table-cell"}`}
+                    >
                       {header}
                     </th>
                   ))}
@@ -109,29 +120,44 @@ export default function DashboardAdmin() {
                 {filteredSearchEvents.map((event, index) => (
                   <tr
                     key={index}
-                    className={`${index % 2 === 0 ? "bg-customGray" : " "}`}
+                    className={`${index % 2 === 0 ? "bg-input" : " "}`}
                   >
-                    <td className="px-6 py-2">{index + 1}</td>
-                    <td className="px-6 py-2">{event.title}</td>
-                    <td className="px-6 py-2">{event.host}</td>
-                    <td className="px-6 py-2">
-                      {event.startTime} - {event.endTime}
+                    <td className="px-4 sm:px-6 py-2 border-r-2 border-opacity-60 border-input">
+                      {index + 1}
                     </td>
-                    <td className="px-6 py-2">{event.startDate}</td>
-                    <td className="px-6 py-2">{event.price} EGP</td>
-                    <td className="px-6 py-2">500</td>
+                    <td className="px-4 sm:px-6 py-2 border-r-2 border-opacity-60 border-input">
+                      <p className="truncate w-20 custom-sm:w-40 sm:w-full ">
+                        {event.title}
+                      </p>
+                    </td>
+                    <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden lg:table-cell">
+                      {event.host}
+                    </td>
+                    <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden xl:table-cell">
+                      {event.startTime - event.endTime}
+                    </td>
+                    <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden lg:table-cell">
+                      {event.startDate}
+                    </td>
+                    <td className="px-4 sm:px-6 py-2 border-r-2 border-opacity-60 border-input hidden sm:table-cell">
+                      {event.price} EGP
+                    </td>
+                    <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden md:table-cell">
+                      500
+                    </td>
+
                     <td className="px-6 py-2">
                       <div className="justify-start items-center gap-2 inline-flex">
                         <Link to={`/admin/event/${event.id}`}>
-                          <button className="w-10 h-10 px-2.5 bg-[#1a1a1a] rounded-lg border border-white justify-center items-center gap-2 flex">
+                          <button className="w-8 h-8 px-2 sm:w-10 sm:h-10 sm:px-2.5 transition duration-300 ease-in-out bg-[#1a1a1a] hover:bg-green-700 rounded-lg border border-green-700 justify-center items-center gap-2 flex">
                             <EditIcon />
                           </button>
                         </Link>
                         <button
                           onClick={() => handleOpenModal(event)}
-                          className="w-10 h-10 px-2.5 bg-[#1a1a1a] rounded-lg border border-[#dd4848] justify-center items-center gap-2 flex"
+                          className="w-8 h-8 px-2 sm:w-10 sm:h-10 sm:px-2.5 transition duration-300 ease-in-out bg-[#1a1a1a] hover:bg-[#831717] rounded-lg border border-[#831717] justify-center items-center gap-2 flex"
                         >
-                          <DeleteIcon /> 
+                          <DeleteIcon />
                         </button>
                       </div>
                     </td>

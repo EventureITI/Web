@@ -1,11 +1,12 @@
 import React from "react";
-import EventBookButton from "./EventBookButton";
-import Footer from "./Footer";
+import EventBookButton from "../Components/EventBookButton";
+import { useNavigate } from "react-router-dom";
 
 export default function EventDetails() {
+  const navigate = useNavigate();
   return (
     <>
-      <div className="w-full bg-[#1A1A1A]">
+      <div className="w-full bg-bg-main">
         <div className="hidden md:block">
           <div className="px-8 w-3/12 h-2/6 bg-[#292929] fixed z-10 right-10 top-40 rounded-lg shadow-lg flex flex-col justify-evenly min-w-72">
             <p className="text-white text-xl font-bold">Book a Ticket</p>
@@ -25,8 +26,7 @@ export default function EventDetails() {
           <div className=" w-full h-[500px] z-1 bg-[url('/images/cover.jfif')] bg-no-repeat bg-cover bg-top">
             <div className="bg-custom-gradient absolute z-2 w-full h-[500px] flex justify-center items-center ">
               <div className="flex flex-col justify-around h-full w-[90%]">
-                <div className="bg-[#4FE0D2] p-2  w-28 rounded-lg cursor-pointer hover:bg-teal-500">
-                  <div className="flex items-center justify-center">
+                <button onClick={()=>navigate("/events-page/all")} className="bg-main-color p-2 flex items-center justify-center hover:scale-105  w-24 rounded-lg cursor-pointer hover:bg-main-hover ">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -42,8 +42,7 @@ export default function EventDetails() {
                       />
                     </svg>
                     <p className="mx-2 text-white">Back</p>
-                  </div>
-                </div>
+                </button>
 
                 <div className="text-white text-5xl font-semibold">
                   King Lear
@@ -54,7 +53,7 @@ export default function EventDetails() {
         </div>
       </div>
 
-      <div className="w-full py-2 bg-[#1A1A1A] flex flex-col justify-center items-center">
+      <div className="w-full py-2 bg-bg-main flex flex-col justify-center items-center">
         {" "}
         {/*description*/}
         <div className="w-[90%]">
@@ -88,7 +87,6 @@ export default function EventDetails() {
           </div>
         </div>
       </div>
-      <Footer />
     </>
   );
 }
