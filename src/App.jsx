@@ -16,9 +16,16 @@ import BackTop from "./Components/BackTop";
 
 function App() {
   const location = useLocation();
-  const hideNavbarRoutes = ["/",'*',"/login","/signup"]; // here you will add the desired route that you do not want to render navbar with
-  const hideFooterRoutes = ['*',"/admin","/admin/add-event","/login","/signup","/"]; // here you will add the desired route that you do not want to render footer with
-  const hideBackTopRoutes = ['*',"/login","/signup"]; // here you will add the desired route that you do not want to render footer with
+  const hideNavbarRoutes = ["/", "*", "/login", "/signup"]; // here you will add the desired route that you do not want to render navbar with
+  const hideFooterRoutes = [
+    "*",
+    "/admin",
+    "/admin/add-event",
+    "/login",
+    "/signup",
+    "/",
+  ]; // here you will add the desired route that you do not want to render footer with
+  const hideBackTopRoutes = ["*", "/login", "/signup"]; // here you will add the desired route that you do not want to render footer with
   return (
     <>
       {!hideNavbarRoutes.includes(location.pathname) && <NavBar />}
@@ -37,13 +44,13 @@ function App() {
         <Route path="/events-page/family" element={<EventsPage />} />
         <Route path="/events-page/workshops" element={<EventsPage />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/event-details" element={<EventDetails/>}/>
+        <Route path="/event-details" element={<EventDetails />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/admin" element={<DashboardAdmin />} />
-        <Route path="/admin/add-event" element={<CreateEvent />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/admin/event/:id" element={<CreateEvent />} />
       </Routes>
       {!hideFooterRoutes.includes(location.pathname) && <Footer />}
     </>
