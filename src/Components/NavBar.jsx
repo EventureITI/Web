@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { SearchSharp } from "react-ionicons";
 import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
@@ -26,7 +25,7 @@ export default function NavBar() {
       }}
     >
       <div className="max-w-screen-xl flex flex-nowrap items-center justify-between mx-auto p-4">
-        <button onClick={allItems} className=" md:hidden pb-2 ">
+        <button onClick={allItems} className=" md:hidden pb-2 mr-8">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -36,9 +35,9 @@ export default function NavBar() {
           >
             <path
               d="M4.125 18.375H19.875M4.125 12.375H19.875M4.125 6.375H19.875"
-              stroke-width="2.25"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2.25"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
         </button>
@@ -46,7 +45,7 @@ export default function NavBar() {
           onClick={() => navigate("/")}
           className="flex justify-center cursor-pointer items-center space-x-3 rtl:space-x-reverse"
         >
-          <span className="self-center text-2xl font-semibold whitespace-nowrap text-teal-500 mb-2">
+          <span className="self-center text-2xl font-semibold whitespace-nowrap text-[#0d9988] mb-2 ">
             Eventure
           </span>
         </a>
@@ -54,30 +53,30 @@ export default function NavBar() {
         <div
           className={`${
             items ? "block" : "hidden"
-          } absolute w-48 top-14 left-4 md:static md:items-center md:justify-between md:flex md:w-auto md:order-1 md:pl-5 " id="navbar-user`}
+          }  absolute w-48 top-14 left-4 md:static md:items-center md:justify-between md:flex md:w-auto md:order-1 md:pl-5 " id="navbar-user`}
         >
-          <ul className="flex flex-col p-2 md:p-0 mt-4 bg-[#292929] md:bg-transparent shadow-md md:shadow-none rounded-lg md:max-lg:space-x-0 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 lg:space-x-6   dark:border-gray-700">
-            <li onClick={() => navigate("/")}>
+          <ul className=" flex flex-col p-2 md:p-0 mt-4 bg-[#292929] md:bg-transparent shadow-md md:shadow-none rounded-lg md:max-lg:space-x-0 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 lg:space-x-6   dark:border-gray-700">
+            <li onClick={() => navigate("/")} className="hover:bg-[#0d9988] rounded-lg md:hover:bg-transparent md:hover:rounded-none">
               <a
                 href="#"
-                className="block text-sm py-1 px-3 text-white hover:text-teal-500 "
+                className="block text-sm py-1 px-3 text-white md:hover:text-main-hover "
                 aria-current="page"
               >
                 Home
               </a>
             </li>
-            <li onClick={() => navigate("/contact")}>
+            <li onClick={() => navigate("/contact")} className="hover:bg-[#0d9988] rounded-lg md:hover:bg-transparent md:hover:rounded-none">
               <a
                 href="#"
-                className="block text-sm py-1 px-3 text-white rounded hover:text-teal-500 hover:opacity-100 "
+                className="block text-sm py-1 px-3 text-white rounded md:hover:text-main-hover hover:opacity-100 "
               >
                 Hosting an Event?
               </a>
             </li>
-            <li>
+            <li className="hover:bg-[#0d9988] rounded-lg md:hover:bg-transparent md:hover:rounded-none">
               <a
                 href="#"
-                className="block text-sm py-1 px-3 text-white rounded hover:text-teal-500 hover:opacity-100 "
+                className="block text-sm py-1 px-3 text-white rounded md:hover:text-main-hover hover:opacity-100 "
               >
                 About
               </a>
@@ -93,10 +92,10 @@ export default function NavBar() {
               <input
                 type="text"
                 placeholder="Search"
-                className="input text-white text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
+                className="input focus:outline-main-color focus:outline-offset-0 text-white text-sm pb-1 h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)]"
               />
-              <button className="absolute right-3 top-1.5">
-                <SearchSharp color={"#FFFFFF"} height="20px" width="20px" />
+              <button className="absolute right-3 bottom-2 hover:scale-110">
+                <img src="/images/Search.svg" alt="searchIcon" />
               </button>
             </div>
           </div>
@@ -111,23 +110,23 @@ export default function NavBar() {
               >
                 <div className="w-10 rounded-full">
                   <img
-                    alt="Tailwind CSS Navbar component"
-                    src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                    alt="profile img"
+                    src="/images/carbon_user-avatar-filled.svg"
                   />
                 </div>
               </div>
               {profile && (
                 <ul
                   tabIndex={0}
-                  className="menu menu-sm dropdown-content text-white bg-[#292929] rounded-lg z-[1] mt-3 w-44 p-2 shadow"
+                  className="menu menu-sm dropdown-content text-white bg-input rounded-lg z-[1] mt-3 w-44 p-2 shadow"
                 >
-                  <li onClick={() => navigate("/editProfile")}>
+                  <li onClick={() => navigate("/edit-profile")} className="hover:bg-[#0d9988] rounded-md">
                     <a>Edit Profile</a>
                   </li>
-                  <li>
+                  <li className="hover:bg-[#0d9988] rounded-lg">
                     <a>Your Bookings</a>
                   </li>
-                  <li onClick={() => navigate("/login")}>
+                  <li onClick={() => navigate("/login")} className="hover:bg-[#0d9988] rounded-lg">
                     <a>Login</a>
                   </li>
                 </ul>
