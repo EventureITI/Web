@@ -1,26 +1,24 @@
 import React from "react";
 import EventCard from "./EventCard";
 import SeeMoreBtn from "./SeeMoreBtn";
-import { SearchSharp } from "react-ionicons";
 
 export default function Events() {
   return (
     <div
-      className="w-full pb-8 flex justify-center"
-      style={{ backgroundColor: "#1A1A1A" }}
+      className="w-full pb-8 flex justify-center bg-bg-main"
     >
-      <div className="w-full sm:container sm:mx-auto px-8 md:px-4 pt-10">
-        <div className="flex form-control md:hidden relative mb-4">
+      <div className="w-full sm:container sm:mx-auto px-8 md:px-4 pt-10 ">
+        <div className="flex form-control md:hidden relative mb-4 ">
           <input
             type="text"
             placeholder="Search"
-            className="input text-white text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
+            className="input text-white focus:outline-main-color focus:outline-offset-0 text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
           />
-          <button className="absolute right-3 top-1.5">
-            <SearchSharp color={"#FFFFFF"} height="20px" width="20px" />
+          <button className="absolute right-4 bottom-2 ">
+            <img src="/images/Search.svg" alt="searchIcon" />
           </button>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5 2xl:grid-cols-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-5 2xl:grid-cols-4">
           <EventCard
             img={"/images/1.png"}
             title={"Ismailia Art Festival 2024, ITI Ismailia"}

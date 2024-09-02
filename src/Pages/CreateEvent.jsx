@@ -1,17 +1,11 @@
-import {
-  Button,
-  Card,
-  Checkbox,
-  Typography,
-  Input,
-} from "@material-tailwind/react";
 import React from "react";
-import { CalendarClear } from "react-ionicons";
+import { useNavigate } from "react-router-dom";
 
 export default function CreateEvent() {
+  const navigate = useNavigate()
   return (
-    <div className="bg-[#1A1A1A] px-6 pt-8 pb-4">
-      <div className="w-full max-w-xx rounded-lg  px-6 2xl:px-40 xl:px-40 lg:px-40 md:px-20 pt-20 mb-8">
+    <div className="bg-bg-main px-6 pt-8 pb-4">
+      <div className="w-full max-w-xx rounded-lg  px-6 2xl:px-40 xl:px-40 lg:px-40 md:px-20 pt-16 mb-8">
         <h2 className="text-[32px] text-white font-semibold mb-6">
           Create Event
         </h2>
@@ -21,7 +15,7 @@ export default function CreateEvent() {
             <label className="block text-white mb-2 text-base font-medium">
               Event Image
             </label>
-            <div className="w-full h-56 bg-customGray rounded-xl flex items-center justify-center relative overflow-hidden">
+            <div className="w-full h-56 bg-input rounded-xl flex items-center justify-center relative overflow-hidden">
               <input
                 id="dropzone-file"
                 type="file"
@@ -44,7 +38,7 @@ export default function CreateEvent() {
               Event Title
             </label>
             <input
-              className="w-full px-4 py-3 bg-customGray  text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-3 bg-input  text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
               type="text"
               id="eventTitle"
               placeholder="Ain Gamal"
@@ -60,7 +54,7 @@ export default function CreateEvent() {
               Event Host
             </label>
             <input
-              className="w-full px-4 py-3 bg-customGray text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
               type="text"
               id="eventHost"
               placeholder="Omar El-Gamal"
@@ -76,7 +70,7 @@ export default function CreateEvent() {
               Event Location
             </label>
             <input
-              className="w-full px-4 py-3 bg-customGray text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
               type="text"
               id="eventLocation"
               placeholder="Saqyet El-Sawi"
@@ -92,7 +86,7 @@ export default function CreateEvent() {
               Ticket Price
             </label>
             <input
-              className="w-full px-4 py-3 bg-customGray text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
               type="number"
               id="ticketPrice"
               placeholder={700}
@@ -109,7 +103,7 @@ export default function CreateEvent() {
                 Start Time
               </label>
               <input
-                className="w-full px-4 py-3 bg-customGray text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 "
+                className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 "
                 type="time"
                 id="startTime"
               />
@@ -122,7 +116,7 @@ export default function CreateEvent() {
                 End Time
               </label>
               <input
-                className="w-full px-4 py-3 bg-customGray text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 "
+                className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 "
                 type="time"
                 id="endTime"
               />
@@ -138,7 +132,7 @@ export default function CreateEvent() {
                 Start Date
               </label>
               <input
-                className="w-full  px-4 py-3 bg-customGray text-white   rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 appearance-none"
+                className="w-full  px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 appearance-none"
                 type="date"
                 id="startDate"
               />
@@ -151,7 +145,7 @@ export default function CreateEvent() {
                 End Date
               </label>
               <input
-                className="w-full px-4 py-3 bg-customGray  text-white  rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 appearance-none"
+                className="w-full px-4 py-3 bg-input  text-white  rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 appearance-none"
                 type="date"
                 id="endDate"
                 placeholder="Select a date"
@@ -167,7 +161,7 @@ export default function CreateEvent() {
               Event Description
             </label>
             <textarea
-              className="w-full px-4 py-3 bg-customGray text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 "
+              className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 "
               id="eventDescription"
               rows={7}
               placeholder="Enter event description"
@@ -177,10 +171,10 @@ export default function CreateEvent() {
           </div>
           {/* Create Event Button */}
           <div className="flex justify-end  space-x-6">
-            <button className=" w-[320px] text-white font-bold py-3 rounded-2xl border-2 border-teal-500 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500">
+            <button onClick={()=>navigate("/admin")} className=" w-[320px] transition duration-300 ease-in-out text-white font-bold py-2 rounded-2xl border-2 border-teal-500 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500">
               Cancel
             </button>
-            <button className=" w-[320px] bg-[#4fdfd1] hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-2xl">
+            <button className=" w-[320px] transition duration-300 ease-in-out bg-main-color hover:bg-main-hover text-white font-bold py-2 px-6 rounded-2xl">
               Create Event
             </button>
           </div>

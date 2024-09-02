@@ -6,6 +6,7 @@ import EyeSlashIcon from "../Components/Icons/EyeSlashIcon";
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   return (
     <div>
       {/* <Layout> */}
@@ -21,13 +22,13 @@ export default function SignUp() {
             </p>
             <Link to="/login" className="block w-full">
               <button className="p-2 w-full rounded-lg text-white font-600 relative border border-main-color">
-                <div className="absolute inset-0 bg-sec-color hover:opacity-100 transition duration-500 ease-in-out opacity-50 rounded-lg"></div>
+                <div className="absolute inset-0 bg-sec-color hover:opacity-100 transition duration-300 ease-in-out opacity-50 rounded-lg"></div>
                 <span className="relative z-10">Sign In</span>
               </button>
             </Link>
           </div>
         </div>
-        <div className="w-full md:w-3/5 flex justify-center items-center px-8 lg:px-28">
+        <div className="w-full md:w-3/5 flex justify-center items-center px-8 pt-16 pb-5 lg:px-28">
           <form className="flex flex-col w-full gap-6 font-Inter ">
             <div className="text-center text-white text-xl font-600">
               Create a new account
@@ -123,14 +124,14 @@ export default function SignUp() {
               </div>
             </div>
             <div>
-              <button className="bg-main-color p-3 w-full rounded-lg text-white font-600">
+              <button className="bg-main-color transition duration-300 ease-in-out hover:bg-main-hover p-3 w-full rounded-lg text-white font-600">
                 Sign Up
               </button>
             </div>
             <div className="md:hidden -mt-4 font-300 text-white">
               Already have an account?
               <Link to="/login" className="pl-1 w-full">
-                <span className="hover:underline transition duration-500 ease-in-out text-main-color cursor-pointer">
+                <span className="hover:underline transition duration-300 ease-in-out text-main-color cursor-pointer">
                   Sign In
                 </span>
               </Link>
