@@ -1,66 +1,74 @@
-import React from "react";
+import React, { useState } from "react";
 import CategoryBtn from "../Components/CategoryBtn";
 import EventCard from "../Components/Home/EventCard";
-import Footer from "../Components/Footer";
 import Pagination from "../Components/Pagination";
-import { SearchSharp } from "react-ionicons";
 
 export default function EventsPage() {
+  
+  // const [colored,setColored] = useState(true)
+  // const [coloredscd,setColoredScd] = useState(false)
+
+  // function allBtn(){
+  //   setColored(true)
+  //   setColoredScd(false)
+  // }
+
+  // function comedyBtn(){
+  //   setColored(false)
+  //   setColoredScd(true)
+  // }
+
   return (
-    <div className="w-full" style={{ backgroundColor: "#1A1A1A" }}>
-      <div className="md:container md:mx-auto mx-8 md:px-4 pt-32">
+    <div className="w-full bg-bg-main">
+      <div className="md:container md:mx-auto mx-8 md:px-4 pt-28">
         <div className="flex flex-col items-center">
           <div className="w-full flex form-control md:hidden relative mb-4">
             <input
               type="text"
               placeholder="Search"
-              className="input text-white text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
+              className="input focus:outline-main-color focus:outline-offset-0 text-white text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
             />
-            <button className="absolute right-3 top-1.5">
-              <SearchSharp color={"#FFFFFF"} height="20px" width="20px" />
+            <button className="absolute right-4 bottom-2">
+            <img src="/images/Search.svg" alt="searchIcon" />
             </button>
           </div>
           <div className="w-full flex gap-5 items-center mb-7 overflow-x-auto">
-            <CategoryBtn category={"All"} bg={"bg-teal-600"} />
+          <div>
+          <CategoryBtn category={"All"} path={"/events-page/all"} classes={""}   />
+            </div>
+            <div>
             <CategoryBtn
               category={"Comedy"}
-              bg={"bg-zinc-700"}
-              hoverBg={"bg-teal-600"}
+              path={"/events-page/comedy"}
             />
+            </div>
             <CategoryBtn
               category={"Music"}
-              bg={"bg-zinc-700"}
-              hoverBg={"bg-teal-600"}
+              path={"/events-page/music"}
             />
             <CategoryBtn
               category={"Sports"}
-              bg={"bg-zinc-700"}
-              hoverBg={"bg-teal-600"}
+              path={"/events-page/sports"}
             />
             <CategoryBtn
               category={"Theater"}
-              bg={"bg-zinc-700"}
-              hoverBg={"bg-teal-600"}
+              path={"/events-page/theater"}
             />
             <CategoryBtn
               category={"Charity"}
-              bg={"bg-zinc-700"}
-              hoverBg={"bg-teal-600"}
+              path={"/events-page/charity"}
             />
             <CategoryBtn
               category={"Virtual"}
-              bg={"bg-zinc-700"}
-              hoverBg={"bg-teal-600"}
+              path={"/events-page/virtual"}
             />
             <CategoryBtn
               category={"Family"}
-              bg={"bg-zinc-700"}
-              hoverBg={"bg-teal-600"}
+              path={"/events-page/family"}
             />
             <CategoryBtn
               category={"Workshops"}
-              bg={"bg-zinc-700"}
-              hoverBg={"bg-teal-600"}
+              path={"/events-page/workshops"}
             />
           </div>
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5 2xl:grid-cols-4">
@@ -178,7 +186,6 @@ export default function EventsPage() {
           <Pagination />
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

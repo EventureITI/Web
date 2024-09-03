@@ -68,7 +68,7 @@ export default function CreateEvent() {
       let endTime24F = convertTo24HourFormat(eventForm.endTime);
       setEventForm((prevForm) => ({ ...prevForm, endTime: endTime24F }));
     }
-  },[]);
+  }, []);
   const [errors, setErrors] = useState({
     title: null,
     host: null,
@@ -183,8 +183,8 @@ export default function CreateEvent() {
   console.log(eventForm);
 
   return (
-    <div className="bg-[#1A1A1A] px-6 pt-8 pb-4">
-      <div className="w-full max-w-xx rounded-lg px-6 2xl:px-40 xl:px-40 lg:px-40 md:px-20 pt-20 mb-8">
+    <div className="bg-bg-main px-6 pt-8 pb-4">
+      <div className="w-full max-w-xx rounded-lg  px-6 2xl:px-40 xl:px-40 lg:px-40 md:px-20 pt-16 mb-8">
         <h2 className="text-[32px] text-white font-semibold mb-6">
           {mode === "add" ? "Create" : "Edit"} Event
         </h2>
@@ -203,7 +203,7 @@ export default function CreateEvent() {
             <div
               className={`${
                 errors.imgUrl ? "border border-red-600" : "border-0"
-              } w-full h-56 bg-customGray rounded-xl flex items-center justify-center relative overflow-hidden`}
+              } w-full h-56 bg-input rounded-xl flex items-center justify-center relative overflow-hidden`}
             >
               <input
                 id="dropzone-file"
@@ -248,7 +248,7 @@ export default function CreateEvent() {
               Event Title
             </label>
             <input
-              className={`w-full px-4 py-3 bg-customGray text-white rounded-xl ${
+              className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
                 errors.title
                   ? "border border-red-600 outline-none"
                   : "focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -278,7 +278,7 @@ export default function CreateEvent() {
               Event Host
             </label>
             <input
-              className={`w-full px-4 py-3 bg-customGray text-white rounded-xl ${
+              className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
                 errors.host
                   ? "border border-red-600 outline-none"
                   : "focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -308,7 +308,7 @@ export default function CreateEvent() {
               Event Location
             </label>
             <input
-              className={`w-full px-4 py-3 bg-customGray text-white rounded-xl ${
+              className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
                 errors.location
                   ? "border border-red-600 outline-none"
                   : "focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -338,7 +338,7 @@ export default function CreateEvent() {
               Ticket Price
             </label>
             <input
-              className={`w-full px-4 py-3 bg-customGray text-white rounded-xl ${
+              className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
                 errors.price
                   ? "border border-red-600 outline-none"
                   : "focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -351,6 +351,35 @@ export default function CreateEvent() {
               placeholder="Enter ticket price"
               style={{ caretColor: "#4FE0D2" }}
             />
+          </div>
+          {/* Start Time and End Time */}
+          <div className="mb-4 grid grid-cols-2 gap-4">
+            <div>
+              <label
+                className="block text-white mb-2 text-base font-medium"
+                htmlFor="startTime"
+              >
+                Start Time
+              </label>
+              <input
+                className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 "
+                type="time"
+                id="startTime"
+              />
+            </div>
+            <div>
+              <label
+                className="block text-white mb-2 text-base font-medium"
+                htmlFor="endTime"
+              >
+                End Time
+              </label>
+              <input
+                className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 "
+                type="time"
+                id="endTime"
+              />
+            </div>
             {errors.price && (
               <span className="text-xs text-red-800 p-1 rounded-md">
                 {errors.price}
@@ -369,7 +398,7 @@ export default function CreateEvent() {
                 Start Date
               </label>
               <input
-                className={`w-full px-4 py-3 bg-customGray text-white rounded-xl ${
+                className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
                   errors.startDate
                     ? "border border-red-600 outline-none"
                     : "focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -396,7 +425,7 @@ export default function CreateEvent() {
                 End Date
               </label>
               <input
-                className={`w-full px-4 py-3 bg-customGray text-white rounded-xl ${
+                className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
                   errors.endDate
                     ? "border border-red-600 outline-none"
                     : "focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -483,7 +512,7 @@ export default function CreateEvent() {
               Event Description
             </label>
             <textarea
-              className={`w-full px-4 py-3 bg-customGray text-white rounded-xl ${
+              className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
                 errors.description
                   ? "border border-red-600 outline-none"
                   : "focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -506,14 +535,12 @@ export default function CreateEvent() {
 
           <div className="flex justify-end  space-x-6">
             <button
-              onClick={() => {
-                navigate("/admin");
-              }}
-              className=" w-[320px] text-white font-bold py-3 rounded-2xl border-2 border-teal-500 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              onClick={() => navigate("/admin")}
+              className=" w-[320px] transition duration-300 ease-in-out text-white font-bold py-2 rounded-2xl border-2 border-teal-500 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
               Cancel
             </button>
-            <button className=" w-[320px] bg-[#4fdfd1] hover:bg-teal-600 text-white font-bold py-3 px-6 rounded-2xl">
+            <button className=" w-[320px] transition duration-300 ease-in-out bg-main-color hover:bg-main-hover text-white font-bold py-2 px-6 rounded-2xl">
               {mode === "add" ? "Create" : "Edit"} Event
             </button>
           </div>
