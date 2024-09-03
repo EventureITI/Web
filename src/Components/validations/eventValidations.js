@@ -78,4 +78,9 @@ export const eventSchema = yup.object({
     .matches(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Invalid end time format"),
   description: yup.string().required("Description is required"),
   imgUrl: yup.string().required("Image is required"),
+  tickets: yup
+    .number()
+    .required("Tickets is required")
+    .typeError("Tickets must be a number")
+    .positive("Tickets must be greater than 0"),
 });
