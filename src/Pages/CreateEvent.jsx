@@ -13,8 +13,14 @@ import { eventSchema } from "../Components/validations/eventValidations";
 export default function CreateEvent() {
   const { id } = useParams();
   const mode = id === "new" ? "add" : "edit";
-  const { handleAddEventsUI, events, restoreEvents, handleEditEventUI } =
-    useContext(appContext);
+  const {
+    handleAddEventsUI,
+    events,
+    restoreEvents,
+    handleEditEventUI,
+    categories,
+  } = useContext(appContext);
+
   const [imgFile, setImgFile] = useState();
   const eventsCollectionRef = collection(db, "events");
   const navigate = useNavigate();
@@ -37,6 +43,8 @@ export default function CreateEvent() {
           description: "",
           isDeleted: false,
           imgUrl: "",
+          categoryId: "5FPf3i6ZnHaGvCYqR5UW",
+          tickets: "",
           // customId: uuid(),
         }
       : events.find((e) => e.id === id)
@@ -80,6 +88,7 @@ export default function CreateEvent() {
     endDate: null,
     description: null,
     imgUrl: null,
+    tickets: null,
   });
 
   // store value from inputs to fromEvent
@@ -96,11 +105,11 @@ export default function CreateEvent() {
         ...prevFormatted,
         [name]: formatTimeTo12Hour(value),
       }));
-      e.target.blur();
+      // e.target.blur();
     }
   };
 
-  // creat or update an event deponds on mode
+  // create or update an event depends on mode
   const handleCreateEvent = async (e) => {
     e.preventDefault();
     setErrors((prevErrors) => ({
@@ -114,6 +123,7 @@ export default function CreateEvent() {
       endDate: null,
       description: null,
       imgUrl: null,
+      tickets: null,
     }));
     // const eventsBeforeAdd = events;
     try {
@@ -135,16 +145,26 @@ export default function CreateEvent() {
           toast.success("Event added successfully");
         } else {
           console.log(id);
+          console.log(formattedTime);
+
           const eventToBeUpdated = doc(db, "events", id);
           await updateDoc(eventToBeUpdated, {
             ...eventForm,
-            startTime: formattedTime.startTime,
-            endTime: formattedTime.endTime,
+            startTime: !formattedTime.startTime
+              ? formatTimeTo12Hour(eventForm.startTime)
+              : formattedTime.startTime,
+            endTime: !formattedTime.endTime
+              ? formatTimeTo12Hour(eventForm.endTime)
+              : formattedTime.endTime,
           });
           handleEditEventUI({
             ...eventForm,
-            startTime: formattedTime.startTime,
-            endTime: formattedTime.endTime,
+            startTime: !formattedTime.startTime
+              ? formatTimeTo12Hour(eventForm.startTime)
+              : formattedTime.startTime,
+            endTime: !formattedTime.endTime
+              ? formatTimeTo12Hour(eventForm.endTime)
+              : formattedTime.endTime,
           });
           toast.success("Event edited successfully");
         }
@@ -351,40 +371,64 @@ export default function CreateEvent() {
               placeholder="Enter ticket price"
               style={{ caretColor: "#4FE0D2" }}
             />
-          </div>
-          {/* Start Time and End Time */}
-          <div className="mb-4 grid grid-cols-2 gap-4">
-            <div>
-              <label
-                className="block text-white mb-2 text-base font-medium"
-                htmlFor="startTime"
-              >
-                Start Time
-              </label>
-              <input
-                className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 "
-                type="time"
-                id="startTime"
-              />
-            </div>
-            <div>
-              <label
-                className="block text-white mb-2 text-base font-medium"
-                htmlFor="endTime"
-              >
-                End Time
-              </label>
-              <input
-                className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 "
-                type="time"
-                id="endTime"
-              />
-            </div>
             {errors.price && (
               <span className="text-xs text-red-800 p-1 rounded-md">
                 {errors.price}
               </span>
             )}
+          </div>
+          {/* Events Tickets */}
+          <div className="mb-4">
+            <label
+              className={`block mb-2 text-base font-medium" ${
+                errors.tickets ? "text-red-600" : "text-white"
+              }`}
+              htmlFor="tickets"
+            >
+              Number of tickets
+            </label>
+            <input
+              className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
+                errors.tickets
+                  ? "border border-red-600 outline-none"
+                  : "focus:outline-none focus:ring-2 focus:ring-teal-500"
+              }`}
+              type="number"
+              id="tickets"
+              name="tickets"
+              value={eventForm.tickets}
+              onChange={(e) => handleChange(e)}
+              placeholder="Enter number of tickets"
+              style={{ caretColor: "#4FE0D2" }}
+            />
+            {errors.tickets && (
+              <span className="text-xs text-red-800 p-1 rounded-md">
+                {errors.tickets}
+              </span>
+            )}
+          </div>
+
+          {/* Event Category */}
+          <div className="mb-4">
+            <label
+              htmlFor="categories"
+              className="block mb-2 text-base font-medium text-white"
+            >
+              Choose a category
+            </label>
+            <select
+              id="categories"
+              name="categoryId"
+              value={eventForm.categoryId}
+              onChange={handleChange}
+              className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
+            >
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
           </div>
           {/* Start Date and End Date */}
           <div className="mb-4 grid grid-cols-2 gap-4">
@@ -455,7 +499,7 @@ export default function CreateEvent() {
                 Start Time
               </label>
               <input
-                className={`w-full px-4 py-3 bg-customGray text-white rounded-xl ${
+                className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
                   errors.startTime
                     ? "border border-red-600 outline-none"
                     : "focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -482,7 +526,7 @@ export default function CreateEvent() {
                 End Time
               </label>
               <input
-                className={`w-full px-4 py-3 bg-customGray text-white rounded-xl ${
+                className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
                   errors.endTime
                     ? "border border-red-600 outline-none"
                     : "focus:outline-none focus:ring-2 focus:ring-teal-500"
