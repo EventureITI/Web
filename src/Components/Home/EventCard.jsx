@@ -2,15 +2,8 @@ import React, { useState } from "react";
 import EventPrice from "./EventPrice";
 import { useNavigate } from "react-router-dom";
 
-export default function EventCard({
-  img,
-  title,
-  name,
-  date,
-  time,
-  city,
-  money,
-}) {
+export default function EventCard({ event }) {
+  
   const [hovered, setHovered] = useState(false);
   const navigate = useNavigate();
 
@@ -35,10 +28,10 @@ export default function EventCard({
         onMouseLeave={noHover}
         className="w-full h-44 overflow-hidden relative "
       >
-        <img className="w-full min-h-[200px]" src={img} alt="eventImg" />
+        <img className="w-full min-h-[200px]" src={event.imgUrl} alt="eventImg" />
         {hovered ? (
           <div
-            onClick={() => navigate("/event-details")}
+            onClick={() => navigate(`/event-details/${event.id}`)}
             className="cursor-pointer absolute top-0 w-full h-full opacity-70 bg-black flex justify-center items-center"
           >
             <button className="flex items-center text-white">
@@ -52,19 +45,19 @@ export default function EventCard({
           className="text-base font-semibold mb-2 px-3 text-ellipsis overflow-hidden"
           style={{ maxWidth: "250px", whiteSpace: "nowrap" }}
         >
-          {title}
+          {event.title}
         </p>
-        <p className="text-sm opacity-50 mb-1 font-Inter font-300 ">{name}</p>
+        <p className="text-sm opacity-50 mb-1 font-Inter font-300 ">{event.host}</p>
         <div className="text-sm mb-3 relative flex justify-center items-center opacity-70 font-Inter font-400">
           <p className='mr-5 after:top-1 after:content-["_"] after:w-0.5 after:h-4 after:bottom-2 after:bg-gray-600 after:absolute after:ml-2'>
-            {date}
+            {event.startDate}
           </p>
           <p className='mr-5 after:top-1 after:content-["_"] after:w-0.5 after:h-4 after:bottom-2 after:bg-gray-600 after:absolute after:ml-2'>
-            {time}
+            {event.startTime}
           </p>
-          <p>{city}</p>
+          <p>{event.location}</p>
         </div>
-        <EventPrice price={money} />
+        <EventPrice price={event.price} />
       </div>
     </div>
   );

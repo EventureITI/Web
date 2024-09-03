@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Main from "../Components/Home/Main";
 import Events from "../Components/Home/Events";
 import CardsSkeleton from "../Components/Skeleton/CardsSkeleton";
@@ -7,10 +7,13 @@ import Footer from "../Components/Footer";
 import NavBar from "../Components/NavBar";
 import SeeMoreSkeleton from "../Components/Skeleton/SeeMoreSkeleton";
 import FooterSkeleton from "../Components/Skeleton/FooterSkeleton";
+import { appContext } from "../context/AppContext";
 
 export default function Home() {
   const [skeleton, setSkeleton] = useState(false);
   const [home, setHome] = useState(false);
+  const { events } = useContext(appContext);
+  console.log(events);
 
   useEffect(() => {
     setSkeleton(true);
@@ -18,7 +21,13 @@ export default function Home() {
       setSkeleton(false);
       setHome(true);
     }, 1000);
+
+
   }, []);
+
+  const sortedEvents = events.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+console.log(sortedEvents);
+
   return (
     <div>
       {skeleton && (
@@ -44,7 +53,7 @@ export default function Home() {
         <div>
           <NavBar />
           <Main />
-          <Events />
+          <Events events={sortedEvents}/>
           <Footer />
         </div>
       )}
