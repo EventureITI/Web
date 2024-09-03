@@ -34,17 +34,17 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         {/* <Route path="/eventsPage" element={<EventsPage />} /> */}
-        <Route path="/events-page/all" element={<EventsPage />} />
-        <Route path="/events-page/comedy" element={<EventsPage />} />
+        <Route path="/events-page/:category" element={<EventsPage />} />
+        {/* <Route path="/events-page/comedy" element={<EventsPage />} />
         <Route path="/events-page/music" element={<EventsPage />} />
         <Route path="/events-page/sports" element={<EventsPage />} />
         <Route path="/events-page/theater" element={<EventsPage />} />
         <Route path="/events-page/charity" element={<EventsPage />} />
         <Route path="/events-page/virtual" element={<EventsPage />} />
         <Route path="/events-page/family" element={<EventsPage />} />
-        <Route path="/events-page/workshops" element={<EventsPage />} />
+        <Route path="/events-page/workshops" element={<EventsPage />} /> */}
         <Route path="/login" element={<Login />} />
-        <Route path="/event-details" element={<EventDetails />} />
+        <Route path="/event-details/:id" element={<EventDetails />} />
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/signup" element={<SignUp />} />
