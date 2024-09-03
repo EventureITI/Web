@@ -1,10 +1,22 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import CategoryBtn from "../Components/CategoryBtn";
 import EventCard from "../Components/Home/EventCard";
 import Pagination from "../Components/Pagination";
+import { appContext } from "../context/AppContext";
+import { useParams, useNavigate } from "react-router-dom";
 
 export default function EventsPage() {
-  
+  const navigate = useNavigate();
+  const {
+    events,
+    categories,
+    searchKey,
+    handleSearchKeyChanges,
+    filteredSearchEvents,
+  } = useContext(appContext);
+  const { category } = useParams();
+  console.log(category);
+
   // const [colored,setColored] = useState(true)
   // const [coloredscd,setColoredScd] = useState(false)
 
@@ -18,168 +30,85 @@ export default function EventsPage() {
   //   setColoredScd(true)
   // }
 
+  const categoryEvents =
+    category === "all"
+      ? events.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
+      : events.filter(
+          (e) =>
+            e.categoryId === categories.find((cat) => cat.name === category).id
+        );
+  console.log(categoryEvents);
   return (
-    <div className="w-full bg-bg-main">
+    <div className="w-full bg-bg-main min-h-screen">
       <div className="md:container md:mx-auto mx-8 md:px-4 pt-28">
         <div className="flex flex-col items-center">
           <div className="w-full flex form-control md:hidden relative mb-4">
             <input
+              onChange={(e) => handleSearchKeyChanges(e.target.value)}
               type="text"
               placeholder="Search"
               className="input focus:outline-main-color focus:outline-offset-0 text-white text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
             />
             <button className="absolute right-4 bottom-2">
-            <img src="/images/Search.svg" alt="searchIcon" />
+              <img src="/images/Search.svg" alt="searchIcon" />
             </button>
           </div>
+          {/* search dropdown */}
+          <div className="flex justify-center">
+            {searchKey && (
+              <div className="block absolute text-white font-Inter bg-input md:w-96 z-50 my-1 rounded-lg px-2 py-2">
+                {filteredSearchEvents.length > 0 ? (
+                  <>
+                    {filteredSearchEvents.map((event, index) => {
+                      return (
+                        <div
+                          key={index}
+                          className="py-2 px-2 cursor-pointer"
+                          onClick={() => navigate(`/event-details/${event.id}`)}
+                        >
+                          <div className="flex items-center gap-2">
+                            <img className="w-10" src={event.imgUrl} alt="" />
+                            {event.title}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex justify-center">
+                      There is no events with this title
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
           <div className="w-full flex gap-5 items-center mb-7 overflow-x-auto">
-          <div>
-          <CategoryBtn category={"All"} path={"/events-page/all"} classes={""}   />
-            </div>
             <div>
-            <CategoryBtn
-              category={"Comedy"}
-              path={"/events-page/comedy"}
-            />
+              <CategoryBtn category={"All"} path={"/events-page/all"} />
             </div>
-            <CategoryBtn
-              category={"Music"}
-              path={"/events-page/music"}
-            />
-            <CategoryBtn
-              category={"Sports"}
-              path={"/events-page/sports"}
-            />
-            <CategoryBtn
-              category={"Theater"}
-              path={"/events-page/theater"}
-            />
-            <CategoryBtn
-              category={"Charity"}
-              path={"/events-page/charity"}
-            />
-            <CategoryBtn
-              category={"Virtual"}
-              path={"/events-page/virtual"}
-            />
-            <CategoryBtn
-              category={"Family"}
-              path={"/events-page/family"}
-            />
-            <CategoryBtn
-              category={"Workshops"}
-              path={"/events-page/workshops"}
-            />
+            {categories.map((cat) => (
+              <div key={cat.id}>
+                <CategoryBtn
+                  category={cat.name}
+                  path={`/events-page/${cat.name}`}
+                />
+              </div>
+            ))}
           </div>
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5 2xl:grid-cols-4">
-            <EventCard
-              img={"/images/1.png"}
-              title={"Ismailia Art Festival 2024, ITI Ismailia"}
-              name={"Ali Qandil"}
-              date={"Sep 14"}
-              time={"10 : 00 PM"}
-              city={"Ismailia, EG"}
-              money={600}
-            />
-            <EventCard
-              img={"/images/2.png"}
-              title={"Al-Qalaa International Music and Singing Festival"}
-              name={"Sherine Abdelwahab"}
-              date={"Sep 30"}
-              time={"9 : 00 PM"}
-              city={"Cairo, EG"}
-              money={250}
-            />
-            <EventCard
-              img={"/images/3.png"}
-              title={"Tamer Ashour Concert"}
-              name={"Tamer Ashour"}
-              date={"Oct 15"}
-              time={"8 : 00 PM"}
-              city={"Cairo, EG"}
-              money={650}
-            />
-            <EventCard
-              img={"/images/4.png"}
-              title={"King Lear"}
-              name={"Yehia El-Fkhrany"}
-              date={"Nov 10"}
-              time={"8 : 30 PM"}
-              city={"Cairo, EG"}
-              money={500}
-            />
-            <EventCard
-              img={"/images/5.png"}
-              title={"Egyptian Luxor Marathon"}
-              name={"Citizens"}
-              date={"Sep 25"}
-              time={"3 : 00 PM"}
-              city={"Alexandria, EG"}
-              money={100}
-            />
-            <EventCard
-              img={"/images/6.png"}
-              title={"AUC Tahrir Concert"}
-              name={"Masar Egbari"}
-              date={"Dec 12"}
-              time={"8 : 00 PM"}
-              city={"Cairo, EG"}
-              money={450}
-            />
-            <EventCard
-              img={"/images/1.png"}
-              title={"Ismailia Art Festival 2024, ITI Ismailia"}
-              name={"Ali Qandil"}
-              date={"Sep 14"}
-              time={"10 : 00 PM"}
-              city={"Ismailia, EG"}
-              money={600}
-            />
-            <EventCard
-              img={"/images/2.png"}
-              title={"Al-Qalaa International Music and Singing Festival"}
-              name={"Sherine Abdelwahab"}
-              date={"Sep 30"}
-              time={"9 : 00 PM"}
-              city={"Cairo, EG"}
-              money={250}
-            />
-            <EventCard
-              img={"/images/3.png"}
-              title={"Tamer Ashour Concert"}
-              name={"Tamer Ashour"}
-              date={"Oct 15"}
-              time={"8 : 00 PM"}
-              city={"Cairo, EG"}
-              money={650}
-            />
-            <EventCard
-              img={"/images/4.png"}
-              title={"King Lear"}
-              name={"Yehia El-Fkhrany"}
-              date={"Nov 10"}
-              time={"8 : 30 PM"}
-              city={"Cairo, EG"}
-              money={500}
-            />
-            <EventCard
-              img={"/images/5.png"}
-              title={"Egyptian Luxor Marathon"}
-              name={"Citizens"}
-              date={"Sep 25"}
-              time={"3 : 00 PM"}
-              city={"Alexandria, EG"}
-              money={100}
-            />
-            <EventCard
-              img={"/images/6.png"}
-              title={"AUC Tahrir Concert"}
-              name={"Masar Egbari"}
-              date={"Dec 12"}
-              time={"8 : 00 PM"}
-              city={"Cairo, EG"}
-              money={450}
-            />
+            {categoryEvents.length > 0 ? (
+              <>
+                {categoryEvents.map((e) => (
+                  <EventCard key={e.id} event={e} />
+                ))}
+              </>
+            ) : (
+              <div className="col-span-2 font-Inter font-600 flex justify-center mb-7 text-white text-center">
+                0 Events
+              </div>
+            )}
           </div>
         </div>
         <div className="py-10 flex justify-center">
