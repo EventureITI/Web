@@ -134,7 +134,7 @@ export default function DashboardAdmin() {
                       {event.host}
                     </td>
                     <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden xl:table-cell">
-                      {event.startTime - event.endTime}
+                      {event.startTime} - {event.endTime}
                     </td>
                     <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden lg:table-cell">
                       {event.startDate}
@@ -143,7 +143,7 @@ export default function DashboardAdmin() {
                       {event.price} EGP
                     </td>
                     <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden md:table-cell">
-                      500
+                      {event.tickets}
                     </td>
 
                     <td className="px-6 py-2">
