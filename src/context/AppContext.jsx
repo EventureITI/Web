@@ -11,10 +11,13 @@ export const appContext = createContext();
 export default function AppContextProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState([]);
+  const [categories, setCategories] = useState([]);
   const eventsCollectionRef = collection(db, "events");
+  const categoriesCollectionRef = collection(db, "categories");
 
   // search for events by title
   const [searchKey, setSearchKey] = useState("");
+
   const handleSearchKeyChanges = (key) => {
     setSearchKey(key);
   };
@@ -35,7 +38,7 @@ export default function AppContextProvider({ children }) {
 
   // update ui after edit an event
   const handleEditEventUI = (event) => {
-    console.log(event);    
+    console.log(event);
     const newEvents = [...events];
     let index = newEvents.findIndex((e) => e.id === event.id);
     newEvents[index] = event;
@@ -53,7 +56,7 @@ export default function AppContextProvider({ children }) {
   const restoreEvents = (events) => {
     setEvents(events);
   };
-  
+
   // get All Events
   useEffect(() => {
     const getAllEvents = async () => {
@@ -89,8 +92,45 @@ export default function AppContextProvider({ children }) {
         setLoading(false);
       }
     };
+    const getAllCategories = async () => {
+      try {
+        const data = await getDocs(categoriesCollectionRef);
+        const categoriesData = data.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setCategories(categoriesData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    const updateExpiredEvents = async () => {
+      const currentDate = new Date();
 
+      // get events where endDate has passed and isDeleted is false
+      const q = query(
+        collection(db, "events"),
+        where("endDate", "<", currentDate),
+        where("isDeleted", "==", false)
+      );
+      try {
+        const querySnapshot = await getDocs(q);
+
+        querySnapshot.forEach(async (docSnapshot) => {
+          const eventRef = doc(db, "events", docSnapshot.id);
+          await updateDoc(eventRef, {
+            isDeleted: true,
+          });
+
+          console.log(`Event ${docSnapshot.id} marked as deleted`);
+        });
+      } catch (error) {
+        console.error("Error updating documents: ", error);
+      }
+    };
+    updateExpiredEvents();
     getAllEvents();
+    getAllCategories();
   }, []);
 
   return (
@@ -104,7 +144,8 @@ export default function AppContextProvider({ children }) {
         filteredSearchEvents,
         handleDeleteEventUI,
         loading,
-        handleEditEventUI
+        handleEditEventUI,
+        categories,
       }}
     >
       {children}
