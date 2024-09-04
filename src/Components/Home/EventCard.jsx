@@ -24,7 +24,9 @@ export default function EventCard({
 
   return (
     <div
-      className="rounded-md overflow-hidden transition duration-300 ease-in-out hover:scale-105"
+      className="rounded-md overflow-hidden transition duration-300 ease-in-out hover:scale-105 "
+      role="button"
+      onClick={() => navigate("/event-details")}
       style={{
         maxWidth: "650px",
         backgroundColor: "#292929",
