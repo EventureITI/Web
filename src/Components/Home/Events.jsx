@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import EventCard from "./EventCard";
 import SeeMoreBtn from "./SeeMoreBtn";
+import { searchEvents } from "../../context/SearchEventsContext";
 
 export default function Events() {
+  const {searched , searchEvent} = useContext(searchEvents)
+
   return (
     <div
       className="w-full pb-8 flex justify-center bg-bg-main"
@@ -12,67 +15,15 @@ export default function Events() {
           <input
             type="text"
             placeholder="Search"
+            onChange={searchEvent}
             className="input text-white focus:outline-main-color focus:outline-offset-0 text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
           />
           <button className="absolute right-4 bottom-2 ">
             <img src="/images/Search.svg" alt="searchIcon" />
           </button>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-5 2xl:grid-cols-4">
-          <EventCard
-            img={"/images/1.png"}
-            title={"Ismailia Art Festival 2024, ITI Ismailia"}
-            name={"Ali Qandil"}
-            date={"Sep 14"}
-            time={"10 : 00 PM"}
-            city={"Ismailia, EG"}
-            money={600}
-          />
-          <EventCard
-            img={"/images/2.png"}
-            title={"Al-Qalaa International Music and Singing Festival"}
-            name={"Sherine Abdelwahab"}
-            date={"Sep 30"}
-            time={"9 : 00 PM"}
-            city={"Cairo, EG"}
-            money={250}
-          />
-          <EventCard
-            img={"/images/3.png"}
-            title={"Tamer Ashour Concert"}
-            name={"Tamer Ashour"}
-            date={"Oct 15"}
-            time={"8 : 00 PM"}
-            city={"Cairo, EG"}
-            money={650}
-          />
-          <EventCard
-            img={"/images/4.png"}
-            title={"King Lear"}
-            name={"Yehia El-Fkhrany"}
-            date={"Nov 10"}
-            time={"8 : 30 PM"}
-            city={"Cairo, EG"}
-            money={500}
-          />
-          <EventCard
-            img={"/images/5.png"}
-            title={"Egyptian Luxor Marathon"}
-            name={"Citizens"}
-            date={"Sep 25"}
-            time={"3 : 00 PM"}
-            city={"Alexandria, EG"}
-            money={100}
-          />
-          <EventCard
-            img={"/images/6.png"}
-            title={"AUC Tahrir Concert"}
-            name={"Masar Egbari"}
-            date={"Dec 12"}
-            time={"8 : 00 PM"}
-            city={"Cairo, EG"}
-            money={450}
-          />
+        <div className={`grid grid-cols-1 ${searched.length == 0 ? "sm:w-full" :"sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"} gap-5 mb-5 2xl:grid-cols-4`}>
+        {searched.length > 0 ?searched.map((e)=><EventCard key={e.title} img={e.img} title={e.title} name={e.name} date={e.date} time={e.time} city={e.city} money={e.money}/>):<h2 className="text-white font-Inter font-400 text-center flex justify-center my-20 ">No Events Found</h2>}
         </div>
         <SeeMoreBtn />
       </div>
