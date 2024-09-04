@@ -1,6 +1,7 @@
 import React from "react";
 import EventBookButton from "../Components/EventBookButton";
 import { useNavigate } from "react-router-dom";
+import BackTop from "../Components/BackTop";
 
 export default function EventDetails() {
   const navigate = useNavigate();
@@ -86,6 +87,7 @@ export default function EventDetails() {
             <EventBookButton></EventBookButton>
           </div>
         </div>
+        <BackTop/>
       </div>
     </>
   );

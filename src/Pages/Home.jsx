@@ -7,6 +7,7 @@ import Footer from "../Components/Footer";
 import NavBar from "../Components/NavBar";
 import SeeMoreSkeleton from "../Components/Skeleton/SeeMoreSkeleton";
 import FooterSkeleton from "../Components/Skeleton/FooterSkeleton";
+import BackTop from "../Components/BackTop";
 
 export default function Home() {
   const [skeleton, setSkeleton] = useState(false);
@@ -45,6 +46,7 @@ export default function Home() {
           <NavBar />
           <Main />
           <Events />
+          <BackTop/>
           <Footer />
         </div>
       )}

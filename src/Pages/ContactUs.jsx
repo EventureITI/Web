@@ -1,4 +1,5 @@
 import React from "react";
+import BackTop from "../Components/BackTop";
 
 export default function ContactUs() {
   return (
@@ -80,6 +81,7 @@ export default function ContactUs() {
           </div>
         </form>
       </div>
+      <BackTop/>
     </div>
   );
 }
