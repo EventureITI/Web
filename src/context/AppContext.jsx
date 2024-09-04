@@ -15,7 +15,7 @@ export default function AppContextProvider({ children }) {
   const eventsCollectionRef = collection(db, "events");
   const categoriesCollectionRef = collection(db, "categories");
 
-
+ 
 
   // update ui after add a new event
   const handleAddEventsUI = (newEvent) => {
@@ -93,6 +93,8 @@ export default function AppContextProvider({ children }) {
       }
     };
     const updateExpiredEvents = async () => {
+      console.log("hh");
+
       const currentDate = new Date();
       // get events where endDate has passed and isDeleted is false
       const q = query(
@@ -101,13 +103,18 @@ export default function AppContextProvider({ children }) {
         where("isDeleted", "==", false)
       );
       try {
+        console.log("bb");
+
         const querySnapshot = await getDocs(q);
 
         querySnapshot.forEach(async (docSnapshot) => {
           const eventRef = doc(db, "events", docSnapshot.id);
+          console.log(eventRef);
+
           await updateDoc(eventRef, {
             isDeleted: true,
           });
+          console.log("hh");
 
           console.log(`Event ${docSnapshot.id} marked as deleted`);
         });

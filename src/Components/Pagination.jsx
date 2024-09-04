@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
+import { appContext } from "../context/AppContext";
 
-export default function Pagination() {
+export default function Pagination({
+  currentPage,
+  handleChangePage,
+  pages,
+  handelPaginationNextBtn,
+  handelPaginationPrevBtn,
+}) {
+  console.log(currentPage);
+  console.log(pages.length);
+
+  if (pages.length === 1) return null;
   return (
     <div>
       <nav className="flex items-center gap-x-1 " aria-label="Pagination">
         <button
+          onClick={handelPaginationPrevBtn}
           type="button"
-          className="mr-5 transition duration-300 ease-in-out min-h-[38px] min-w-[38px] py-2 px-1 sm:px-2.5 inline-flex jusify-center items-center gap-x-2 text-sm rounded-lg text-white hover:bg-teal-500 focus:outline-none focus:bg-teal-500 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
+          className={(currentPage===1? "hidden": "")+" mr-5 transition duration-300 ease-in-out min-h-[38px] min-w-[38px] py-2 px-1 sm:px-2.5 inline-flex jusify-center items-center gap-x-2 text-sm rounded-lg text-white hover:bg-teal-500 focus:outline-none focus:bg-teal-500 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"}
           aria-label="Previous"
         >
           <svg
@@ -26,7 +38,7 @@ export default function Pagination() {
           Previous
         </button>
         <div className="flex items-center gap-x-1">
-          <button
+          {/* <button
             type="button"
             className="min-h-[38px] transition duration-300 ease-in-out min-w-[38px] flex justify-center items-center bg-teal-500 text-white py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-teal-500 disabled:opacity-50 disabled:pointer-events-none"
             aria-current="page"
@@ -44,7 +56,7 @@ export default function Pagination() {
             className="min-h-[38px] transition duration-300 ease-in-out min-w-[38px] flex justify-center items-center text-white hover:bg-teal-500 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-teal-500 disabled:opacity-50 disabled:pointer-events-none"
           >
             3
-          </button>
+          </button> */}
           {/* <div className="hs-tooltip inline-block">
             <button
               type="button"
@@ -74,16 +86,26 @@ export default function Pagination() {
               </span>
             </button>
           </div> */}
-          <button
-            type="button"
-            className="min-h-[38px] transition duration-300 ease-in-out min-w-[38px] flex justify-center items-center text-white hover:bg-teal-500 py-2 px-3 text-sm rounded-lg focus:outline-none focus:bg-teal-500 disabled:opacity-50 disabled:pointer-events-none"
-          >
-            4
-          </button>
+          {pages.map((page) => (
+            <button
+              type="button"
+              onClick={() => handleChangePage(page)}
+              className={
+                "min-h-[38px] transition duration-300 ease-in-out min-w-[38px] flex justify-center items-center text-white hover:bg-teal-500 py-2 px-3 text-sm rounded-lg focus:outline-none disabled:opacity-50 disabled:pointer-events-none " +
+                (currentPage === page ? "bg-teal-500" : "")
+              }
+            >
+              {page}
+            </button>
+          ))}
         </div>
         <button
+          onClick={handelPaginationNextBtn}
           type="button"
-          className="ml-5 min-h-[38px] transition duration-300 ease-in-out min-w-[38px] py-2 px-1 sm:px-2.5 inline-flex jusify-center items-center gap-x-2 text-sm rounded-lg text-white hover:bg-teal-500 focus:outline-none focus:bg-teal-500 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
+          className={
+            (currentPage === pages.length ? "hidden" : "") +
+            " ml-5 min-h-[38px] transition duration-300 ease-in-out min-w-[38px] py-2 px-1 sm:px-2.5 inline-flex justify-center items-center gap-x-2 text-sm rounded-lg text-white hover:bg-teal-500 focus:outline-none focus:bg-teal-500 disabled:opacity-50 disabled:pointer-events-none dark:text-white dark:hover:bg-white/10 dark:focus:bg-white/10"
+          }
           aria-label="Next"
         >
           Next

@@ -8,8 +8,11 @@ import DeleteConfirmationModal from "../Components/DeleteConfirmationModal";
 import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import { toast } from "react-toastify";
+import generateArrayFromNumber from "../utils/generateArrayFromNumber";
 
 export default function DashboardAdmin() {
+  const [currentPage, setCurrentPage] = useState(1);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const tableHeaders = [
@@ -23,20 +26,16 @@ export default function DashboardAdmin() {
     "",
   ];
   const navigate = useNavigate();
-  const {
-    events,
-    handleDeleteEventUI,
-    restoreEvents,
-    loading,
-  } = useContext(appContext);
-    // search for events by title
-    const [searchAdminKey, setSearchAdminKey] = useState("");
+  const { events, handleDeleteEventUI, restoreEvents, loading } =
+    useContext(appContext);
+  // search for events by title
+  const [searchAdminKey, setSearchAdminKey] = useState("");
 
-    const handleSearchAdminKeyChanges = (key) => {
-      setSearchAdminKey(key);
-    };
-  
- 
+  const handleSearchAdminKeyChanges = (key) => {
+    setSearchAdminKey(key);
+    setCurrentPage(1)
+  };
+
   const handleOpenModal = (event) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
@@ -61,17 +60,36 @@ export default function DashboardAdmin() {
       toast.error("Failed to delete event");
     }
   };
-     // return events that match the search key
-     const filteredSearchAdminEvents = !searchAdminKey
-     ? events
-     : events.filter((event) =>
-         event.title.toLowerCase().includes(searchAdminKey.toLowerCase())
-       );
+  // return events that match the search key
+  const filteredSearchAdminEvents = !searchAdminKey
+    ? events
+    : events.filter((event) =>
+        event.title.toLowerCase().includes(searchAdminKey.toLowerCase())
+      );
   console.log(filteredSearchAdminEvents);
-
+  //pagination logic
+  const pageSize = 5;
+  const pages = generateArrayFromNumber(Math.ceil(filteredSearchAdminEvents.length / pageSize));
+  const pageToStart = (currentPage - 1) * pageSize;
+  console.log(pageToStart);
+  
+  const paginatedEvents = filteredSearchAdminEvents.slice(
+    pageToStart,
+    pageToStart + pageSize
+  );
+  
+  const handleChangePage = (page) => {
+    setCurrentPage(page);
+  };
+  const handelPaginationNextBtn=()=>{
+    setCurrentPage(currentPage+1)
+  }
+  const handelPaginationPrevBtn=()=>{
+    setCurrentPage(currentPage-1)
+  }
   // if (loading) return <TableSkeleton />;
   return (
-    <div className="bg-bg-main px-4 pt-16 pb-4">
+    <div className="bg-bg-main px-4 pt-16 pb-4 min-h-screen">
       <div className="self-stretch md:justify-between md:items-center gap-4 flex flex-col md:flex-row p-10 overflow-x-auto whitespace-nowrap">
         <div className="grow shrink basis-0 text-white text-[32px] font-semibold ">
           Event List
@@ -129,7 +147,7 @@ export default function DashboardAdmin() {
                 </tr>
               </thead>
               <tbody className=" text-white">
-                {filteredSearchAdminEvents.map((event, index) => (
+                {paginatedEvents.map((event, index) => (
                   <tr
                     key={index}
                     className={`${index % 2 === 0 ? "bg-input" : " "}`}
@@ -191,7 +209,13 @@ export default function DashboardAdmin() {
         )}
 
         <div className="flex justify-center">
-          <Pagination />
+          <Pagination
+            currentPage={currentPage}
+            handleChangePage={handleChangePage}
+            pages={pages}
+            handelPaginationNextBtn={handelPaginationNextBtn}
+            handelPaginationPrevBtn={handelPaginationPrevBtn}
+          />
         </div>
       </div>
     </div>
