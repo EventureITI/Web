@@ -15,19 +15,7 @@ export default function AppContextProvider({ children }) {
   const eventsCollectionRef = collection(db, "events");
   const categoriesCollectionRef = collection(db, "categories");
 
-  // search for events by title
-  const [searchKey, setSearchKey] = useState("");
 
-  const handleSearchKeyChanges = (key) => {
-    setSearchKey(key);
-  };
-
-  // return events that match the serach key
-  const filteredSearchEvents = !searchKey
-    ? events
-    : events.filter((event) =>
-        event.title.toLowerCase().includes(searchKey.toLowerCase())
-      );
 
   // update ui after add a new event
   const handleAddEventsUI = (newEvent) => {
@@ -106,7 +94,6 @@ export default function AppContextProvider({ children }) {
     };
     const updateExpiredEvents = async () => {
       const currentDate = new Date();
-
       // get events where endDate has passed and isDeleted is false
       const q = query(
         collection(db, "events"),
@@ -139,9 +126,6 @@ export default function AppContextProvider({ children }) {
         events,
         handleAddEventsUI,
         restoreEvents,
-        searchKey,
-        handleSearchKeyChanges,
-        filteredSearchEvents,
         handleDeleteEventUI,
         loading,
         handleEditEventUI,
