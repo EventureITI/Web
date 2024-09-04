@@ -11,7 +11,7 @@ export default function Pagination({
   console.log(currentPage);
   console.log(pages.length);
 
-  if (pages.length === 1) return null;
+  if (pages.length <= 1 ) return null;
   return (
     <div>
       <nav className="flex items-center gap-x-1 " aria-label="Pagination">
@@ -87,7 +87,7 @@ export default function Pagination({
             </button>
           </div> */}
           {pages.map((page) => (
-            <button
+            <button key={page}
               type="button"
               onClick={() => handleChangePage(page)}
               className={

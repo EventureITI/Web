@@ -4,19 +4,20 @@ import EventCard from "../Components/Home/EventCard";
 import Pagination from "../Components/Pagination";
 import { appContext } from "../context/AppContext";
 import { useParams, useNavigate } from "react-router-dom";
+import generateArrayFromNumber from "../utils/generateArrayFromNumber";
 
 export default function EventsPage() {
+  const [currentPage, setCurrentPage] = useState(1);
+
   const navigate = useNavigate();
-  const {
-    events,
-    categories,
-  } = useContext(appContext);
+  const { events, categories } = useContext(appContext);
   const { category } = useParams();
   console.log(category);
   const [searchEventsKey, setSearchEventsKey] = useState("");
 
   const handleSearchEventsKeyChanges = (key) => {
     setSearchEventsKey(key);
+    // setCurrentPage(1);
   };
   // const [colored,setColored] = useState(true)
   // const [coloredscd,setColoredScd] = useState(false)
@@ -40,10 +41,33 @@ export default function EventsPage() {
         );
   console.log(categoryEvents);
   const filteredSearchEvents = !searchEventsKey
-  ? events
-  : events.filter((event) =>
-      event.title.toLowerCase().includes(searchEventsKey.toLowerCase())
-    );
+    ? categoryEvents
+    : categoryEvents.filter((event) =>
+        event.title.toLowerCase().includes(searchEventsKey.toLowerCase())
+      );
+  const pageSize = 5;
+  const pages = generateArrayFromNumber(
+    Math.ceil(filteredSearchEvents.length / pageSize)
+  );
+  console.log(pages);
+  
+  const pageToStart = (currentPage - 1) * pageSize;
+  console.log(pageToStart);
+
+  const paginatedEvents = filteredSearchEvents.slice(
+    pageToStart,
+    pageToStart + pageSize
+  );
+
+  const handleChangePage = (page) => {
+    setCurrentPage(page);
+  };
+  const handelPaginationNextBtn = () => {
+    setCurrentPage(currentPage + 1);
+  };
+  const handelPaginationPrevBtn = () => {
+    setCurrentPage(currentPage - 1);
+  };
   return (
     <div className="w-full bg-bg-main min-h-screen">
       <div className="md:container md:mx-auto mx-8 md:px-4 pt-28">
@@ -65,7 +89,7 @@ export default function EventsPage() {
               <div className="block absolute text-white font-Inter bg-input md:w-96 z-50 my-1 rounded-lg px-2 py-2">
                 {filteredSearchEvents.length > 0 ? (
                   <>
-                    {filteredSearchEvents.map((event, index) => {
+                    {paginatedEvents.map((event, index) => {
                       return (
                         <div
                           key={index}
@@ -95,7 +119,7 @@ export default function EventsPage() {
               <CategoryBtn category={"All"} path={"/events-page/all"} />
             </div>
             {categories.map((cat) => (
-              <div key={cat.id}>
+              <div key={cat.id} onClick={()=>{setCurrentPage(1)}}>
                 <CategoryBtn
                   category={cat.name}
                   path={`/events-page/${cat.name}`}
@@ -106,7 +130,7 @@ export default function EventsPage() {
           <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5 2xl:grid-cols-4">
             {categoryEvents.length > 0 ? (
               <>
-                {categoryEvents.map((e) => (
+                {paginatedEvents.map((e) => (
                   <EventCard key={e.id} event={e} />
                 ))}
               </>
@@ -118,7 +142,13 @@ export default function EventsPage() {
           </div>
         </div>
         <div className="py-10 flex justify-center">
-          <Pagination />
+          <Pagination
+            currentPage={currentPage}
+            handleChangePage={handleChangePage}
+            pages={pages}
+            handelPaginationNextBtn={handelPaginationNextBtn}
+            handelPaginationPrevBtn={handelPaginationPrevBtn}
+          />
         </div>
       </div>
     </div>
