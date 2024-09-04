@@ -10,13 +10,14 @@ export default function EventsPage() {
   const {
     events,
     categories,
-    searchKey,
-    handleSearchKeyChanges,
-    filteredSearchEvents,
   } = useContext(appContext);
   const { category } = useParams();
   console.log(category);
+  const [searchEventsKey, setSearchEventsKey] = useState("");
 
+  const handleSearchEventsKeyChanges = (key) => {
+    setSearchEventsKey(key);
+  };
   // const [colored,setColored] = useState(true)
   // const [coloredscd,setColoredScd] = useState(false)
 
@@ -38,13 +39,18 @@ export default function EventsPage() {
             e.categoryId === categories.find((cat) => cat.name === category).id
         );
   console.log(categoryEvents);
+  const filteredSearchEvents = !searchEventsKey
+  ? events
+  : events.filter((event) =>
+      event.title.toLowerCase().includes(searchEventsKey.toLowerCase())
+    );
   return (
     <div className="w-full bg-bg-main min-h-screen">
       <div className="md:container md:mx-auto mx-8 md:px-4 pt-28">
         <div className="flex flex-col items-center">
           <div className="w-full flex form-control md:hidden relative mb-4">
             <input
-              onChange={(e) => handleSearchKeyChanges(e.target.value)}
+              onChange={(e) => handleSearchEventsKeyChanges(e.target.value)}
               type="text"
               placeholder="Search"
               className="input focus:outline-main-color focus:outline-offset-0 text-white text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
@@ -55,7 +61,7 @@ export default function EventsPage() {
           </div>
           {/* search dropdown */}
           <div className="flex justify-center">
-            {searchKey && (
+            {searchEventsKey && (
               <div className="block absolute text-white font-Inter bg-input md:w-96 z-50 my-1 rounded-lg px-2 py-2">
                 {filteredSearchEvents.length > 0 ? (
                   <>

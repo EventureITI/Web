@@ -1,19 +1,28 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import EventCard from "./EventCard";
 import SeeMoreBtn from "./SeeMoreBtn";
 import { appContext } from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Events({ events }) {
-  const { searchKey, handleSearchKeyChanges, filteredSearchEvents } =
-    useContext(appContext);
+  // const { events } = useContext(appContext);
   const navigate = useNavigate();
+  const [searchEventsKey, setSearchEventsKey] = useState("");
+
+  const handleSearchEventsKeyChanges = (key) => {
+    setSearchEventsKey(key);
+  };
+  const filteredSearchEvents = !searchEventsKey
+    ? events
+    : events.filter((event) =>
+        event.title.toLowerCase().includes(searchEventsKey.toLowerCase())
+      );
   return (
     <div className="w-full pb-8 flex justify-center bg-bg-main">
       <div className="w-full sm:container sm:mx-auto px-8 md:px-4 pt-10 ">
         <div className="flex form-control md:hidden relative mb-4 ">
           <input
-            onChange={(e) => handleSearchKeyChanges(e.target.value)}
+            onChange={(e) => handleSearchEventsKeyChanges(e.target.value)}
             type="text"
             placeholder="Search"
             className="input text-white focus:outline-main-color focus:outline-offset-0 text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
@@ -24,7 +33,7 @@ export default function Events({ events }) {
         </div>
         {/* search dropdown */}
         <div className="flex justify-center">
-          {searchKey && (
+          {searchEventsKey && (
             <div className="block absolute text-white font-Inter bg-input w-96 z-50 my-1 rounded-lg px-2 py-2">
               {filteredSearchEvents.length > 0 ? (
                 <>

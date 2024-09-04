@@ -25,13 +25,18 @@ export default function DashboardAdmin() {
   const navigate = useNavigate();
   const {
     events,
-    searchKey,
-    handleSearchKeyChanges,
-    filteredSearchEvents,
     handleDeleteEventUI,
     restoreEvents,
     loading,
   } = useContext(appContext);
+    // search for events by title
+    const [searchAdminKey, setSearchAdminKey] = useState("");
+
+    const handleSearchAdminKeyChanges = (key) => {
+      setSearchAdminKey(key);
+    };
+  
+ 
   const handleOpenModal = (event) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
@@ -56,7 +61,14 @@ export default function DashboardAdmin() {
       toast.error("Failed to delete event");
     }
   };
-  console.log(filteredSearchEvents);
+     // return events that match the search key
+     const filteredSearchAdminEvents = !searchAdminKey
+     ? events
+     : events.filter((event) =>
+         event.title.toLowerCase().includes(searchAdminKey.toLowerCase())
+       );
+  console.log(filteredSearchAdminEvents);
+
   // if (loading) return <TableSkeleton />;
   return (
     <div className="bg-bg-main px-4 pt-16 pb-4">
@@ -67,9 +79,9 @@ export default function DashboardAdmin() {
         <div className="flex gap-2 md:gap-4 w-full md:justify-end">
           <div className="relative w-[480px] md:w-[346px] flex items-center">
             <input
-              value={searchKey}
+              value={searchAdminKey}
               onChange={(e) => {
-                handleSearchKeyChanges(e.target.value);
+                handleSearchAdminKeyChanges(e.target.value);
               }}
               type="search"
               className="w-full h-[43px] px-4 py-2 text-white bg-[#c9c9c9]/20 rounded-lg outline-none focus:outline-offset-0 focus:outline-main-color "
@@ -94,7 +106,7 @@ export default function DashboardAdmin() {
 
       {/* <div className="justify-center items-end gap-8 flex mb-10"> */}
       <div className="overflow-x-auto  px-10">
-        {filteredSearchEvents.length > 0 ? (
+        {filteredSearchAdminEvents.length > 0 ? (
           <>
             <table className="w-full text-base font-body text-left rtl:text-right text-gray-500 mb-10 overflow-x-auto whitespace-nowrap">
               <thead className=" text-white">
@@ -117,7 +129,7 @@ export default function DashboardAdmin() {
                 </tr>
               </thead>
               <tbody className=" text-white">
-                {filteredSearchEvents.map((event, index) => (
+                {filteredSearchAdminEvents.map((event, index) => (
                   <tr
                     key={index}
                     className={`${index % 2 === 0 ? "bg-input" : " "}`}

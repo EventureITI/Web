@@ -3,8 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { appContext } from "../context/AppContext";
 
 export default function NavBar() {
-  const { searchKey, handleSearchKeyChanges, filteredSearchEvents } =
-    useContext(appContext);
+  const [searchNavbarKey, setSearchNavbarKey] = useState("");
+
+  const handleSearchNavbarKeyChanges = (key) => {
+    setSearchNavbarKey(key);
+  };
+  const {events}=useContext(appContext)
   const [profile, setProfile] = useState(false);
   const [items, setItems] = useState(false);
   const navigate = useNavigate();
@@ -18,7 +22,11 @@ export default function NavBar() {
     setProfile(!profile);
     setItems(false);
   }
-
+  const filteredSearchNavbarEvents = !searchNavbarKey
+  ? events
+  : events.filter((event) =>
+      event.title.toLowerCase().includes(searchNavbarKey.toLowerCase())
+    );
   return (
     <nav
       className=" border-gray-200 fixed w-full z-30 dark:bg-gray-900 "
@@ -101,7 +109,7 @@ export default function NavBar() {
               <input
                 type="text"
                 placeholder="Search"
-                onChange={(e) => handleSearchKeyChanges(e.target.value)}
+                onChange={(e) => handleSearchNavbarKeyChanges(e.target.value)}
                 className="input focus:outline-main-color focus:outline-offset-0 text-white text-sm pb-1 h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)]"
               />
               <button className="absolute right-3 bottom-2 hover:scale-110">
@@ -110,11 +118,11 @@ export default function NavBar() {
             </div>
             {/* search dropdown */}
             <div className="flex justify-center">
-              {searchKey && (
+              {searchNavbarKey && (
                 <div className="block absolute text-white font-Inter bg-input md:w-96 z-50 my-1 rounded-lg px-2 py-2">
-                  {filteredSearchEvents.length > 0 ? (
+                  {filteredSearchNavbarEvents.length > 0 ? (
                     <>
-                      {filteredSearchEvents.map((event, index) => {
+                      {filteredSearchNavbarEvents.map((event, index) => {
                         return (
                           <div key={index} className="py-2 px-2 cursor-pointer" onClick={()=>navigate(`/event-details/${event.id}`)}>
                             <div className="flex items-center gap-2">
