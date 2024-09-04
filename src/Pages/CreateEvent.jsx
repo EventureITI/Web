@@ -9,6 +9,7 @@ import Loader from "../Components/Loader";
 import { appContext } from "../context/AppContext";
 import { toast } from "react-toastify";
 import { eventSchema } from "../Components/validations/eventValidations";
+import convertTo24HourFormat from "../utils/formatTimeTo24Hrs";
 
 export default function CreateEvent() {
   const { id } = useParams();
@@ -50,23 +51,23 @@ export default function CreateEvent() {
       : events.find((e) => e.id === id)
   );
   useEffect(() => {
-    function convertTo24HourFormat(time12h) {
-      console.log(time12h);
+    // function convertTo24HourFormat(time12h) {
+    //   console.log(time12h);
 
-      const [time, modifier] = time12h.split(" "); // Split the time and the AM/PM modifier
-      let [hours, minutes] = time.split(":"); // Split the hours and minutes
-      console.log(time, " |", modifier);
+    //   const [time, modifier] = time12h.split(" "); // Split the time and the AM/PM modifier
+    //   let [hours, minutes] = time.split(":"); // Split the hours and minutes
+    //   console.log(time, " |", modifier);
 
-      if (hours === "12") {
-        hours = "00"; // Convert 12 AM to 00 hours
-      }
+    //   if (hours === "12") {
+    //     hours = "00"; // Convert 12 AM to 00 hours
+    //   }
 
-      if (modifier.toLowerCase() === "pm") {
-        hours = (parseInt(hours, 10) + 12).toString(); // Convert PM hours to 24-hour format
-      }
+    //   if (modifier.toLowerCase() === "pm") {
+    //     hours = (parseInt(hours, 10) + 12).toString(); // Convert PM hours to 24-hour format
+    //   }
 
-      return `${hours.padStart(2, "0")}:${minutes}`; // Return in HH:mm format, padding single digit hours with 0
-    }
+    //   return `${hours.padStart(2, "0")}:${minutes}`; // Return in HH:mm format, padding single digit hours with 0
+    // }
     if (mode === "edit") {
       console.log("edit");
 
