@@ -17,7 +17,7 @@ export default function EventsPage() {
   const [filteredSearch, setFilteredSearch] = useState(events);
   const [searchWord, SetSearchWord] = useState("");
 
-  const categoryEvents =
+  const categorizedEvents =
     category === "all"
       ? filteredSearch.sort(
           (a, b) => new Date(a.startDate) - new Date(b.startDate)
@@ -27,17 +27,22 @@ export default function EventsPage() {
             e.categoryId === categories.find((cat) => cat.name === category).id
         );
 
-  console.log(categoryEvents);
+  const filteredSearchEvents = !searchWord
+    ? categorizedEvents
+    : categorizedEvents.filter((event) =>
+        event.title.toLowerCase().includes(searchWord.toLowerCase())
+      );
+
   const pageSize = 6;
   const pages = generateArrayFromNumber(
-    Math.ceil(filteredSearch.length / pageSize)
+    Math.ceil(filteredSearchEvents.length / pageSize)
   );
   console.log(pages);
 
   const pageToStart = (currentPage - 1) * pageSize;
   console.log(pageToStart);
 
-  const paginatedEvents = filteredSearch.slice(
+  const paginatedEvents = filteredSearchEvents.slice(
     pageToStart,
     pageToStart + pageSize
   );
@@ -109,7 +114,7 @@ export default function EventsPage() {
                 } `}
           >
             {filteredSearch.length > 0 ? (
-              categoryEvents.length > 0 && (
+              categorizedEvents.length > 0 && (
                 <>
                   {paginatedEvents.map((e) => (
                     <EventCard key={e.id} event={e} />
