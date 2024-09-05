@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import EventCard from "./EventCard";
 import SeeMoreBtn from "./SeeMoreBtn";
-import { appContext } from "../../context/AppContext";
 import { useNavigate } from "react-router-dom";
+import { searchEvents } from "../../context/SearchEventsContext";
 
 export default function Events({ events }) {
   // const { events } = useContext(appContext);
@@ -17,10 +17,11 @@ export default function Events({ events }) {
     : events.filter((event) =>
         event.title.toLowerCase().includes(searchEventsKey.toLowerCase())
       );
+
   return (
     <div className="w-full pb-8 flex justify-center bg-bg-main">
       <div className="w-full sm:container sm:mx-auto px-8 md:px-4 pt-10 ">
-        <div className="flex form-control md:hidden relative mb-4 ">
+        <div className="form-control hidden relative mb-4 ">
           <input
             onChange={(e) => handleSearchEventsKeyChanges(e.target.value)}
             type="text"
@@ -62,17 +63,20 @@ export default function Events({ events }) {
             </div>
           )}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-5 2xl:grid-cols-4">
+        {/* Filtered Events */}
+        <div
+          className={`grid grid-cols-1 ${
+            events.length == 0
+              ? "sm:w-full"
+              : "sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+          } gap-5 mb-5 2xl:grid-cols-4`}
+        >
           {events.length > 0 ? (
-            <>
-              {events.slice(0, 6).map((e) => (
-                <EventCard key={e.id} event={e} />
-              ))}
-            </>
+            events.slice(0, 6).map((e) => <EventCard key={e.id} event={e} />)
           ) : (
-            <div className="col-span-2 font-Inter font-600 flex justify-center mb-7 text-white text-center">
-              0 Events
-            </div>
+            <h2 className="text-white font-Inter font-400 text-center flex justify-center my-20 ">
+              No Events Found
+            </h2>
           )}
         </div>
         <SeeMoreBtn />

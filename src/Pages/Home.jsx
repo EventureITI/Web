@@ -8,6 +8,7 @@ import NavBar from "../Components/NavBar";
 import SeeMoreSkeleton from "../Components/Skeleton/SeeMoreSkeleton";
 import FooterSkeleton from "../Components/Skeleton/FooterSkeleton";
 import { appContext } from "../context/AppContext";
+import BackTop from "../Components/BackTop";
 
 export default function Home() {
   const [skeleton, setSkeleton] = useState(false);
@@ -21,12 +22,12 @@ export default function Home() {
       setSkeleton(false);
       setHome(true);
     }, 1000);
-
-
   }, []);
 
-  const sortedEvents = events.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-console.log(sortedEvents);
+  const sortedEvents = events.sort(
+    (a, b) => new Date(a.startDate) - new Date(b.startDate)
+  );
+  console.log(sortedEvents);
 
   return (
     <div>
@@ -53,7 +54,8 @@ console.log(sortedEvents);
         <div>
           <NavBar />
           <Main />
-          <Events events={sortedEvents}/>
+          <Events events={sortedEvents} />
+          <BackTop />
           <Footer />
         </div>
       )}

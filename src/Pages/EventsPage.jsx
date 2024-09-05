@@ -1,13 +1,16 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CategoryBtn from "../Components/CategoryBtn";
 import EventCard from "../Components/Home/EventCard";
 import Pagination from "../Components/Pagination";
+import BackTop from "../Components/BackTop";
 import { appContext } from "../context/AppContext";
 import { useParams, useNavigate } from "react-router-dom";
 import generateArrayFromNumber from "../utils/generateArrayFromNumber";
+import { searchEvents } from "../context/SearchEventsContext";
 
 export default function EventsPage() {
   const [currentPage, setCurrentPage] = useState(1);
+  const { searched, searchEvent } = useContext(searchEvents);
 
   const navigate = useNavigate();
   const { events, categories } = useContext(appContext);
@@ -50,7 +53,7 @@ export default function EventsPage() {
     Math.ceil(filteredSearchEvents.length / pageSize)
   );
   console.log(pages);
-  
+
   const pageToStart = (currentPage - 1) * pageSize;
   console.log(pageToStart);
 
@@ -69,7 +72,7 @@ export default function EventsPage() {
     setCurrentPage(currentPage - 1);
   };
   return (
-    <div className="w-full bg-bg-main min-h-screen">
+    <div className="w-full bg-bg-main min-h-screen relative">
       <div className="md:container md:mx-auto mx-8 md:px-4 pt-28">
         <div className="flex flex-col items-center">
           <div className="w-full flex form-control md:hidden relative mb-4">
@@ -77,6 +80,7 @@ export default function EventsPage() {
               onChange={(e) => handleSearchEventsKeyChanges(e.target.value)}
               type="text"
               placeholder="Search"
+              // onChange={searchEvent}
               className="input focus:outline-main-color focus:outline-offset-0 text-white text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
             />
             <button className="absolute right-4 bottom-2">
@@ -119,7 +123,12 @@ export default function EventsPage() {
               <CategoryBtn category={"All"} path={"/events-page/all"} />
             </div>
             {categories.map((cat) => (
-              <div key={cat.id} onClick={()=>{setCurrentPage(1)}}>
+              <div
+                key={cat.id}
+                onClick={() => {
+                  setCurrentPage(1);
+                }}
+              >
                 <CategoryBtn
                   category={cat.name}
                   path={`/events-page/${cat.name}`}
@@ -127,7 +136,8 @@ export default function EventsPage() {
               </div>
             ))}
           </div>
-          <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5 2xl:grid-cols-4">
+          {/* Pagination */}
+          {/* <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5 2xl:grid-cols-4">
             {categoryEvents.length > 0 ? (
               <>
                 {paginatedEvents.map((e) => (
@@ -138,6 +148,33 @@ export default function EventsPage() {
               <div className="col-span-2 font-Inter font-600 flex justify-center mb-7 text-white text-center">
                 0 Events
               </div>
+            )}
+          </div> */}
+          {/* Search */}
+          <div
+            className={`w-full grid grid-cols-1 ${
+              searched.length == 0
+                ? "sm:w-full"
+                : "sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+            }   gap-5 mb-5 2xl:grid-cols-4 justify-center items-center`}
+          >
+            {searched.length > 0 ? (
+              searched.map((e) => (
+                <EventCard
+                  key={e.title}
+                  img={e.img}
+                  title={e.title}
+                  name={e.name}
+                  date={e.date}
+                  time={e.time}
+                  city={e.city}
+                  money={e.money}
+                />
+              ))
+            ) : (
+              <h2 className="text-white font-Inter font-400 text-center flex justify-center my-20 ">
+                No Events Found
+              </h2>
             )}
           </div>
         </div>
@@ -151,6 +188,7 @@ export default function EventsPage() {
           />
         </div>
       </div>
+      <BackTop />
     </div>
   );
 }

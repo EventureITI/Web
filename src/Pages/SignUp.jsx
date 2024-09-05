@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EyeIcon from "../Components/Icons/EyeIcon";
 import EyeSlashIcon from "../Components/Icons/EyeSlashIcon";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate()
 
   return (
     <div>
@@ -28,9 +29,10 @@ export default function SignUp() {
             </Link>
           </div>
         </div>
-        <div className="w-full md:w-3/5 flex justify-center items-center px-8 pt-16 pb-5 lg:px-28">
+        <div className="w-full md:w-3/5 flex justify-center items-center px-8 pb-5 lg:px-28">
+        <div role="button" onClick={()=>navigate("/")} className="text-2xl font-semibold whitespace-nowrap text-main-color hover:text-main-hover absolute top-4">Eventure</div>
           <form className="flex flex-col w-full gap-6 font-Inter ">
-            <div className="text-center text-white text-xl font-600">
+            <div className="text-center text-white text-xl pt-10 font-600">
               Create a new account
             </div>
             <div className="flex justify-between items-center gap-3">

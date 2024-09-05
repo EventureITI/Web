@@ -1,15 +1,17 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import EyeIcon from "../Components/Icons/EyeIcon";
 import EyeSlashIcon from "../Components/Icons/EyeSlashIcon";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   return (
     <div>
       {/* <Layout> */}
       <div className="flex flex-col md:flex-row md:justify-between justify-center h-screen bg-bg-main">
         <div className="w-full md:w-3/5 flex justify-center items-center px-8 lg:px-28">
+        <div role="button" onClick={()=>navigate("/")} className="text-2xl font-semibold whitespace-nowrap text-main-color hover:text-main-hover absolute top-8">Eventure</div>
           <form className="flex flex-col w-full gap-8 font-Inter ">
             <div className="text-center text-white text-xl font-600">
               Sign in to your account

@@ -3,7 +3,6 @@ import EventPrice from "./EventPrice";
 import { useNavigate } from "react-router-dom";
 
 export default function EventCard({ event }) {
-  
   const [hovered, setHovered] = useState(false);
   const navigate = useNavigate();
 
@@ -17,7 +16,9 @@ export default function EventCard({ event }) {
 
   return (
     <div
-      className="rounded-md overflow-hidden transition duration-300 ease-in-out hover:scale-105"
+      className="rounded-md overflow-hidden transition duration-300 ease-in-out hover:scale-105 "
+      role="button"
+      onClick={() => navigate(`/event-details/${event.id}`)}
       style={{
         maxWidth: "650px",
         backgroundColor: "#292929",
@@ -28,12 +29,13 @@ export default function EventCard({ event }) {
         onMouseLeave={noHover}
         className="w-full h-44 overflow-hidden relative "
       >
-        <img className="w-full min-h-[200px]" src={event.imgUrl} alt="eventImg" />
+        <img
+          className="w-full min-h-[200px]"
+          src={event.imgUrl}
+          alt="eventImg"
+        />
         {hovered ? (
-          <div
-            onClick={() => navigate(`/event-details/${event.id}`)}
-            className="cursor-pointer absolute top-0 w-full h-full opacity-70 bg-black flex justify-center items-center"
-          >
+          <div className="cursor-pointer absolute top-0 w-full h-full opacity-70 bg-black flex justify-center items-center">
             <button className="flex items-center text-white">
               <p className=" mr-1 font-semibold text-xl">More Details</p>
             </button>
@@ -47,7 +49,9 @@ export default function EventCard({ event }) {
         >
           {event.title}
         </p>
-        <p className="text-sm opacity-50 mb-1 font-Inter font-300 ">{event.host}</p>
+        <p className="text-sm opacity-50 mb-1 font-Inter font-300 ">
+          {event.host}
+        </p>
         <div className="text-sm mb-3 relative flex justify-center items-center opacity-70 font-Inter font-400">
           <p className='mr-5 after:top-1 after:content-["_"] after:w-0.5 after:h-4 after:bottom-2 after:bg-gray-600 after:absolute after:ml-2'>
             {event.startDate}

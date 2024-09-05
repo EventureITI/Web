@@ -3,6 +3,7 @@ import EventBookButton from "../Components/EventBookButton";
 import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
+import BackTop from "../Components/BackTop";
 
 export default function EventDetails() {
   const [event, setEvent] = useState({});
@@ -35,7 +36,10 @@ export default function EventDetails() {
 
         <div>
           {/*hero*/}
-          <div style={{ backgroundImage: `url(${event.imgUrl})` }} className="w-full h-[500px] z-1 bg-no-repeat bg-cover bg-top">
+          <div
+            style={{ backgroundImage: `url(${event.imgUrl})` }}
+            className="w-full h-[500px] z-1 bg-no-repeat bg-cover bg-top"
+          >
             <div className="bg-custom-gradient absolute z-2 w-full h-[500px] flex justify-center items-center ">
               <div className="flex flex-col justify-around h-full w-[90%]">
                 <button
@@ -97,6 +101,7 @@ export default function EventDetails() {
             <EventBookButton></EventBookButton>
           </div>
         </div>
+        <BackTop />
       </div>
     </>
   );

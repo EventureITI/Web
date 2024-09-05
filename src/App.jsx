@@ -25,11 +25,9 @@ function App() {
     "/signup",
     "/",
   ]; // here you will add the desired route that you do not want to render footer with
-  const hideBackTopRoutes = ["*", "/login", "/signup"]; // here you will add the desired route that you do not want to render footer with
   return (
     <>
       {!hideNavbarRoutes.includes(location.pathname) && <NavBar />}
-      {!hideBackTopRoutes.includes(location.pathname) && <BackTop />}
       <ScrollTop />
       <Routes>
         <Route path="/" element={<Home />} />

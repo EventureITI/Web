@@ -15,7 +15,7 @@ export default function NavBar() {
 
   function allItems() {
     setItems(!items);
-    setProfile(false);
+    setProfile(false);    
   }
 
   function profileBtn() {
@@ -56,7 +56,7 @@ export default function NavBar() {
           onClick={() => navigate("/")}
           className="flex justify-center cursor-pointer items-center space-x-3 rtl:space-x-reverse"
         >
-          <span className="self-center text-2xl font-semibold whitespace-nowrap text-[#0d9988] mb-2 ">
+          <span className="self-center text-2xl font-semibold whitespace-nowrap text-main-color hover:text-main-hover mb-2 ">
             Eventure
           </span>
         </a>

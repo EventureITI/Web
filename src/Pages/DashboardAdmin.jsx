@@ -9,6 +9,7 @@ import { updateDoc, doc } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import { toast } from "react-toastify";
 import generateArrayFromNumber from "../utils/generateArrayFromNumber";
+import BackTop from "../Components/BackTop";
 
 export default function DashboardAdmin() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +34,7 @@ export default function DashboardAdmin() {
 
   const handleSearchAdminKeyChanges = (key) => {
     setSearchAdminKey(key);
-    setCurrentPage(1)
+    setCurrentPage(1);
   };
 
   const handleOpenModal = (event) => {
@@ -69,24 +70,26 @@ export default function DashboardAdmin() {
   console.log(filteredSearchAdminEvents);
   //pagination logic
   const pageSize = 5;
-  const pages = generateArrayFromNumber(Math.ceil(filteredSearchAdminEvents.length / pageSize));
+  const pages = generateArrayFromNumber(
+    Math.ceil(filteredSearchAdminEvents.length / pageSize)
+  );
   const pageToStart = (currentPage - 1) * pageSize;
   console.log(pageToStart);
-  
+
   const paginatedEvents = filteredSearchAdminEvents.slice(
     pageToStart,
     pageToStart + pageSize
   );
-  
+
   const handleChangePage = (page) => {
     setCurrentPage(page);
   };
-  const handelPaginationNextBtn=()=>{
-    setCurrentPage(currentPage+1)
-  }
-  const handelPaginationPrevBtn=()=>{
-    setCurrentPage(currentPage-1)
-  }
+  const handelPaginationNextBtn = () => {
+    setCurrentPage(currentPage + 1);
+  };
+  const handelPaginationPrevBtn = () => {
+    setCurrentPage(currentPage - 1);
+  };
   // if (loading) return <TableSkeleton />;
   return (
     <div className="bg-bg-main px-4 pt-16 pb-4 min-h-screen">
@@ -133,7 +136,9 @@ export default function DashboardAdmin() {
                     <th
                       key={index}
                       scope="col"
-                      className={`px-6 border-r-2 border-opacity-60 border-input ${
+                      className={`px-6 ${
+                        header == "" ? "border-r-0 " : "border-r-2"
+                      } border-opacity-60 border-input ${
                         header == "Host" || header == "Date"
                           ? "hidden lg:table-cell"
                           : ""
@@ -176,8 +181,8 @@ export default function DashboardAdmin() {
                       {event.tickets}
                     </td>
 
-                    <td className="px-6 py-2">
-                      <div className="justify-start items-center gap-2 inline-flex">
+                    <td className="px-3 py-2">
+                      <div className="justify-center w-full items-center gap-2 inline-flex">
                         <Link to={`/admin/event/${event.id}`}>
                           <button className="w-8 h-8 px-2 sm:w-10 sm:h-10 sm:px-2.5 transition duration-300 ease-in-out bg-[#1a1a1a] hover:bg-green-700 rounded-lg border border-green-700 justify-center items-center gap-2 flex">
                             <EditIcon />
@@ -217,6 +222,7 @@ export default function DashboardAdmin() {
             handelPaginationPrevBtn={handelPaginationPrevBtn}
           />
         </div>
+        <BackTop />
       </div>
     </div>
   );
