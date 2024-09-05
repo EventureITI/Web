@@ -6,17 +6,18 @@ import BackTop from "../Components/BackTop";
 import { appContext } from "../context/AppContext";
 import { useParams, useNavigate } from "react-router-dom";
 import generateArrayFromNumber from "../utils/generateArrayFromNumber";
-import { searchEvents } from "../context/SearchEventsContext";
 
 export default function EventsPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const { searched, searchEvent } = useContext(searchEvents);
 
   const navigate = useNavigate();
   const { events, categories } = useContext(appContext);
   const { category } = useParams();
   console.log(category);
   const [searchEventsKey, setSearchEventsKey] = useState("");
+
+  const [filteredSearch, setFilteredSearch] = useState(events);
+  const [searchWord, SetSearchWord] = useState("");
 
   const handleSearchEventsKeyChanges = (key) => {
     setSearchEventsKey(key);
@@ -37,18 +38,21 @@ export default function EventsPage() {
 
   const categoryEvents =
     category === "all"
-      ? events.sort((a, b) => new Date(a.startDate) - new Date(b.startDate))
-      : events.filter(
+      ? filteredSearch.sort(
+          (a, b) => new Date(a.startDate) - new Date(b.startDate)
+        )
+      : filteredSearch.filter(
           (e) =>
             e.categoryId === categories.find((cat) => cat.name === category).id
         );
+
   console.log(categoryEvents);
   const filteredSearchEvents = !searchEventsKey
     ? categoryEvents
     : categoryEvents.filter((event) =>
         event.title.toLowerCase().includes(searchEventsKey.toLowerCase())
       );
-  const pageSize = 5;
+  const pageSize = 6;
   const pages = generateArrayFromNumber(
     Math.ceil(filteredSearchEvents.length / pageSize)
   );
@@ -61,6 +65,19 @@ export default function EventsPage() {
     pageToStart,
     pageToStart + pageSize
   );
+
+  // In-page Search
+  function searchEvents(e) {
+    SetSearchWord(e.target.value);
+  }
+
+  useEffect(() => {
+    const data = events.filter((e) =>
+      e.title?.toLowerCase().includes(searchWord?.toLowerCase())
+    );
+    setFilteredSearch(data);
+    console.log(filteredSearch);
+  }, [searchWord, events]);
 
   const handleChangePage = (page) => {
     setCurrentPage(page);
@@ -75,12 +92,25 @@ export default function EventsPage() {
     <div className="w-full bg-bg-main min-h-screen relative">
       <div className="md:container md:mx-auto mx-8 md:px-4 pt-28">
         <div className="flex flex-col items-center">
-          <div className="w-full flex form-control md:hidden relative mb-4">
+          {/* In-page Search */}
+          <div className="flex w-full form-control md:hidden relative mb-4 ">
+            <input
+              // onChange={(e) => handleSearchEventsKeyChanges(e.target.value)}
+              onChange={searchEvents}
+              type="text"
+              placeholder="Search"
+              className="input text-white focus:outline-main-color focus:outline-offset-0 text-sm pb-1 input-bordered h-8 rounded-lg  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
+            />
+            <button className="absolute right-4 bottom-2 ">
+              <img src="/images/Search.svg" alt="searchIcon" />
+            </button>
+          </div>
+          {/* Navbar Search */}
+          <div className="w-full form-control hidden relative mb-4">
             <input
               onChange={(e) => handleSearchEventsKeyChanges(e.target.value)}
               type="text"
               placeholder="Search"
-              // onChange={searchEvent}
               className="input focus:outline-main-color focus:outline-offset-0 text-white text-sm pb-1 input-bordered h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)] focus:border-none focus:outline-none"
             />
             <button className="absolute right-4 bottom-2">
@@ -110,9 +140,7 @@ export default function EventsPage() {
                   </>
                 ) : (
                   <>
-                    <div className="flex justify-center">
-                      There is no events with this title
-                    </div>
+                    <div className="flex justify-center">No events found</div>
                   </>
                 )}
               </div>
@@ -136,57 +164,40 @@ export default function EventsPage() {
               </div>
             ))}
           </div>
-          {/* Pagination */}
-          {/* <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-5 2xl:grid-cols-4">
-            {categoryEvents.length > 0 ? (
-              <>
-                {paginatedEvents.map((e) => (
-                  <EventCard key={e.id} event={e} />
-                ))}
-              </>
-            ) : (
-              <div className="col-span-2 font-Inter font-600 flex justify-center mb-7 text-white text-center">
-                0 Events
-              </div>
-            )}
-          </div> */}
-          {/* Search */}
+          {/* Searched Events */}
           <div
-            className={`w-full grid grid-cols-1 ${
-              searched.length == 0
-                ? "sm:w-full"
-                : "sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
-            }   gap-5 mb-5 2xl:grid-cols-4 justify-center items-center`}
+            className={`grid grid-cols-1 gap-5 mb-5 2xl:grid-cols-4
+                ${
+                  filteredSearch.length > 0
+                    ? "sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
+                    : "sm:w-full"
+                } `}
           >
-            {searched.length > 0 ? (
-              searched.map((e) => (
-                <EventCard
-                  key={e.title}
-                  img={e.img}
-                  title={e.title}
-                  name={e.name}
-                  date={e.date}
-                  time={e.time}
-                  city={e.city}
-                  money={e.money}
-                />
-              ))
+            {filteredSearch.length > 0 ? (
+              categoryEvents.length > 0 && (
+                <>
+                  {paginatedEvents.map((e) => (
+                    <EventCard key={e.id} event={e} />
+                  ))}
+                </>
+              )
             ) : (
               <h2 className="text-white font-Inter font-400 text-center flex justify-center my-20 ">
-                No Events Found
+                No Events
               </h2>
             )}
           </div>
         </div>
-        <div className="py-10 flex justify-center">
-          <Pagination
-            currentPage={currentPage}
-            handleChangePage={handleChangePage}
-            pages={pages}
-            handelPaginationNextBtn={handelPaginationNextBtn}
-            handelPaginationPrevBtn={handelPaginationPrevBtn}
-          />
-        </div>
+        {/* Search */}
+      </div>
+      <div className="py-10 flex justify-center">
+        <Pagination
+          currentPage={currentPage}
+          handleChangePage={handleChangePage}
+          pages={pages}
+          handelPaginationNextBtn={handelPaginationNextBtn}
+          handelPaginationPrevBtn={handelPaginationPrevBtn}
+        />
       </div>
       <BackTop />
     </div>
