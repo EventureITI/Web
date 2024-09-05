@@ -2,9 +2,11 @@ import React, { createContext, useEffect, useState } from "react";
 import { db } from "../firebase/firebase-config";
 import {
   collection,
+  doc,
   getDocs,
   onSnapshot,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 export const appContext = createContext();
@@ -93,9 +95,9 @@ export default function AppContextProvider({ children }) {
       }
     };
     const updateExpiredEvents = async () => {
-      console.log("hh");
-
-      const currentDate = new Date();
+      const currentDate = new Date().toISOString().split('T')[0];
+      console.log(currentDate);
+      
       // get events where endDate has passed and isDeleted is false
       const q = query(
         collection(db, "events"),
@@ -114,8 +116,6 @@ export default function AppContextProvider({ children }) {
           await updateDoc(eventRef, {
             isDeleted: true,
           });
-          console.log("hh");
-
           console.log(`Event ${docSnapshot.id} marked as deleted`);
         });
       } catch (error) {
