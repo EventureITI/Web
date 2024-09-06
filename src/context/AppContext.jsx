@@ -50,17 +50,6 @@ export default function AppContextProvider({ children }) {
   // get All Events
   useEffect(() => {
     const getAllEvents = async () => {
-      // try {
-      //   const data = await getDocs(eventsCollectionRef);
-      //   const filteredData = data.docs.map((doc) => ({
-      //     ...doc.data(),
-      //     id: doc.id,
-      //   }));
-      //   console.log(filteredData);
-      //   setEvents(filteredData);
-      // } catch (err) {
-      //   console.log(err);
-      // }
       setLoading(true);
       try {
         const q = query(
@@ -96,8 +85,7 @@ export default function AppContextProvider({ children }) {
     };
     const updateExpiredEvents = async () => {
       const currentDate = new Date().toISOString().split('T')[0];
-      console.log(currentDate);
-      
+      console.log(currentDate);      
       // get events where endDate has passed and isDeleted is false
       const q = query(
         collection(db, "events"),

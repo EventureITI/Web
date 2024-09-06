@@ -6,26 +6,28 @@ import BackTop from "../Components/BackTop";
 import { appContext } from "../context/AppContext";
 import { useParams } from "react-router-dom";
 import generateArrayFromNumber from "../utils/generateArrayFromNumber";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../firebase/firebase-config";
 
 export default function EventsPage() {
   const [currentPage, setCurrentPage] = useState(1);
-
-  const { events, categories } = useContext(appContext);
+  const {categories } = useContext(appContext);
+  // const { events, categories } = useContext(appContext);
   const { category } = useParams();
   console.log(category);
 
-  const [filteredSearch, setFilteredSearch] = useState(events);
+  // const [filteredSearch, setFilteredSearch] = useState(events);
   const [searchWord, SetSearchWord] = useState("");
-
-  const categorizedEvents =
-    category === "all"
-      ? filteredSearch.sort(
-          (a, b) => new Date(a.startDate) - new Date(b.startDate)
-        )
-      : filteredSearch.filter(
-          (e) =>
-            e.categoryId === categories.find((cat) => cat.name === category).id
-        );
+const [categorizedEvents,setCategorizedEvents]=useState([]);
+  // const categorizedEvents =
+  //   category === "all"
+  //     ? filteredSearch.sort(
+  //         (a, b) => new Date(a.startDate) - new Date(b.startDate)
+  //       )
+  //     : filteredSearch.filter(
+  //         (e) =>
+  //           e.categoryId === categories.find((cat) => cat.name === category).id
+  //       );
 
   const filteredSearchEvents = !searchWord
     ? categorizedEvents
@@ -52,13 +54,62 @@ export default function EventsPage() {
     SetSearchWord(e.target.value);
   }
 
-  useEffect(() => {
-    const data = events.filter((e) =>
-      e.title?.toLowerCase().includes(searchWord?.toLowerCase())
-    );
-    setFilteredSearch(data);
-    console.log(filteredSearch);
-  }, [searchWord, events]);
+  // useEffect(() => {
+  //   const data = events.filter((e) =>
+  //     e.title?.toLowerCase().includes(searchWord?.toLowerCase())
+  //   );
+  //   setFilteredSearch(data);
+  //   console.log(filteredSearch);
+  // }, [searchWord, events]);
+
+useEffect(()=>{
+  const getEventsByCategory = async () => {
+    try {
+      const  categoryId=categories.find((cat) => cat.name === category).id
+      const q = query(
+        collection(db, "events"),
+        where("categoryId", "==", categoryId),
+        where("isDeleted", "==", false)
+      );
+      const data = onSnapshot(q, (QuerySnapshot) => {
+        let eventsArr = [];
+        QuerySnapshot.forEach((doc) => {
+          eventsArr.push({ ...doc.data(), id: doc.id });
+        });
+        console.log(eventsArr);
+        setCategorizedEvents(eventsArr);
+      });
+      return () => data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getAllEvents = async () => {
+    try {
+      const q = query(
+        collection(db, "events"),
+        where("isDeleted", "==", false)
+      );
+      const data = onSnapshot(q, (QuerySnapshot) => {
+        let eventsArr = [];
+        QuerySnapshot.forEach((doc) => {
+          eventsArr.push({ ...doc.data(), id: doc.id });
+        });
+        console.log(eventsArr);
+        setCategorizedEvents(eventsArr);
+      });
+      return () => data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  if(category==='all'){
+    getAllEvents()
+  }
+  else{
+    getEventsByCategory()
+  }
+},[category])
 
   const handleChangePage = (page) => {
     setCurrentPage(page);
@@ -69,6 +120,8 @@ export default function EventsPage() {
   const handelPaginationPrevBtn = () => {
     setCurrentPage(currentPage - 1);
   };
+  // console.log(filteredSearch);
+  
   return (
     <div className="w-full bg-bg-main min-h-screen relative">
       <div className="md:container md:mx-auto mx-8 md:px-4 pt-28">
@@ -108,18 +161,22 @@ export default function EventsPage() {
           <div
             className={`grid grid-cols-1 gap-5 mb-5 2xl:grid-cols-4
                 ${
-                  filteredSearch.length > 0
+                  filteredSearchEvents.length > 0
                     ? "sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
                     : "sm:w-full"
                 } `}
           >
-            {filteredSearch.length > 0 ? (
-              categorizedEvents.length > 0 && (
+            {filteredSearchEvents.length > 0 ? (
+              categorizedEvents.length > 0 ? (
                 <>
                   {paginatedEvents.map((e) => (
                     <EventCard key={e.id} event={e} />
                   ))}
                 </>
+              ) : (
+                <h2 className="text-white font-Inter font-400 text-center flex justify-center my-20 ">
+                  No Events
+                </h2>
               )
             ) : (
               <h2 className="text-white font-Inter font-400 text-center flex justify-center my-20 ">
