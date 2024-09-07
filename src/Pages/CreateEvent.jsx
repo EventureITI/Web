@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { db, storage } from "../firebase/firebase-config";
-import { addDoc, collection, doc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { formatTimeTo12Hour } from "../utils/formatTimeTo12Hrs";
@@ -13,7 +13,11 @@ import convertTo24HourFormat from "../utils/formatTimeTo24Hrs";
 
 export default function CreateEvent() {
   const { id } = useParams();
+  console.log(id);
+
   const mode = id === "new" ? "add" : "edit";
+  console.log(mode);
+
   const {
     handleAddEventsUI,
     events,
@@ -50,34 +54,67 @@ export default function CreateEvent() {
         }
       : events.find((e) => e.id === id)
   );
+  console.log(events, eventForm);
+
   useEffect(() => {
-    // function convertTo24HourFormat(time12h) {
-    //   console.log(time12h);
-
-    //   const [time, modifier] = time12h.split(" "); // Split the time and the AM/PM modifier
-    //   let [hours, minutes] = time.split(":"); // Split the hours and minutes
-    //   console.log(time, " |", modifier);
-
-    //   if (hours === "12") {
-    //     hours = "00"; // Convert 12 AM to 00 hours
-    //   }
-
-    //   if (modifier.toLowerCase() === "pm") {
-    //     hours = (parseInt(hours, 10) + 12).toString(); // Convert PM hours to 24-hour format
-    //   }
-
-    //   return `${hours.padStart(2, "0")}:${minutes}`; // Return in HH:mm format, padding single digit hours with 0
-    // }
     if (mode === "edit") {
-      console.log("edit");
+      const getEventById = async () => {
+        console.log("again");
+        try {
+          const docRef = doc(db, "events", id);
+          const docSnap = await getDoc(docRef);
 
-      let startTime24F = convertTo24HourFormat(eventForm.startTime);
-      setEventForm((prevForm) => ({ ...prevForm, startTime: startTime24F }));
+          if (docSnap.exists()) {
+            setEventForm((prev) => docSnap.data());
+            if (
+              eventForm?.startTime.includes("AM") ||
+              eventForm?.startTime.includes("PM")
+            ) {
+              let startTime24F = convertTo24HourFormat(eventForm.startTime);
+              console.log(startTime24F);
+              setEventForm((prevForm) => ({
+                ...prevForm,
+                startTime: startTime24F,
+              }));
+            }
 
-      let endTime24F = convertTo24HourFormat(eventForm.endTime);
-      setEventForm((prevForm) => ({ ...prevForm, endTime: endTime24F }));
+            if (
+              eventForm?.endTime.includes("AM") ||
+              eventForm?.endTime.includes("PM")
+            ) {
+              console.log("time");
+
+              let endTime24F = convertTo24HourFormat(eventForm.endTime);
+              setEventForm((prevForm) => ({
+                ...prevForm,
+                endTime: endTime24F,
+              }));
+            }
+          } else {
+            console.log("No such document");
+          }
+        } catch (err) {
+          console.error("Error fetching document:", err);
+        }
+      };
+      getEventById();
+      console.log(eventForm);
+      if (eventForm) {
+        let startTime24F = convertTo24HourFormat(eventForm.startTime);
+        console.log(startTime24F);
+        setEventForm((prevForm) => ({
+          ...prevForm,
+          startTime: startTime24F,
+        }));
+        let endTime24F = convertTo24HourFormat(eventForm.endTime);
+        setEventForm((prevForm) => ({
+          ...prevForm,
+          endTime: endTime24F,
+        }));
+      }
+      // setEventForm((prev) => ({ ...events.find((e) => e.id === id) }));
     }
-  }, []);
+  }, [events]);
   const [errors, setErrors] = useState({
     title: null,
     host: null,
@@ -100,8 +137,6 @@ export default function CreateEvent() {
       [name]: value,
     }));
     if (name === "startTime" || name === "endTime") {
-      console.log("aaa");
-
       setFormattedTime((prevFormatted) => ({
         ...prevFormatted,
         [name]: formatTimeTo12Hour(value),
@@ -233,10 +268,10 @@ export default function CreateEvent() {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
               />
 
-              {eventForm.imgUrl ? (
+              {eventForm?.imgUrl ? (
                 <img
                   id="image-preview"
-                  src={eventForm.imgUrl}
+                  src={eventForm?.imgUrl}
                   alt="Event"
                   className="w-full h-full object-cover rounded-xl"
                 />
@@ -277,7 +312,7 @@ export default function CreateEvent() {
               type="text"
               id="eventTitle"
               name="title"
-              value={eventForm.title}
+              value={eventForm?.title}
               onChange={(e) => handleChange(e)}
               placeholder="Enter event title"
               style={{ caretColor: "#4FE0D2" }}
@@ -307,7 +342,7 @@ export default function CreateEvent() {
               type="text"
               id="eventHost"
               name="host"
-              value={eventForm.host}
+              value={eventForm?.host}
               onChange={(e) => handleChange(e)}
               placeholder="Enter event title"
               style={{ caretColor: "#4FE0D2" }}
@@ -337,7 +372,7 @@ export default function CreateEvent() {
               type="text"
               id="eventLocation"
               name="location"
-              value={eventForm.location}
+              value={eventForm?.location}
               onChange={(e) => handleChange(e)}
               placeholder="Enter event location"
               style={{ caretColor: "#4FE0D2" }}
@@ -367,7 +402,7 @@ export default function CreateEvent() {
               type="number"
               id="ticketPrice"
               name="price"
-              value={eventForm.price}
+              value={eventForm?.price}
               onChange={(e) => handleChange(e)}
               placeholder="Enter ticket price"
               style={{ caretColor: "#4FE0D2" }}
@@ -397,7 +432,7 @@ export default function CreateEvent() {
               type="number"
               id="tickets"
               name="tickets"
-              value={eventForm.tickets}
+              value={eventForm?.tickets}
               onChange={(e) => handleChange(e)}
               placeholder="Enter number of tickets"
               style={{ caretColor: "#4FE0D2" }}
@@ -420,7 +455,7 @@ export default function CreateEvent() {
             <select
               id="categories"
               name="categoryId"
-              value={eventForm.categoryId}
+              value={eventForm?.categoryId}
               onChange={handleChange}
               className="w-full px-4 py-3 bg-input text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
@@ -451,7 +486,7 @@ export default function CreateEvent() {
                 type="date"
                 id="startDate"
                 name="startDate"
-                value={eventForm.startDate}
+                value={eventForm?.startDate}
                 onChange={(e) => handleChange(e)}
               />
               {errors.startDate && (
@@ -478,7 +513,7 @@ export default function CreateEvent() {
                 type="date"
                 id="endDate"
                 name="endDate"
-                value={eventForm.endDate}
+                value={eventForm?.endDate}
                 onChange={(e) => handleChange(e)}
               />
               {errors.endDate && (
@@ -508,7 +543,7 @@ export default function CreateEvent() {
                 type="time"
                 id="startTime"
                 name="startTime"
-                value={eventForm.startTime}
+                value={eventForm?.startTime}
                 onChange={(e) => handleChange(e)}
               />
               {errors.startTime && (
@@ -535,7 +570,7 @@ export default function CreateEvent() {
                 type="time"
                 id="endTime"
                 name="endTime"
-                value={eventForm.endTime}
+                value={eventForm?.endTime}
                 onChange={(e) => handleChange(e)}
               />
               {errors.endTime && (
@@ -565,7 +600,7 @@ export default function CreateEvent() {
               id="eventDescription"
               rows={7}
               name="description"
-              value={eventForm.description}
+              value={eventForm?.description}
               onChange={(e) => handleChange(e)}
               placeholder="Enter event description"
               style={{ caretColor: "#4FE0D2" }}
