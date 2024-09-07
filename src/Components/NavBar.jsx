@@ -1,6 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { appContext } from "../context/AppContext";
+import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
+import { db } from "../firebase/firebase-config";
 
 export default function NavBar() {
   const [searchNavbarKey, setSearchNavbarKey] = useState("");
@@ -27,6 +29,31 @@ export default function NavBar() {
   : events.filter((event) =>
       event.title.toLowerCase().includes(searchNavbarKey.toLowerCase())
     );
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const handleSearch = async () => {
+      console.log(searchTerm);
+      
+      if (searchTerm) {
+        try {
+          const q = query(
+            collection(db, 'events'),
+            where('isDeleted', '==', false),
+            where('title', '>=', searchTerm.toLowerCase()),
+            where('title', '<=', searchTerm.toLowerCase() + '\uf8ff') // Range query for matching search terms
+          );
+          const querySnapshot = await getDocs(q);
+          const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+          setSearchResults(prev=>data);
+        } catch (error) {
+          console.error("Error fetching documents: ", error);
+        }
+      }
+    };
+    useEffect(() => {
+      handleSearch();
+    }, [searchTerm]);
+    console.log("results",searchResults);
   return (
     <nav
       className=" border-gray-200 fixed w-full z-30 dark:bg-gray-900 "
@@ -109,7 +136,9 @@ export default function NavBar() {
               <input
                 type="text"
                 placeholder="Search"
-                onChange={(e) => handleSearchNavbarKeyChanges(e.target.value)}
+                // onChange={(e) => handleSearchNavbarKeyChanges(e.target.value)}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="input focus:outline-main-color focus:outline-offset-0 text-white text-sm pb-1 h-8 rounded-lg lg:w-72 md:w-48  bg-[rgba(201,201,201,0.2)]"
               />
               <button className="absolute right-3 bottom-2 hover:scale-110">
@@ -118,14 +147,14 @@ export default function NavBar() {
             </div>
             {/* search dropdown */}
             <div className="flex justify-center">
-              {searchNavbarKey && (
+              {searchTerm && (
                 <div className="block absolute text-white font-Inter bg-input md:w-96 z-50 my-1 rounded-lg px-2 py-2">
-                  {filteredSearchNavbarEvents.length > 0 ? (
+                  {searchResults.length > 0 ? (
                     <>
-                      {filteredSearchNavbarEvents.map((event, index) => {
+                      {searchResults.map((event, index) => {
                         return (
                           <div key={index} className="py-2 px-2 cursor-pointer" onClick={()=>navigate(`/event-details/${event.id}`)}>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 capitalize">
                               <img className="w-10" src={event.imgUrl} alt="" />
                               {event.title}
                             </div>

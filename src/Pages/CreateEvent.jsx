@@ -170,6 +170,7 @@ export default function CreateEvent() {
             ...eventForm,
             startTime: formattedTime.startTime,
             endTime: formattedTime.endTime,
+            title:eventForm.title.toLowerCase()
           });
           console.log(docRef);
           handleAddEventsUI({
@@ -177,11 +178,13 @@ export default function CreateEvent() {
             id: docRef.id,
             startTime: formattedTime.startTime,
             endTime: formattedTime.endTime,
+            title:eventForm.title.toLowerCase()
           });
           toast.success("Event added successfully");
         } else {
           console.log(id);
           console.log(formattedTime);
+console.log(eventForm);
 
           const eventToBeUpdated = doc(db, "events", id);
           await updateDoc(eventToBeUpdated, {
@@ -192,6 +195,7 @@ export default function CreateEvent() {
             endTime: !formattedTime.endTime
               ? formatTimeTo12Hour(eventForm.endTime)
               : formattedTime.endTime,
+              title:eventForm.title.toLowerCase()
           });
           handleEditEventUI({
             ...eventForm,
@@ -201,6 +205,7 @@ export default function CreateEvent() {
             endTime: !formattedTime.endTime
               ? formatTimeTo12Hour(eventForm.endTime)
               : formattedTime.endTime,
+              title:eventForm.title.toLowerCase()
           });
           toast.success("Event edited successfully");
         }
