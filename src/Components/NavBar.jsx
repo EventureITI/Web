@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { appContext } from "../context/AppContext";
 
 export default function NavBar() {
@@ -172,7 +172,7 @@ export default function NavBar() {
                     <a>Edit Profile</a>
                   </li>
                   <li className="hover:bg-[#0d9988] rounded-lg">
-                    <a>Your Bookings</a>
+                    <Link to='/profile'>Your Bookings</Link >
                   </li>
                   <li
                     onClick={() => navigate("/login")}
