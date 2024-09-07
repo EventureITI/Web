@@ -1,11 +1,22 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import EditIcon from "../Components/Icons/EditIcon";
 import DeleteIcon from "../Components/Icons/DeleteIcon";
 import { Link, useNavigate } from "react-router-dom";
 import { appContext } from "../context/AppContext";
 import Pagination from "../Components/Pagination";
 import DeleteConfirmationModal from "../Components/DeleteConfirmationModal";
-import { updateDoc, doc } from "firebase/firestore";
+import {
+  updateDoc,
+  doc,
+  getDocs,
+  collection,
+  query,
+  orderBy,
+  limit,
+  startAfter,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
 import { toast } from "react-toastify";
 import generateArrayFromNumber from "../utils/generateArrayFromNumber";
@@ -13,7 +24,6 @@ import BackTop from "../Components/BackTop";
 
 export default function DashboardAdmin() {
   const [currentPage, setCurrentPage] = useState(1);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const tableHeaders = [
@@ -27,6 +37,7 @@ export default function DashboardAdmin() {
     "",
   ];
   const navigate = useNavigate();
+
   const { events, handleDeleteEventUI, restoreEvents, loading } =
     useContext(appContext);
   // search for events by title
@@ -70,9 +81,9 @@ export default function DashboardAdmin() {
   console.log(filteredSearchAdminEvents);
   //pagination logic
   const pageSize = 5;
-  const pages = generateArrayFromNumber(
-    Math.ceil(filteredSearchAdminEvents.length / pageSize)
-  );
+  // const pages = generateArrayFromNumber(
+  //   Math.ceil(filteredSearchAdminEvents.length / pageSize)
+  // );
   const pageToStart = (currentPage - 1) * pageSize;
   console.log(pageToStart);
 
@@ -90,7 +101,170 @@ export default function DashboardAdmin() {
   const handelPaginationPrevBtn = () => {
     setCurrentPage(currentPage - 1);
   };
+  ///////////////////////////////////////////////////////////////////
+  const PAGE_SIZE = 3;
+  const [data, setData] = useState([]);
+
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [documentSnapshots, setDocumentSnapshots] = useState([]);
+
+  const fetchTotalDocuments = async () => {
+    let q = query(collection(db, "events"), where("isDeleted", "==", false));
+    const snapshot = await getDocs(q);
+    const totalDocs = snapshot.size;
+    setTotalPages(Math.ceil(totalDocs / PAGE_SIZE));
+  };
+  // const fetchData = async (direction = "next") => {
+  //   let q;
+
+  //   if (direction === "next" && lastDoc) {
+  //     q = query(
+  //       collection(db, "events"),
+  //       where("isDeleted", "==", false),
+  //       orderBy("title"),
+  //       startAfter(lastDoc),
+  //       limit(PAGE_SIZE)
+  //     );
+  //   } else if (direction === "prev" && firstDoc) {
+  //     q = query(collection(db, "events") , where("isDeleted", "==", false), orderBy("title"), limit(PAGE_SIZE));
+  //   } else {
+  //     q = query(collection(db, "events"),  where("isDeleted", "==", false), orderBy("title"), limit(PAGE_SIZE));
+  //   }
+  //   const snapshot = await getDocs(q);
+  //   const docs = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+
+  //   if (snapshot.docs.length > 0) {
+  //     setLastDoc(snapshot.docs[snapshot.docs.length - 1]);
+  //     setFirstDoc(snapshot.docs[0]);
+  //   }
+
+  //   setData(docs);
+  // };
+  const fetchPage = async (targetPage) => {
+    let q;
+
+    if (targetPage === 1) {
+      // Query for the first page
+      q = query(
+        collection(db, "events"),
+        where("isDeleted", "==", false),
+        orderBy("title"),
+        limit(PAGE_SIZE)
+      );
+    } else if (documentSnapshots[targetPage - 2]) {
+      // Use cached last document from the previous page
+      q = query(
+        collection(db, "events"),
+        where("isDeleted", "==", false),
+        orderBy("title"),
+        startAfter(documentSnapshots[targetPage - 2]),
+        limit(PAGE_SIZE)
+      );
+    } else {
+      // If no cache, manually go through the previous pages to reach the target
+      let lastVisible = null;
+      for (let i = 1; i < targetPage; i++) {
+        const tempQ = query(
+          collection(db, "events"),
+          where("isDeleted", "==", false),
+          orderBy("title"),
+          startAfter(lastVisible || undefined),
+          limit(PAGE_SIZE)
+        );
+        const tempSnapshot = await getDocs(tempQ);
+        lastVisible = tempSnapshot.docs[tempSnapshot.docs.length - 1];
+        documentSnapshots[i - 1] = lastVisible;
+      }
+      q = query(
+        collection(db, "events"),
+        where("isDeleted", "==", false),
+        orderBy("title"),
+        startAfter(lastVisible),
+        limit(PAGE_SIZE)
+      );
+    }
+
+    const snapshot = await getDocs(q);
+    const docs = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+
+    setData(docs);
+
+    // Cache the last document of the current page
+    if (snapshot.docs.length > 0) {
+      documentSnapshots[targetPage - 1] =
+        snapshot.docs[snapshot.docs.length - 1];
+      setDocumentSnapshots([...documentSnapshots]);
+    }
+  };
+
+  useEffect(() => {
+    // fetchTotalDocuments();
+    // fetchPage(1);
+  }, []);
+  const handlePageClick = (pageNum) => {
+    setPage(pageNum);
+    fetchPage(pageNum);
+  };
+  const handleNext = () => {
+    if (page < totalPages) {
+      fetchData("next");
+      setPage(page + 1);
+    }
+  };
+  const handlePrev = () => {
+    if (page > 1) {
+      fetchData("prev");
+      setPage(page - 1);
+    }
+  };
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const handleSearch = async () => {
+    console.log(searchTerm);
+    
+    if (searchTerm) {
+      try {
+        const q = query(
+          collection(db, 'events'),
+          where('isDeleted', '==', false),
+          where('title', '>=', searchTerm),
+          where('title', '<=', searchTerm + '\uf8ff') // Range query for matching search terms
+        );
+        const querySnapshot = await getDocs(q);
+        const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        setSearchResults(prev=>data);
+      } catch (error) {
+        console.error("Error fetching documents: ", error);
+      }
+    }else{
+      console.log('empty');      
+      try {
+        const q = query(
+          collection(db, "events"),
+          where("isDeleted", "==", false)
+        );
+        const data = onSnapshot(q, (QuerySnapshot) => {
+          let eventsArr = [];
+          QuerySnapshot.forEach((doc) => {
+            eventsArr.push({ ...doc.data(), id: doc.id });
+          });
+          console.log(eventsArr);
+          setSearchResults((prev)=>eventsArr);
+        });
+        return () => data;
+      } catch (error) {
+        console.log(error);
+      }
+      
+    }
+  };
+  useEffect(() => {
+    handleSearch();
+  }, [searchTerm]);
   // if (loading) return <TableSkeleton />;
+  console.log("results",searchResults);
+  
   return (
     <div className="bg-bg-main px-4 pt-16 pb-4 min-h-screen">
       <div className="self-stretch md:justify-between md:items-center gap-4 flex flex-col md:flex-row p-10 overflow-x-auto whitespace-nowrap">
@@ -100,10 +274,12 @@ export default function DashboardAdmin() {
         <div className="flex gap-2 md:gap-4 w-full md:justify-end">
           <div className="relative w-[480px] md:w-[346px] flex items-center">
             <input
-              value={searchAdminKey}
-              onChange={(e) => {
-                handleSearchAdminKeyChanges(e.target.value);
-              }}
+              // value={searchAdminKey}
+              // onChange={(e) => {
+              //   handleSearchAdminKeyChanges(e.target.value);
+              // }}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               type="search"
               className="w-full h-[43px] px-4 py-2 text-white bg-[#c9c9c9]/20 rounded-lg outline-none focus:outline-offset-0 focus:outline-main-color "
               style={{ caretColor: "#4FE0D2" }}
@@ -152,7 +328,7 @@ export default function DashboardAdmin() {
                 </tr>
               </thead>
               <tbody className=" text-white">
-                {paginatedEvents.map((event, index) => (
+                {searchResults.map((event, index) => (
                   <tr
                     key={index}
                     className={`${index % 2 === 0 ? "bg-input" : " "}`}
@@ -214,13 +390,39 @@ export default function DashboardAdmin() {
         )}
 
         <div className="flex justify-center">
-          <Pagination
-            currentPage={currentPage}
-            handleChangePage={handleChangePage}
+          {/* <Pagination
+            // currentPage={currentPage}
+            currentPage={page}
+            // handleChangePage={handleChangePage}
+            handleChangePage={() => setPage(i + 1)}
             pages={pages}
-            handelPaginationNextBtn={handelPaginationNextBtn}
-            handelPaginationPrevBtn={handelPaginationPrevBtn}
-          />
+            // pages={totalPages}
+            // handelPaginationNextBtn={handelPaginationNextBtn}
+            handelPaginationNextBtn={handleNext}
+            // handelPaginationPrevBtn={handelPaginationPrevBtn}
+            handelPaginationPrevBtn={handlePrev}
+          /> */}
+          {/* <div>
+            <div>
+              <button
+                onClick={() => handlePageClick(page - 1)}
+                disabled={page === 1}
+              >
+                Previous
+              </button>
+              {[...Array(totalPages)].map((_, i) => (
+                <button key={i} onClick={() => handlePageClick(i + 1)}>
+                  {i + 1}
+                </button>
+              ))}
+              <button
+                onClick={() => handlePageClick(page + 1)}
+                disabled={page === totalPages}
+              >
+                Next
+              </button>
+            </div>
+          </div> */}
         </div>
         <BackTop />
       </div>
