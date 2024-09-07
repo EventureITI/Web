@@ -44,7 +44,7 @@ export default function EventCard({ event }) {
       </div>
       <div className="w-full h-fit flex flex-col justify-center items-center py-2 text-white">
         <p
-          className="text-base font-semibold mb-2 px-3 text-ellipsis overflow-hidden"
+          className="text-base font-semibold mb-2 px-3 text-ellipsis overflow-hidden capitalize"
           style={{ maxWidth: "250px", whiteSpace: "nowrap" }}
         >
           {event.title}

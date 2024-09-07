@@ -63,7 +63,7 @@ export default function EventDetails() {
                   <p className="mx-2 text-white">Back</p>
                 </button>
 
-                <div className="text-white text-5xl font-semibold">
+                <div className="text-white text-5xl font-semibold capitalize">
                   {event.title}
                 </div>
               </div>
