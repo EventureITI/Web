@@ -13,6 +13,10 @@ import EventDetails from "./Pages/EventDetails";
 import Footer from "./Components/Footer";
 import NotFound from "./Pages/NotFound";
 import BackTop from "./Components/BackTop";
+import PaymentSuccess from "./Pages/payment/PaymentSuccess";
+import PaymentFailed from "./Pages/payment/PaymentFailed";
+import GetTicket from "./Pages/GetTicket";
+import Profile from "./Pages/Profile";
 
 function App() {
   const location = useLocation();
@@ -42,8 +46,14 @@ function App() {
         <Route path="/events-page/family" element={<EventsPage />} />
         <Route path="/events-page/workshops" element={<EventsPage />} /> */}
         <Route path="/login" element={<Login />} />
-        <Route path="/event-details/:id" element={<EventDetails />} />
+
+        <Route path="/event-details/:id" element={<EventDetails />}/>
+        <Route path="/event-details/:id/get-ticket" element={<GetTicket />} />
+        
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-failed" element={<PaymentFailed />} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/admin" element={<DashboardAdmin />} />
