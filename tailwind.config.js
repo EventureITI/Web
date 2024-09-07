@@ -29,6 +29,7 @@ export default {
         "main-hover": "#12b7b4", //main-teal-lighter
         "sec-color": "#1F1F1F", //grey-dark
         "bg-main": "#1A1A1A", //grey-darker
+        "ticket":"#292929" // bg-ticket
       },
       boxShadow: {
         "custom-shadow": "0px 0px 2px 0px rgba(0, 0, 0, 0.25)",
