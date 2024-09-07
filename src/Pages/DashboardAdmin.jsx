@@ -228,8 +228,8 @@ export default function DashboardAdmin() {
         const q = query(
           collection(db, 'events'),
           where('isDeleted', '==', false),
-          where('title', '>=', searchTerm),
-          where('title', '<=', searchTerm + '\uf8ff') // Range query for matching search terms
+          where('title', '>=', searchTerm.toLowerCase()),
+          where('title', '<=', searchTerm.toLowerCase() + '\uf8ff') // Range query for matching search terms
         );
         const querySnapshot = await getDocs(q);
         const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -303,7 +303,7 @@ export default function DashboardAdmin() {
 
       {/* <div className="justify-center items-end gap-8 flex mb-10"> */}
       <div className="overflow-x-auto  px-10">
-        {filteredSearchAdminEvents.length > 0 ? (
+        {searchResults.length > 0 ? (
           <>
             <table className="w-full text-base font-body text-left rtl:text-right text-gray-500 mb-10 overflow-x-auto whitespace-nowrap">
               <thead className=" text-white">
@@ -337,7 +337,7 @@ export default function DashboardAdmin() {
                       {index + 1}
                     </td>
                     <td className="px-4 sm:px-6 py-2 border-r-2 border-opacity-60 border-input">
-                      <p className="truncate w-20 custom-sm:w-40 sm:w-full ">
+                      <p className="truncate w-20 custom-sm:w-40 sm:w-full capitalize">
                         {event.title}
                       </p>
                     </td>
