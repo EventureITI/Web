@@ -13,6 +13,10 @@ import EventDetails from "./Pages/EventDetails";
 import Footer from "./Components/Footer";
 import NotFound from "./Pages/NotFound";
 import BackTop from "./Components/BackTop";
+import AuthDetailsContext from "./context/Authentication/AuthDetailsContext";
+import { useContext } from "react";
+import NotAuthenticated from "./Components/ProtectedRoutes/NotAuthenticated";
+import Authenticated from "./Components/ProtectedRoutes/Authenticated";
 
 function App() {
   const location = useLocation();
@@ -27,30 +31,44 @@ function App() {
   ]; // here you will add the desired route that you do not want to render footer with
   return (
     <>
-      {!hideNavbarRoutes.includes(location.pathname) && <NavBar />}
-      <ScrollTop />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        {/* <Route path="/eventsPage" element={<EventsPage />} /> */}
-        <Route path="/events-page/:category" element={<EventsPage />} />
-        {/* <Route path="/events-page/comedy" element={<EventsPage />} />
-        <Route path="/events-page/music" element={<EventsPage />} />
-        <Route path="/events-page/sports" element={<EventsPage />} />
-        <Route path="/events-page/theater" element={<EventsPage />} />
-        <Route path="/events-page/charity" element={<EventsPage />} />
-        <Route path="/events-page/virtual" element={<EventsPage />} />
-        <Route path="/events-page/family" element={<EventsPage />} />
-        <Route path="/events-page/workshops" element={<EventsPage />} /> */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/event-details/:id" element={<EventDetails />} />
-        <Route path="/contact" element={<ContactUs />} />
-        <Route path="/edit-profile" element={<EditProfile />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/admin" element={<DashboardAdmin />} />
-        <Route path="*" element={<NotFound />} />
-        <Route path="/admin/event/:id" element={<CreateEvent />} />
-      </Routes>
-      {!hideFooterRoutes.includes(location.pathname) && <Footer />}
+      <AuthDetailsContext>
+        {!hideNavbarRoutes.includes(location.pathname) && <NavBar />}
+        <ScrollTop />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/events-page/:category" element={<EventsPage />} />
+          <Route
+            path="/login"
+            element={
+              <Authenticated>
+                <Login />
+              </Authenticated>
+            }
+          />
+          <Route path="/event-details/:id" element={<EventDetails />} />
+          <Route path="/contact" element={<ContactUs />} />
+          <Route
+            path="/edit-profile"
+            element={
+              <NotAuthenticated>
+                <EditProfile />
+              </NotAuthenticated>
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              <Authenticated>
+                <SignUp />
+              </Authenticated>
+            }
+          />
+          <Route path="/admin" element={<DashboardAdmin />} />
+          <Route path="*" element={<NotFound />} />
+          <Route path="/admin/event/:id" element={<CreateEvent />} />
+        </Routes>
+        {!hideFooterRoutes.includes(location.pathname) && <Footer />}
+      </AuthDetailsContext>
     </>
   );
 }
