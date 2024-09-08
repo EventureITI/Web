@@ -4,12 +4,22 @@ import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../firebase/firebase-config";
 import { doc, getDoc } from "firebase/firestore";
 import BackTop from "../Components/BackTop";
+import StripePayment from "../Components/StripePayment";
+import { loadStripe } from "@stripe/stripe-js";
 
 export default function EventDetails() {
   const [event, setEvent] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
   // console.log(id);
+
+  // async function makePayment (){
+  //   const stripe = await loadStripe("pk_test_51Pw0DIKNB1qa5niHFcBfkGral2f1ZSbRuOaqvO5w2c3oqZDDaJKKPDHKSXdiQV56Iote19LpvN3gTUcQrDTGthHo008GwiI8CJ")
+
+  //   const body = {
+  //   }
+  // }
+
   useEffect(() => {
     const getEventById = async () => {
       const docRef = doc(db, "events", id);
@@ -31,6 +41,7 @@ export default function EventDetails() {
               <p className="text-[#909090] uppercase">{event.startTime}</p>
             </div>
             <EventBookButton id={id}></EventBookButton>
+            <div>{/* <StripePayment/> */}</div>
           </div>
         </div>
 

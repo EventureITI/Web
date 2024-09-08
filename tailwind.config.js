@@ -25,7 +25,7 @@ export default {
       },
       colors: {
         input: "#333333", //grey-light
-        "main-color": "#0d9988", //main-teal
+        "main-color": "#00796B", //main-teal
         "main-hover": "#12b7b4", //main-teal-lighter
         "sec-color": "#1F1F1F", //grey-dark
         "bg-main": "#1A1A1A", //grey-darker
