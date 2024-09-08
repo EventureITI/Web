@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { appContext } from "../context/AppContext";
 import { collection, getDocs, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
@@ -201,7 +201,7 @@ export default function NavBar() {
                     <a>Edit Profile</a>
                   </li>
                   <li className="hover:bg-[#0d9988] rounded-lg">
-                    <a>Your Bookings</a>
+                    <Link to='/profile'>Your Bookings</Link >
                   </li>
                   <li
                     onClick={() => navigate("/login")}

@@ -9,7 +9,7 @@ export default function EventDetails() {
   const [event, setEvent] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
-  console.log(id);
+  // console.log(id);
   useEffect(() => {
     const getEventById = async () => {
       const docRef = doc(db, "events", id);
@@ -30,7 +30,7 @@ export default function EventDetails() {
               <p className="capitalize text-[#909090]">{event.startDate}</p>
               <p className="text-[#909090] uppercase">{event.startTime}</p>
             </div>
-            <EventBookButton></EventBookButton>
+            <EventBookButton id={id}></EventBookButton>
           </div>
         </div>
 
