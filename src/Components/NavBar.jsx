@@ -1,21 +1,67 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { appContext } from "../context/AppContext";
+import NavBtns from "./NavBtns";
+import { AuthDetails } from "../context/Authentication/AuthDetailsContext";
+import { signOut } from "firebase/auth";
+import { toast } from "react-toastify";
+import { auth } from "../firebase/firebase-config";
 
 export default function NavBar() {
   const [searchNavbarKey, setSearchNavbarKey] = useState("");
+  const {auther} = useContext(AuthDetails)  
 
   const handleSearchNavbarKeyChanges = (key) => {
     setSearchNavbarKey(key);
   };
-  const {events}=useContext(appContext)
+  const { events } = useContext(appContext);
   const [profile, setProfile] = useState(false);
   const [items, setItems] = useState(false);
+  const homeRef = useRef();
+  const contactRef = useRef();
+  const aboutRef = useRef();
+  const menuRef = useRef();
   const navigate = useNavigate();
+
+  async function handleLogout(){
+    try{
+      await signOut(auth)
+      navigate("/")
+      
+      toast.success("Logged out Successfully", {
+        icon: <img src="/images/carbon_user-avatar-filled.svg"></img>,
+        progressStyle: { background: "white" },
+        style: { backgroundColor: "#00796B", color: "white" },
+      });    }catch (err){
+      console.log(err);
+      toast.error(
+        "Something went wrong, try again later",
+        {
+          icon: <img src="/images/carbon_user-avatar-filled.svg"></img>,
+          progressStyle: { background: "white" },
+          style: {
+            backgroundColor: "#891a1a",
+            color: "white",
+            fontSize: "14px",
+          },
+        }
+      );      
+    }
+  }
+
+  window.addEventListener("click", (e) => {
+
+    if(e.target != homeRef.current && e.target != contactRef.current && e.target != aboutRef.current && e.target != menuRef.current){
+      setItems(false)
+    }else{
+      setItems(true)
+    }
+    
+  });
 
   function allItems() {
     setItems(!items);
-    setProfile(false);    
+    setProfile(false);
   }
 
   function profileBtn() {
@@ -23,10 +69,10 @@ export default function NavBar() {
     setItems(false);
   }
   const filteredSearchNavbarEvents = !searchNavbarKey
-  ? events
-  : events.filter((event) =>
-      event.title.toLowerCase().includes(searchNavbarKey.toLowerCase())
-    );
+    ? events
+    : events.filter((event) =>
+        event.title.toLowerCase().includes(searchNavbarKey.toLowerCase())
+      );
   return (
     <nav
       className=" border-gray-200 fixed w-full z-30 dark:bg-gray-900 "
@@ -38,6 +84,7 @@ export default function NavBar() {
       <div className="max-w-screen-xl flex flex-nowrap items-center justify-between mx-auto p-4">
         <button onClick={allItems} className=" md:hidden pb-2 mr-8">
           <svg
+          ref={menuRef}
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -62,43 +109,15 @@ export default function NavBar() {
         </a>
 
         <div
+        
           className={`${
             items ? "block" : "hidden"
           }  absolute w-48 top-14 left-4 md:static md:items-center md:justify-between md:flex md:w-auto md:order-1 md:pl-5 " id="navbar-user`}
         >
           <ul className=" flex flex-col p-2 md:p-0 mt-4 bg-[#292929] md:bg-transparent shadow-md md:shadow-none rounded-lg md:max-lg:space-x-0 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 lg:space-x-6   dark:border-gray-700">
-            <li
-              onClick={() => navigate("/")}
-              className="hover:bg-[#0d9988] rounded-lg md:hover:bg-transparent md:hover:rounded-none"
-            >
-              <a
-                href="#"
-                className="block text-sm py-1 px-3 text-white md:hover:text-main-hover "
-                aria-current="page"
-              >
-                Home
-              </a>
-            </li>
-            <li
-              onClick={() => navigate("/contact")}
-              className="hover:bg-[#0d9988] rounded-lg md:hover:bg-transparent md:hover:rounded-none"
-            >
-              <a
-                href="#"
-                className="block text-sm py-1 px-3 text-white rounded md:hover:text-main-hover hover:opacity-100 "
-              >
-                Hosting an Event?
-              </a>
-            </li>
-            <li className="hover:bg-[#0d9988] rounded-lg md:hover:bg-transparent md:hover:rounded-none">
-              <a
-                href="#"
-                className="block text-sm py-1 px-3 text-white rounded md:hover:text-main-hover hover:opacity-100 "
-              >
-                About
-              </a>
-            </li>
-            <li></li>
+            <NavBtns menuRef={homeRef} path={"/"} text={"Home"} />
+            <NavBtns menuRef={contactRef} path={"/contact"} text={"Hosting an Event?"} />
+            <NavBtns menuRef={aboutRef} path={"/events-page"} text={"About"} />
           </ul>
         </div>
 
@@ -124,7 +143,13 @@ export default function NavBar() {
                     <>
                       {filteredSearchNavbarEvents.map((event, index) => {
                         return (
-                          <div key={index} className="py-2 px-2 cursor-pointer" onClick={()=>navigate(`/event-details/${event.id}`)}>
+                          <div
+                            key={index}
+                            className="py-2 px-2 cursor-pointer"
+                            onClick={() =>
+                              navigate(`/event-details/${event.id}`)
+                            }
+                          >
                             <div className="flex items-center gap-2">
                               <img className="w-10" src={event.imgUrl} alt="" />
                               {event.title}
@@ -145,8 +170,13 @@ export default function NavBar() {
             </div>
           </div>
           <div>
+            
+            {!auther?<button type="button" onClick={() => navigate("/login")} className="text-white flex justify-center items-center bg-sec-color bg-opacity-50 border-[1px] border-main-color hover:bg-main-color hover:bg-opacity-80 transition-all duration-300 ease-in-out font-medium rounded-lg text-sm px-3 py-2 text-center ">
+            <img className="w-5 mr-3" src="/images/carbon_user-avatar-filled.svg" alt="loginIcon" />
+              Login
+              </button>:null}
             {/* <!-- Dropdown menu --> */}
-            <div className="dropdown dropdown-end">
+            {auther?<div className="dropdown dropdown-end">
               <div
                 onClick={profileBtn}
                 tabIndex={0}
@@ -175,14 +205,14 @@ export default function NavBar() {
                     <a>Your Bookings</a>
                   </li>
                   <li
-                    onClick={() => navigate("/login")}
+                    onClick={handleLogout}
                     className="hover:bg-[#0d9988] rounded-lg"
                   >
-                    <a>Login</a>
+                    <a>Logout</a>
                   </li>
                 </ul>
               )}
-            </div>
+            </div>:null}
           </div>
         </div>
       </div>
