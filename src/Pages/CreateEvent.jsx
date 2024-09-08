@@ -50,6 +50,7 @@ export default function CreateEvent() {
           imgUrl: "",
           categoryId: "5FPf3i6ZnHaGvCYqR5UW",
           tickets: "",
+          eventDate: "",
           // customId: uuid(),
         }
       : events.find((e) => e.id === id)
@@ -127,11 +128,13 @@ export default function CreateEvent() {
     description: null,
     imgUrl: null,
     tickets: null,
+    eventDate: null,
   });
 
   // store value from inputs to fromEvent
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value } = e.target;
+
     setEventForm((prevForm) => ({
       ...prevForm,
       [name]: value,
@@ -143,6 +146,12 @@ export default function CreateEvent() {
       }));
       // e.target.blur();
     }
+    // try {
+    //   await eventSchema.validateAt(name, { [name]: value });
+    //   setErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
+    // } catch (err) {
+    //       setErrors((prevErrors) => ({ ...prevErrors, [name]: err.message }));
+    // }
   };
 
   // create or update an event depends on mode
@@ -160,6 +169,7 @@ export default function CreateEvent() {
       description: null,
       imgUrl: null,
       tickets: null,
+      eventDate: null,
     }));
     // const eventsBeforeAdd = events;
     try {
@@ -170,7 +180,7 @@ export default function CreateEvent() {
             ...eventForm,
             startTime: formattedTime.startTime,
             endTime: formattedTime.endTime,
-            title:eventForm.title.toLowerCase()
+            title: eventForm.title.toLowerCase(),
           });
           console.log(docRef);
           handleAddEventsUI({
@@ -178,13 +188,13 @@ export default function CreateEvent() {
             id: docRef.id,
             startTime: formattedTime.startTime,
             endTime: formattedTime.endTime,
-            title:eventForm.title.toLowerCase()
+            title: eventForm.title.toLowerCase(),
           });
           toast.success("Event added successfully");
         } else {
           console.log(id);
           console.log(formattedTime);
-console.log(eventForm);
+          console.log(eventForm);
 
           const eventToBeUpdated = doc(db, "events", id);
           await updateDoc(eventToBeUpdated, {
@@ -195,7 +205,7 @@ console.log(eventForm);
             endTime: !formattedTime.endTime
               ? formatTimeTo12Hour(eventForm.endTime)
               : formattedTime.endTime,
-              title:eventForm.title.toLowerCase()
+            title: eventForm.title.toLowerCase(),
           });
           handleEditEventUI({
             ...eventForm,
@@ -205,7 +215,7 @@ console.log(eventForm);
             endTime: !formattedTime.endTime
               ? formatTimeTo12Hour(eventForm.endTime)
               : formattedTime.endTime,
-              title:eventForm.title.toLowerCase()
+            title: eventForm.title.toLowerCase(),
           });
           toast.success("Event edited successfully");
         }
@@ -242,6 +252,7 @@ console.log(eventForm);
     });
   };
   console.log(eventForm);
+  console.log(errors);
 
   return (
     <div className="bg-bg-main px-6 pt-8 pb-4">
@@ -528,6 +539,38 @@ console.log(eventForm);
               )}
             </div>
           </div>
+
+          {/* Event Date */}
+          <div className="mb-4">
+            <div>
+              <label
+                className={`block mb-2 text-base font-medium" ${
+                  errors.eventDate ? "text-red-600" : "text-white"
+                }`}
+                htmlFor="eventDate"
+              >
+                Event Date
+              </label>
+              <input
+                className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
+                  errors.eventDate
+                    ? "border border-red-600 outline-none"
+                    : "focus:outline-none focus:ring-2 focus:ring-teal-500"
+                }`}
+                type="date"
+                id="eventDate"
+                name="eventDate"
+                value={eventForm?.eventDate}
+                onChange={(e) => handleChange(e)}
+              />
+              {errors.eventDate && (
+                <span className="text-xs text-red-800 p-1 rounded-md">
+                  {errors.eventDate}
+                </span>
+              )}
+            </div>
+          </div>
+
           {/* Start Time and End Time */}
           <div className="mb-4 grid grid-cols-2 gap-4">
             <div>

@@ -83,4 +83,12 @@ export const eventSchema = yup.object({
     .required("Tickets is required")
     .typeError("Tickets must be a number")
     .positive("Tickets must be greater than 0"),
+    eventDate: yup
+    .date()
+    .required("Event date is required")
+    .typeError("Invalid date format")
+    .min(
+      yup.ref("endDate"),
+      "Event date must be the same as or after end date"
+    )
 });
