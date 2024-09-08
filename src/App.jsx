@@ -17,6 +17,7 @@ import PaymentSuccess from "./Pages/payment/PaymentSuccess";
 import PaymentFailed from "./Pages/payment/PaymentFailed";
 import GetTicket from "./Pages/GetTicket";
 import Profile from "./Pages/Profile";
+import SuccessEmail from "./Pages/SuccessEmail";
 
 function App() {
   const location = useLocation();
@@ -53,6 +54,7 @@ function App() {
         <Route path="/contact" element={<ContactUs />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-failed" element={<PaymentFailed />} />
+        <Route path="/success-email" element={<SuccessEmail />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/signup" element={<SignUp />} />
