@@ -1,7 +1,7 @@
 import React from 'react';
 import formatDate from '../utils/formatDayAndYear';
 
-export default function TicketItem({ imgUrl, title, myDate, startTime, endTime, price }) {
+export default function TicketItem({numberOfTickets, imgUrl, title, myDate, startTime, endTime, price }) {
  
   const day = formatDate(myDate)['day'];
   const year = formatDate(myDate)['year'];
@@ -10,7 +10,7 @@ export default function TicketItem({ imgUrl, title, myDate, startTime, endTime, 
     <div className="self-stretch flex flex-col justify-start items-start gap-6">
       <div className="self-stretch p-4 sm:p-6 bg-ticket rounded-2xl flex flex-col md:flex-row justify-start items-start gap-4 md:gap-8">
         {/* Image with responsive width and height */}
-        <img className="w-full md:w-[300px] lg:w-[380px] h-auto rounded-[10px]" src={imgUrl} alt="Ticket" />
+        <img className="w-full md:w-[300px] lg:w-[380px] h-[220px] rounded-[10px]" src={imgUrl} alt="Ticket" />
     
         <div className="grow shrink basis-0 self-stretch py-2 sm:py-4 flex flex-col justify-between items-start">
           {/* Title and time section */}
@@ -19,7 +19,7 @@ export default function TicketItem({ imgUrl, title, myDate, startTime, endTime, 
             <div className="self-stretch text-main-color text-sm sm:text-base font-normal">
               {day}, {year} - {startTime} - {endTime}
             </div>
-            <div className="self-stretch text-main-color text-sm sm:text-base font-normal">Quantity: 1</div>
+            <div className="self-stretch text-main-color text-sm sm:text-base font-normal">Quantity: {numberOfTickets}</div>
           </div>
 
           {/* Price and total section */}

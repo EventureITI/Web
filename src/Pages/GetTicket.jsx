@@ -1,20 +1,51 @@
 import React, { useContext, useState } from 'react'
-import { appContext } from '../context/AppContext';
+import AppContextProvider, { appContext } from '../context/AppContext';
 import { useParams } from 'react-router-dom';
 import formatDate from '../utils/formatDayAndYear';
+import { addDoc, arrayUnion, doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
+import { auth, db} from '../firebase/firebase-config';
+import { AuthDetails } from '../context/Authentication/AuthDetailsContext';
 
 export default function GetTicket() {
-    const { events } = useContext(appContext)
-    const { id } = useParams();
+    
+    const [count, setCount] = useState(1);
+    const { events , user } = useContext(appContext)
 
+    const { id } = useParams();
+    
     const event = events.find(event => event.id === id) || {};
     
     const { price, endTime, startTime, title, startDate } = event;
     const day = formatDate(startDate)['day'];
-    const year = formatDate(startDate)['year'];
-
-
-    const [count, setCount] = useState(1);
+    const year = formatDate(startDate)['year']; 
+    
+    const handleClick = () => {
+        const eventData = {
+          id: id,
+          totalPrice: count * price,
+          numberOfTickets: count 
+        };
+      
+        addEventsToFirestore(eventData);
+      };
+      
+    const addEventsToFirestore = async (eventData) => {
+        
+        const id = user[0]['id'];
+        
+          const docRef = doc(db , `user/${id}`);
+    
+          try {
+            await updateDoc(docRef, { 
+                events: arrayUnion(eventData)
+              });
+            console.log('Events added to Firestore successfully!');
+          } catch (error) {
+            console.error('Error adding events: ', error);
+          }
+      };
+      
+    
     return (
         <div className='flex justify-center pt-28 pb-10 px-20'>
             <div className="w-[600px] h-[600px] px-8 py-6 bg-ticket rounded-2xl flex-col justify-center items-center gap-4 flex">
@@ -49,7 +80,9 @@ export default function GetTicket() {
                         </button>
                     </div>
                 </div>
-                <button className="w-[348px] h-[51px] flex justify-center items-center bg-main-color hover:bg-main-hover transition duration-300 ease-in-out text-white font-bold py-4 px-6 rounded-2xl">Pay Now - {price} EGP</button>
+                <button
+                onClick={handleClick} 
+                className="w-[348px] h-[51px] flex justify-center items-center bg-main-color hover:bg-main-hover transition duration-300 ease-in-out text-white font-bold py-4 px-6 rounded-2xl">Pay Now - {price * count} EGP</button>
 
             </div>
         </div>
