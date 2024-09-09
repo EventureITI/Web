@@ -5,17 +5,6 @@ import emailjs from '@emailjs/browser'
 import { useNavigate } from "react-router-dom";
 
 export default function ContactUs() {
-  const notify = () => toast.success('Done ✅', {
-    position: "top-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: true,
-    draggable: true,
-    progress: undefined,
-    theme: "dark",
-    transition: Bounce,
-  });
   const notifyError = ()=> toast.error('Error of send', {
     position: "top-right",
     autoClose: 5000,
@@ -47,79 +36,54 @@ export default function ContactUs() {
   const [errors, setErrors] = useState({});
 
   // Validation function
-  const validateField = (name, value) => {
-    const newErrors = { ...errors };
-    
-    if (name === 'name') {
-      if (typeof value !== 'string') {
-        newErrors.name = 'Name must be a valid string';
-      } else if (value.trim() === '') {
-        newErrors.name = 'Name is required';
-      } else if (value.trim().length < 3) {
-        newErrors.name = 'Name must be at least 3 characters long';
-      } else {
-        delete newErrors.name;
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Validate name
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (formData.name.trim().length < 3) {
+      newErrors.name = 'Name must be at least 3 characters long';
+    }
+
+    // Validate email
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(formData.email)) {
+        newErrors.email = 'Please enter a valid email address (e.g., name@gmail.com)';
       }
     }
 
-    if (name === 'email') {
-      if (!value.trim()) {
-        newErrors.email = 'Email is required';
-      } else {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailPattern.test(value)) {
-          newErrors.email = 'Please enter a valid email address ex: name@gmail.com';
-        } else {
-          delete newErrors.email;
-        }
-      }
-    }
-    
-
-    if (name === 'subject') {
-      if (value.trim() === '') {
-        newErrors.subject = 'Subject is required';
-      } else {
-        delete newErrors.subject;
-      }
+    // Validate subject
+    if (!formData.subject.trim()) {
+      newErrors.subject = 'Subject is required';
     }
 
-    if (name === 'description') {
-      if (value.trim().length < 20) {
-        newErrors.description = 'Description must be at least 20 characters long';
-      } else {
-        delete newErrors.description;
-      }
+    // Validate description
+    if (formData.description.trim().length < 20) {
+      newErrors.description = 'Description must be at least 20 characters long';
     }
 
     setErrors(newErrors);
+    
+    // Return true if no errors
+    return Object.keys(newErrors).length === 0;
   };
 
-    // Handle form input change with inline validation
-    const handleInputChange = (e) => {
-      const { name, value } = e.target;
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-  
-      // Validate the field as it changes
-      validateField(name, value);
-    };
+
   
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    validateField('name', formData.name);
-    validateField('email', formData.email);
-    validateField('subject', formData.subject);
-    validateField('description', formData.description);
 
-    if (Object.keys(errors).length === 0) {
+    if (validateForm()) {
+      console.log("vailde");
+      
       // Form is valid
-      emailjs
-      .sendForm('service_3rt1bak', 'template_9s02qmv', form.current, {
+      emailjs.sendForm('service_3rt1bak', 'template_9s02qmv', form.current, {
         publicKey: '2X53uaQIWtewlAiTX',
       })
       .then(
@@ -138,9 +102,24 @@ export default function ContactUs() {
         subject: '',
         description: '',
       })
+    }else{
+      console.log("error");
+      
     }
   };
 
+   // Handle form input change
+   const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    setErrors({
+      ...errors,
+      [name]: ''
+    });
+  };
 
   return (
     <div className=" bg-bg-main ">
