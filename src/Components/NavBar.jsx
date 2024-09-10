@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { appContext } from "../context/AppContext";
 import {
@@ -18,6 +18,10 @@ import { auth } from "../firebase/firebase-config";
 export default function NavBar() {
   const [searchNavbarKey, setSearchNavbarKey] = useState("");
   const { auther } = useContext(AuthDetails);
+  const [userImg,setUserImg] = useState()
+
+  console.log(userImg);
+  
 
   const handleSearchNavbarKeyChanges = (key) => {
     setSearchNavbarKey(key);
@@ -25,11 +29,19 @@ export default function NavBar() {
   const { events } = useContext(appContext);
   const [profile, setProfile] = useState(false);
   const [items, setItems] = useState(false);
-  const homeRef = useRef();
-  const contactRef = useRef();
-  const aboutRef = useRef();
   const menuRef = useRef();
+  const pathRef = useRef();
   const navigate = useNavigate();
+
+  useEffect(()=>{
+    const setData = async ()=>{
+      const data = await getDocs(collection(db,"user"))
+      const userData = data.docs.map(doc => ({...doc.data()}))      
+      const userInfo = userData.filter(e => e.email == auth.currentUser.email)      
+      setUserImg(userInfo[0].imgURL)
+    }
+    setData()
+  },[])
 
   async function handleLogout() {
     try {
@@ -57,18 +69,21 @@ export default function NavBar() {
 
   window.addEventListener("click", (e) => {
     if (
-      e.target != homeRef.current &&
-      e.target != contactRef.current &&
-      e.target != aboutRef.current &&
-      e.target != menuRef.current
+      e.target == menuRef.current ||
+      e.target == pathRef.current
     ) {
-      setItems(false);
-    } else {
       setItems(true);
+    }else{
+      setItems(false)
     }
+    console.log(e.target);
+    console.log(items);
   });
+  
 
   function allItems() {
+    console.log("hi");
+    
     setItems(!items);
     setProfile(false);
   }
@@ -121,7 +136,7 @@ export default function NavBar() {
       <div className="max-w-screen-xl flex flex-nowrap items-center justify-between mx-auto p-4">
         <button onClick={allItems} className=" md:hidden pb-2 mr-8">
           <svg
-            ref={menuRef}
+          ref={menuRef}
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
@@ -129,6 +144,7 @@ export default function NavBar() {
             className="stroke-current hover:text-teal-500 text-white"
           >
             <path
+              ref={pathRef}
               d="M4.125 18.375H19.875M4.125 12.375H19.875M4.125 6.375H19.875"
               strokeWidth="2.25"
               strokeLinecap="round"
@@ -151,13 +167,13 @@ export default function NavBar() {
           }  absolute w-48 top-14 left-4 md:static md:items-center md:justify-between md:flex md:w-auto md:order-1 md:pl-5 " id="navbar-user`}
         >
           <ul className=" flex flex-col p-2 md:p-0 mt-4 bg-[#292929] md:bg-transparent shadow-md md:shadow-none rounded-lg md:max-lg:space-x-0 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 lg:space-x-6   dark:border-gray-700">
-            <NavBtns menuRef={homeRef} path={"/"} text={"Home"} />
+            <NavBtns path={"/"} text={"Home"} />
             <NavBtns
-              menuRef={contactRef}
+              
               path={"/contact"}
               text={"Hosting an Event?"}
             />
-            <NavBtns menuRef={aboutRef} path={"/events-page"} text={"About"} />
+            <NavBtns path={"/events-page"} text={"About"} />
           </ul>
         </div>
 
@@ -238,7 +254,7 @@ export default function NavBar() {
                   <div className="w-10 rounded-full">
                     <img
                       alt="profile img"
-                      src="/images/carbon_user-avatar-filled.svg"
+                      src={userImg}
                     />
                   </div>
                 </div>
