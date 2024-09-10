@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import { db } from "../firebase/firebase-config";
+import { auth, db } from "../firebase/firebase-config";
 import {
   collection,
   doc,
@@ -16,7 +16,7 @@ export default function AppContextProvider({ children }) {
   const [categories, setCategories] = useState([]);
   const eventsCollectionRef = collection(db, "events");
   const categoriesCollectionRef = collection(db, "categories");
-
+  const [user ,setUser] = useState([]);
  
 
   // update ui after add a new event
@@ -110,9 +110,22 @@ export default function AppContextProvider({ children }) {
         console.error("Error updating documents: ", error);
       }
     };
+    
+    // the add all user
+
+    const getDataOfUser = async () =>{
+      const data = await getDocs(collection(db , "user"));
+      const userData = data.docs.map((doc) => ({...doc.data() ,id:doc.id}));
+      const userInfo = userData.filter(
+        (e) => e.email == auth.currentUser.email
+      );
+      setUser(userInfo);
+      
+    }
     updateExpiredEvents();
     getAllEvents();
     getAllCategories();
+    getDataOfUser()
   }, []);
 
   return (
@@ -125,6 +138,7 @@ export default function AppContextProvider({ children }) {
         loading,
         handleEditEventUI,
         categories,
+        user,
       }}
     >
       {children}
