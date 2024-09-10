@@ -146,12 +146,12 @@ export default function CreateEvent() {
       }));
       // e.target.blur();
     }
-    // try {
-    //   await eventSchema.validateAt(name, { [name]: value });
-    //   setErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
-    // } catch (err) {
-    //       setErrors((prevErrors) => ({ ...prevErrors, [name]: err.message }));
-    // }
+    try {    
+      await eventSchema.validateAt(name, { [name]: value });
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
+    } catch (err) {
+      setErrors((prevErrors) => ({ ...prevErrors, [name]: err.message }));
+    }
   };
 
   // create or update an event depends on mode
