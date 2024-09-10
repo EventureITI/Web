@@ -6,7 +6,7 @@ import { Validation } from "../context/Authentication/ValidationContext";
 import { auth, db, storage } from "../firebase/firebase-config";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { updateEmail, updatePassword } from "firebase/auth";
+import { sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import NameValidation from "../Components/validations/NameValidation";
@@ -63,13 +63,15 @@ export default function EditProfile() {
         !editEmailRequireState &&
         !correctEmailState
       ) {
-        await updateDoc(doc(db, "user", userInfoId), {
-          firstName: userFirstName,
-          lastName: userLastName,
-          email: userEmail,
+        await sendEmailVerification(auth.currentUser)
+        try{
+          await updateEmail(auth.currentUser, userEmail);
+          await updateDoc(doc(db, "user", userInfoId), {
+            firstName: userFirstName,
+            lastName: userLastName,
+            email: userEmail,
           imgURL: userInfoImg,
         });
-        // await updateEmail(auth.currentUser, userEmail);
         await updatePassword(auth.currentUser, userPass);
         toast.success("Your edits are saved successfully!", {
           icon: <img src="/images/carbon_user-avatar-filled.svg"></img>,
@@ -77,6 +79,10 @@ export default function EditProfile() {
           style: { backgroundColor: "#00796B", color: "white" },
         });
         navigate("/");
+      }catch(err){
+        console.log(err);
+        
+      }
       } else {
         setNameState(true);
         setEmailState(true);
