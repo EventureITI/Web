@@ -15,6 +15,7 @@ import ConfirmPassValidation from "../Components/validations/ConfirmPassValidati
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [disabled,setDisabled] = useState(false)
   const navigate = useNavigate();
   const {
     userEmail,
@@ -59,12 +60,14 @@ export default function SignUp() {
         !correctPassState &&
         !correctConfirmPassState
       ) {
+        setDisabled(true)
         await createUserWithEmailAndPassword(auth, userEmail, userPass);
         await addDoc(collection(db, "user"), {
           firstName: userFirstName,
           lastName: userLastName,
           email: userEmail,
-          imgURL: " ",
+          imgURL: "/images/carbon_user-avatar-filled.svg",
+          role: "user"
         });
         navigate("/");
         toast.success("Account Created Successfully", {
@@ -80,6 +83,7 @@ export default function SignUp() {
       }
     } catch (err) {
       console.log(err);
+      setDisabled(false)
       if (err.code === "auth/email-already-in-use") {
         toast.error(
           "This Email is already registered, please choose another one",
@@ -306,7 +310,7 @@ export default function SignUp() {
               />
             </div>
             <div>
-              <button className="bg-main-color transition duration-300 ease-in-out hover:bg-main-hover p-3 w-full rounded-lg text-white font-600">
+              <button disabled={disabled} className="bg-main-color transition duration-300 ease-in-out hover:bg-main-hover p-3 w-full rounded-lg text-white font-600">
                 Sign Up
               </button>
             </div>
