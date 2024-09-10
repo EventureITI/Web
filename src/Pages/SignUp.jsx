@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import EyeIcon from "../Components/Icons/EyeIcon";
 import EyeSlashIcon from "../Components/Icons/EyeSlashIcon";
@@ -6,118 +6,44 @@ import { toast } from "react-toastify";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase/firebase-config";
 import { addDoc, collection } from "firebase/firestore";
+import { Validation } from "../context/Authentication/ValidationContext";
+import NameValidation from "../Components/validations/NameValidation";
+import SignupEmailValidation from "../Components/validations/SignupEmailValidation";
+import SignupPassValidation from "../Components/validations/SignupPassValidation";
+import ConfirmPassValidation from "../Components/validations/ConfirmPassValidation";
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [userEmail, setUserEmail] = useState(null);
-  const [userPass, setUserPass] = useState(null);
   const navigate = useNavigate();
-
-  // Validation states & functions
-  const [nameState, setNameState] = useState(false);
-  const [emailState, setEmailState] = useState();
-  const [passState, setPassState] = useState();
-  const [confirmPassState, setConfirmPassState] = useState();
-
-  const [userConfirmPass, setUserConfirmPass] = useState(null);
-  const [userFirstName, setUserFirstName] = useState(null);
-  const [userLastName, setUserLastName] = useState(null);
-
-  const [minNameState, setMinNameState] = useState();
-  const [noNumNameState, setNoNumNameState] = useState();
-  const [requiredNameState, setRequiredNameState] = useState();
-
-  function handleFirstName(e) {
-    setUserFirstName(e.target.value);
-    setNameState(true);
-  }
-  function handleLastName(e) {
-    setUserLastName(e.target.value);
-    setNameState(true);
-  }
-
-  useEffect(() => {
-    const text = /^[a-zA-Z\s]*$/;
-    if (!userFirstName || !userLastName) {
-      setRequiredNameState(true);
-      setMinNameState(false);
-      setNoNumNameState(false);
-    } else if (userFirstName?.length < 3 || userLastName?.length < 3) {
-      setMinNameState(true);
-      setRequiredNameState(false);
-      setNoNumNameState(false);
-    } else if (!text.test(userFirstName) || !text.test(userLastName)) {
-      setNoNumNameState(true);
-      setMinNameState(false);
-    } else {
-      setRequiredNameState(false);
-      setNoNumNameState(false);
-      setMinNameState(false);
-    }
-  }, [userFirstName, userLastName]);
-
-  const [correctEmailState, setCorrectEmailState] = useState();
-  const [requiredEmailState, setRequiredEmailState] = useState(true);
-
-  function handleEmail(e) {
-    setUserEmail(e.target.value);
-    setEmailState(true);
-    const emailExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (e.target.value.length == 0) {
-      setRequiredEmailState(true);
-      setCorrectEmailState(false);
-    } else if (!emailExp.test(e.target.value)) {
-      setCorrectEmailState(true);
-      setRequiredEmailState(false);
-    } else {
-      setRequiredEmailState(false);
-      setCorrectEmailState(false);
-    }
-  }
-
-  const [correctPassState, setCorrectPassState] = useState();
-  const [requiredPassState, setRequiredPassState] = useState(true);
-  const [minPassState, setminPassState] = useState();
-
-  function handlePass(e) {
-    setUserPass(e.target.value);
-    setPassState(true);
-    const passExp = /^[A-Z][a-zA-Z0-9!@#$%^&*()_+={}\[\]:;"'<>,.?/\\|`~-]*$/;
-    if (e.target.value.length == 0) {
-      setRequiredPassState(true);
-      setminPassState(false);
-      setCorrectPassState(false);
-    } else if (e.target.value.length < 6) {
-      setminPassState(true);
-      setRequiredPassState(false);
-      setCorrectPassState(false);
-    } else if (!passExp.test(e.target.value)) {
-      setCorrectPassState(true);
-      setRequiredPassState(false);
-      setminPassState(false);
-    } else {
-      setminPassState(false);
-      setRequiredPassState(false);
-      setCorrectPassState(false);
-    }
-  }
-
-  const [correctConfirmPassState, setCorrectConfirmPassState] = useState(true);
-
-  function handleConfirmPass(e) {
-    setConfirmPassState(true);
-    setUserConfirmPass(e.target.value);
-  }
-
-  useEffect(() => {
-    if (userConfirmPass === userPass) {
-      setCorrectConfirmPassState(false);
-    } else {
-      setCorrectConfirmPassState(true);
-    }
-  }, [userConfirmPass, userPass]);
-  ///////////////////////////////////////////////////////////
+  const {
+    userEmail,
+    userPass,
+    nameState,
+    setNameState,
+    emailState,
+    setEmailState,
+    passState,
+    setPassState,
+    confirmPassState,
+    setConfirmPassState,
+    userFirstName,
+    userLastName,
+    minNameState,
+    noNumNameState,
+    requiredNameState,
+    correctEmailState,
+    requiredEmailState,
+    correctPassState,
+    requiredPassState,
+    minPassState,
+    correctConfirmPassState,
+    handleFirstName,
+    handleLastName,
+    handleEmail,
+    handlePass,
+    handleConfirmPass,
+  } = useContext(Validation);
 
   async function handleSignUp(e) {
     e.preventDefault();
@@ -168,18 +94,16 @@ export default function SignUp() {
           }
         );
       } else {
-        toast.error(
-          "Something went wrong, try again later",
-          {
-            icon: <img src="/images/carbon_user-avatar-filled.svg"></img>,
-            progressStyle: { background: "white" },
-            style: {
-              backgroundColor: "#891a1a",
-              color: "white",
-              fontSize: "14px",
-            },
-          }
-        );      }
+        toast.error("Something went wrong, try again later", {
+          icon: <img src="/images/carbon_user-avatar-filled.svg"></img>,
+          progressStyle: { background: "white" },
+          style: {
+            backgroundColor: "#891a1a",
+            color: "white",
+            fontSize: "14px",
+          },
+        });
+      }
     }
   }
 
@@ -273,47 +197,12 @@ export default function SignUp() {
                   />
                 </div>
               </div>
-              {nameState && (
-                <div className="flex flex-col justify-center py-2">
-                  <div className="flex flex-row justify-between">
-                    {requiredNameState ? (
-                      <p
-                        className={`
-                        ${
-                          !requiredNameState
-                            ? " text-main-color"
-                            : "text-red-800"
-                        }
-                      `}
-                      >
-                        Both fields are required{" "}
-                        <span>{!requiredNameState ? "✔" : "✖"}</span>
-                      </p>
-                    ) : null}
-                    {noNumNameState ? (
-                      <p
-                        className={`
-                        ${!noNumNameState ? " text-main-color" : "text-red-800"}
-                      `}
-                      >
-                        Only characters are allowed{" "}
-                        <span>{!noNumNameState ? "✔" : "✖"}</span>
-                      </p>
-                    ) : null}
-                  </div>
-
-                  {minNameState ? (
-                    <p
-                      className={`
-                        ${!minNameState ? " text-main-color" : "text-red-800"}
-                      `}
-                    >
-                      Minimum 3 charachters required in each field{" "}
-                      <span>{!minNameState ? "✔" : "✖"}</span>
-                    </p>
-                  ) : null}
-                </div>
-              )}
+              <NameValidation
+                nameState={nameState}
+                requiredNameState={requiredNameState}
+                minNameState={minNameState}
+                noNumNameState={noNumNameState}
+              />{" "}
             </div>
             <div className={`flex flex-col ${emailState ? "mb-0" : "mb-6"} `}>
               <div className="relative">
@@ -338,36 +227,11 @@ export default function SignUp() {
                   } block px-2.5 pb-2.5 pt-3 appearance-none dark:text-white peer`}
                 />
               </div>
-              {emailState && (
-                <div className="flex py-2 flex-row justify-between">
-                  {requiredEmailState ? (
-                    <p
-                      className={`
-                      ${
-                        !requiredEmailState
-                          ? " text-main-color"
-                          : "text-red-800"
-                      }
-                    `}
-                    >
-                      This field is required{" "}
-                      <span>{!requiredEmailState ? "✔" : "✖"}</span>
-                    </p>
-                  ) : null}
-                  {correctEmailState ? (
-                    <p
-                      className={`
-                      ${
-                        !correctEmailState ? " text-main-color" : "text-red-800"
-                      }
-                    `}
-                    >
-                      Email format: "name@example.com"{" "}
-                      <span>{!correctEmailState ? "✔" : "✖"}</span>
-                    </p>
-                  ) : null}
-                </div>
-              )}
+              <SignupEmailValidation
+                emailState={emailState}
+                requiredEmailState={requiredEmailState}
+                correctEmailState={correctEmailState}
+              />
             </div>
             <div className={`flex flex-col ${passState ? "mb-0" : "mb-6"} `}>
               <div className="relative">
@@ -398,44 +262,12 @@ export default function SignUp() {
                   {showPassword ? <EyeIcon /> : <EyeSlashIcon />}
                 </div>
               </div>
-              {passState && (
-                <div className="flex flex-col justify-center py-2">
-                  <div className="flex flex-col sm:flex-row justify-between">
-                    {requiredPassState ? (
-                      <p
-                        className={`
-                      ${
-                        !requiredPassState ? " text-main-color" : "text-red-800"
-                      }
-                    `}
-                      >
-                        This field is required{" "}
-                        <span>{!requiredPassState ? "✔" : "✖"}</span>
-                      </p>
-                    ) : null}
-                    {minPassState ? (
-                      <p
-                        className={`
-                     ${!minPassState ? " text-main-color" : "text-red-800"}
-                    `}
-                      >
-                        Minimum 6 charachters are required{" "}
-                        <span>{!minPassState ? "✔" : "✖"}</span>
-                      </p>
-                    ) : null}
-                  </div>
-                  {correctPassState ? (
-                    <p
-                      className={`
-                      ${!correctPassState ? " text-main-color" : "text-red-800"}
-                    `}
-                    >
-                      Should start with uppercase letter{" "}
-                      <span>{!correctPassState ? "✔" : "✖"}</span>
-                    </p>
-                  ) : null}
-                </div>
-              )}
+              <SignupPassValidation
+                passState={passState}
+                requiredPassState={requiredPassState}
+                minPassState={minPassState}
+                correctPassState={correctPassState}
+              />
             </div>
             <div
               className={`flex flex-col ${confirmPassState ? "mb-0" : "mb-6"} `}
@@ -468,24 +300,10 @@ export default function SignUp() {
                   {showConfirmPassword ? <EyeIcon /> : <EyeSlashIcon />}
                 </div>
               </div>
-              {confirmPassState && (
-                <div className="flex sm:items-center flex-col sm:flex-row justify-between py-2">
-                  {correctConfirmPassState ? (
-                    <p
-                      className={`
-                      ${
-                        !correctConfirmPassState
-                          ? " text-main-color"
-                          : "text-red-800"
-                      }
-                    `}
-                    >
-                      This field must match your Password{" "}
-                      <span>{!correctConfirmPassState ? "✔" : "✖"}</span>
-                    </p>
-                  ) : null}
-                </div>
-              )}
+              <ConfirmPassValidation
+                confirmPassState={confirmPassState}
+                correctConfirmPassState={correctConfirmPassState}
+              />
             </div>
             <div>
               <button className="bg-main-color transition duration-300 ease-in-out hover:bg-main-hover p-3 w-full rounded-lg text-white font-600">

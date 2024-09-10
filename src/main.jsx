@@ -8,6 +8,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 import SearchEventsContext from "./context/SearchEventsContext.jsx";
+import ValidationContext from "./context/Authentication/ValidationContext.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
@@ -15,8 +16,10 @@ ReactDOM.createRoot(document.getElementById("root")).render(
       <SearchEventsContext>
         <AppContextProvider>
           <BrowserRouter>
+          <ValidationContext>
             <ToastContainer />
             <App />
+          </ValidationContext>
           </BrowserRouter>
         </AppContextProvider>
       </SearchEventsContext>
