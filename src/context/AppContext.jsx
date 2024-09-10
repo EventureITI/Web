@@ -117,7 +117,7 @@ export default function AppContextProvider({ children }) {
       const data = await getDocs(collection(db , "user"));
       const userData = data.docs.map((doc) => ({...doc.data() ,id:doc.id}));
       const userInfo = userData.filter(
-        (e) => e.email == auth.currentUser.email
+        (e) => e.email == auth.currentUser?.email
       );
       setUser(userInfo);
       
