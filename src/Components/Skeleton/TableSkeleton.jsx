@@ -1,26 +1,9 @@
 import React from "react";
 
-export default function DashboardSkeleton() {
+export default function TableSkeleton() {
   return (
     <>
       <div className="animate-pulse p-10">
-        <div className="flex flex-wrap -m-4 justify-center">
-          <div  className="p-4 md:w-1/3 sm:w-1/2 w-full">
-            <div className="px-4 py-8 bg-gray-300 rounded-lg"></div>
-          </div>
-          <div  className="p-4 md:w-1/3 sm:w-1/2 w-full">
-            <div className="px-4 py-8 bg-gray-300 rounded-lg"></div>
-          </div>
-        </div>
-        <div className="self-stretch md:justify-between md:items-center gap-4 flex flex-col md:flex-row p-10 overflow-x-auto whitespace-nowrap">
-          <div className="h-10 bg-gray-300 rounded-lg w-32"></div>
-          <div className="flex gap-2 md:gap-4 w-full md:justify-end">
-            <div className="relative w-[480px] md:w-[346px] flex items-center">
-              <div className="h-10 bg-gray-300 rounded-lg w-full"></div>
-            </div>
-            <div className="h-10 bg-gray-300 rounded-full sm:rounded-lg w-32"></div>
-          </div>
-        </div>
         <div className="space-y-2">
           <div className="flex space-x-4 px-10">
             <div className="px-4 sm:px-6 h-8 bg-gray-300 rounded mb-2 w-1/12"></div>
