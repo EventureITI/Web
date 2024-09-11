@@ -146,7 +146,7 @@ export default function CreateEvent() {
       }));
       // e.target.blur();
     }
-    try {    
+    try {
       await eventSchema.validateAt(name, { [name]: value });
       setErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
     } catch (err) {
@@ -246,7 +246,6 @@ export default function CreateEvent() {
           ...prevForm,
           imgUrl: url,
         }));
-
         setLoading(false);
       });
     });

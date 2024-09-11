@@ -133,12 +133,13 @@ export default function SignUp() {
         !correctPassState &&
         !correctConfirmPassState
       ) {
-        await createUserWithEmailAndPassword(auth, userEmail, userPass);
+        await createUserWithEmailAndPassword(auth, userEmail, userPass);        
         await addDoc(collection(db, "user"), {
           firstName: userFirstName,
           lastName: userLastName,
           email: userEmail,
           imgURL: " ",
+          authId:auth.currentUser.uid
         });
         navigate("/");
         toast.success("Account Created Successfully", {
@@ -442,14 +443,14 @@ export default function SignUp() {
             >
               <div className="relative">
                 <label
-                  htmlFor="password"
+                  htmlFor="confirmPassword"
                   className="block text-base font-500 text-white"
                 >
                   Confirm password
                 </label>
                 <input
                   type={showConfirmPassword ? "text" : "password"}
-                  id="password"
+                  id="confirmPassword"
                   placeholder="Enter your password"
                   style={{ caretColor: "#4FE0D2" }}
                   onChange={handleConfirmPass}
