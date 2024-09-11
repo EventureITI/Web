@@ -152,7 +152,7 @@ export default function Login() {
                 } mt-1 rounded-lg bg-input p-3 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color`}
               />
               <div
-                className="absolute inset-y-0 right-0 pr-3 flex items-center pb-1 cursor-pointer"
+                className="absolute bottom-10 right-0 pr-3 flex items-center pb-1 cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeIcon /> : <EyeSlashIcon />}
