@@ -46,7 +46,6 @@ export default function NavBar() {
     setData();
   }, []);
 
-  
   async function handleLogout() {
     try {
       await signOut(auth);
@@ -145,27 +144,26 @@ export default function NavBar() {
               </span>
             </a>
 
-<div className="flex ">
+            <div className="flex ">
+              <div className="hidden sm:flex items-center mr-10 space-x-3 md:space-x-0 rtl:space-x-reverse">
+                <p className="text-white font-Inter font-400"> {name}</p>
+              </div>
 
-            <div className="hidden sm:flex items-center mr-10 space-x-3 md:space-x-0 rtl:space-x-reverse">
-              <p className="text-white font-Inter font-400"> {name}</p>
+              <div>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-white flex justify-center items-center bg-sec-color bg-opacity-50 border-[1px] border-main-color hover:bg-main-color hover:bg-opacity-80 transition-all duration-300 ease-in-out font-medium rounded-lg text-sm px-3 py-2 text-center "
+                >
+                  <img
+                    className="w-5 mr-3"
+                    src="/images/carbon_user-avatar-filled.svg"
+                    alt="loginIcon"
+                  />
+                  Logout
+                </button>
+              </div>
             </div>
-
-            <div>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="text-white flex justify-center items-center bg-sec-color bg-opacity-50 border-[1px] border-main-color hover:bg-main-color hover:bg-opacity-80 transition-all duration-300 ease-in-out font-medium rounded-lg text-sm px-3 py-2 text-center "
-              >
-                <img
-                  className="w-5 mr-3"
-                  src="/images/carbon_user-avatar-filled.svg"
-                  alt="loginIcon"
-                />
-                Logout
-              </button>
-            </div>
-</div>
           </div>
         </nav>
       ) : (
@@ -247,7 +245,7 @@ export default function NavBar() {
                                   navigate(`/event-details/${event.id}`)
                                 }
                               >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 capitalize">
                                   <img
                                     className="w-10"
                                     src={event.imgUrl}

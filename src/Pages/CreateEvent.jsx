@@ -134,6 +134,8 @@ export default function CreateEvent() {
   // store value from inputs to fromEvent
   const handleChange = async (e) => {
     const { name, value } = e.target;
+console.log(name);
+console.log(value);
 
     setEventForm((prevForm) => ({
       ...prevForm,

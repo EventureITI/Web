@@ -54,7 +54,7 @@ export default function EventCard({ event }) {
         </p>
         <div className="text-sm mb-3 relative flex justify-center items-center opacity-70 font-Inter font-400">
           <p className='mr-5 after:top-1 after:content-["_"] after:w-0.5 after:h-4 after:bottom-2 after:bg-gray-600 after:absolute after:ml-2'>
-            {event.startDate}
+            {event.eventDate}
           </p>
           <p className='mr-5 after:top-1 after:content-["_"] after:w-0.5 after:h-4 after:bottom-2 after:bg-gray-600 after:absolute after:ml-2'>
             {event.startTime}

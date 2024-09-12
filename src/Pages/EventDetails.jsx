@@ -11,6 +11,7 @@ export default function EventDetails() {
   const [event, setEvent] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
+  console.log(id)
   // console.log(id);
 
   // async function makePayment (){
@@ -23,13 +24,12 @@ export default function EventDetails() {
   useEffect(() => {
     const getEventById = async () => {
       const docRef = doc(db, "events", id);
-
       const selectedEvent = await getDoc(docRef);
       console.log(selectedEvent.data());
       setEvent(selectedEvent.data());
     };
     getEventById();
-  }, []);
+  }, [id]);
   return (
     <>
       <div className="w-full bg-bg-main">
@@ -37,7 +37,7 @@ export default function EventDetails() {
           <div className="px-8 w-3/12 h-2/6 bg-[#292929] fixed z-10 right-10 top-40 rounded-lg shadow-lg flex flex-col justify-evenly min-w-72">
             <p className="text-white text-xl font-bold">Book a Ticket</p>
             <div>
-              <p className="capitalize text-[#909090]">{event.startDate}</p>
+              <p className="capitalize text-[#909090]">{event.eventDate}</p>
               <p className="text-[#909090] uppercase">{event.startTime}</p>
             </div>
             <EventBookButton id={id}></EventBookButton>
@@ -96,7 +96,7 @@ export default function EventDetails() {
           <div className="mb-5">
             <p className="text-white text-3xl mb-3 capitalize">Hours</p>
             <p className="w-full md:w-[50%] text-[#909090] capitalize">
-              {event.startDate} /{event.startTime} - {event.endTime}
+              {event.eventDate} /{event.startTime} - {event.endTime}
             </p>
           </div>
 
