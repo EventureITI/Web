@@ -1,10 +1,27 @@
-import React from "react";
+import { collection, getDocs } from "firebase/firestore";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { auth, db } from "../firebase/firebase-config";
 
 export default function Footer() {
   const navigate = useNavigate();
+  const [role,setRole] = useState();
+  useEffect(() => {
+    const setData = async () => {
+      const data = await getDocs(collection(db, "user"));
+      const userData = data.docs.map((doc) => ({ ...doc.data() }));
+      const userInfo = userData.filter(
+        (e) => e.email == auth.currentUser?.email
+      );
+      setRole(userInfo[0].role);
+      console.log(role);
+      
+    };
+    setData();
+  }, []);
   return (
-    <div
+    <>
+    {role == "admin" ? <div></div> :<div
       className="w-full py-6"
       style={{
         backgroundColor: "#1A1A1A",
@@ -92,6 +109,7 @@ export default function Footer() {
           </p>
         </div>
       </div>
-    </div>
+    </div>}
+      </>
   );
 }

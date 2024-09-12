@@ -5,7 +5,6 @@ import EyeSlashIcon from "../Components/Icons/EyeSlashIcon";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { toast } from "react-toastify";
 import { auth, db } from "../firebase/firebase-config";
-import { collection, getDoc, getDocs } from "firebase/firestore";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,8 +14,14 @@ export default function Login() {
   const [err, setErr] = useState(null);
   const [emailErr, setEmailErr] = useState(false);
   const [passErr, setPassErr] = useState(false);
+  const [disabled,setDisabled] = useState(false)
   const emailExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   const navigate = useNavigate();
+
+  function forgotPass(){
+    navigate("/forgot-pass")
+    setUserEmail(null)
+  }
 
   function handleEmail(e) {
     setUserEmail(e.target.value);
@@ -33,8 +38,8 @@ export default function Login() {
     // console.log(userInfo.filter((e)=>e.email == userEmail)[0].firstName);
     
     try {
+      setDisabled(true)
       await signInWithEmailAndPassword(auth, userEmail, userPass);
-      
       navigate("/");
       toast.success("Logged in Successfully", {
         icon: <img src="/images/carbon_user-avatar-filled.svg"></img>,
@@ -42,6 +47,7 @@ export default function Login() {
         style: { backgroundColor: "#00796B", color: "white" },
       });
     } catch (err) {
+      setDisabled(false)
       console.log(err);
       if (err.code == "auth/missing-email") {
         setInvalid(true);
@@ -146,23 +152,23 @@ export default function Login() {
                 } mt-1 rounded-lg bg-input p-3 w-full text-white text-base font-400 shadow-custom-shadow focus:outline-none focus:ring-1 focus:ring-main-color focus:border-main-color`}
               />
               <div
-                className="absolute inset-y-0 right-0 pr-3 flex items-center pb-1 cursor-pointer"
+                className="absolute bottom-10 right-0 pr-3 flex items-center pb-1 cursor-pointer"
                 onClick={() => setShowPassword(!showPassword)}
               >
                 {showPassword ? <EyeIcon /> : <EyeSlashIcon />}
               </div>
 
               <div className="mt-2 text-right">
-                <a
-                  href="#"
+                <button
+                  onClick={forgotPass}
                   className="text-main-color font-500 hover:underline"
                 >
                   Forgot Password?
-                </a>
+                </button>
               </div>
             </div>
             <div>
-              <button className="bg-main-color hover:bg-main-hover transition duration-300 ease-in-out p-3 w-full rounded-lg text-white font-600">
+              <button disabled={disabled} className="bg-main-color hover:bg-main-hover transition duration-300 ease-in-out p-3 w-full rounded-lg text-white font-600">
                 Sign In
               </button>
             </div>

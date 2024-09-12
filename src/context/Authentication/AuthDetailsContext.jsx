@@ -16,7 +16,7 @@ export default function AuthDetailsContext({ children }) {
       }
       setTimeout(() => {
         setLoading(false)
-      },0);
+      },1000);
     });
     return () => {
       authenticate(); // to unmount function

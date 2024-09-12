@@ -20,7 +20,9 @@ import SuccessEmail from "./Pages/SuccessEmail";
 import AuthDetailsContext from "./context/Authentication/AuthDetailsContext";
 import NotAuthenticated from "./Components/ProtectedRoutes/NotAuthenticated";
 import Authenticated from "./Components/ProtectedRoutes/Authenticated";
-
+import ForgotPass from "./Components/ForgotPass";
+import RoleAuthentication from "./Components/ProtectedRoutes/RoleAuthentication";
+import AdminAuthentication from "./Components/ProtectedRoutes/AdminAuthentication";
 
 function App() {
   const location = useLocation();
@@ -40,8 +42,8 @@ function App() {
         {!hideNavbarRoutes.includes(location.pathname) && <NavBar />}
         <ScrollTop />
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/events-page/:category" element={<EventsPage />} />
+          <Route path="/" element={<AdminAuthentication><Home /></AdminAuthentication>} />
+          <Route path="/events-page/:category" element={<AdminAuthentication><EventsPage /></AdminAuthentication>} />
           <Route
             path="/login"
             element={
@@ -50,18 +52,28 @@ function App() {
               </Authenticated>
             }
           />
-          <Route path="/event-details/:id" element={<EventDetails />} />
-          <Route path="/event-details/:id/get-ticket" element={<GetTicket />} />
-          <Route path="/contact" element={<ContactUs />} />
-          <Route path="/payment-success" element={<PaymentSuccess />} />
-          <Route path="/payment-failed" element={<PaymentFailed />} />
-          <Route path="/success-email" element={<SuccessEmail />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/forgot-pass"
+            element={
+              <Authenticated>
+                <ForgotPass />
+              </Authenticated>
+            }
+          />
+          <Route path="/event-details/:id" element={<AdminAuthentication><EventDetails /></AdminAuthentication>} />
+          <Route path="/event-details/:id/get-ticket" element={<AdminAuthentication><GetTicket /></AdminAuthentication>} />
+          <Route path="/contact" element={<AdminAuthentication><ContactUs /></AdminAuthentication>} />
+          <Route path="/payment-success" element={<AdminAuthentication><PaymentSuccess /></AdminAuthentication>} />
+          <Route path="/payment-failed" element={<AdminAuthentication><PaymentFailed /></AdminAuthentication>} />
+          <Route path="/success-email" element={<AdminAuthentication><SuccessEmail /></AdminAuthentication>} />
+          <Route path="/profile" element={<AdminAuthentication><Profile /></AdminAuthentication>} />
           <Route
             path="/edit-profile"
             element={
               <NotAuthenticated>
+                <AdminAuthentication>
                 <EditProfile />
+                </AdminAuthentication>
               </NotAuthenticated>
             }
           />
@@ -73,9 +85,23 @@ function App() {
               </Authenticated>
             }
           />
-          <Route path="/admin" element={<DashboardAdmin />} />
+          <Route
+            path="/admin"
+            element={
+              <RoleAuthentication>
+                <DashboardAdmin />
+              </RoleAuthentication>
+            }
+          />
           <Route path="*" element={<NotFound />} />
-          <Route path="/admin/event/:id" element={<CreateEvent />} />
+          <Route
+            path="/admin/event/:id"
+            element={
+              <RoleAuthentication>
+                <CreateEvent />
+              </RoleAuthentication>
+            }
+          />
         </Routes>
         {!hideFooterRoutes.includes(location.pathname) && <Footer />}
       </AuthDetailsContext>
