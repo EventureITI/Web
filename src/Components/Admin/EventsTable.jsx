@@ -23,7 +23,8 @@ import { toast } from "react-toastify";
 import generateArrayFromNumber from "../../utils/generateArrayFromNumber";
 import Pagination from "../Pagination";
 import TableSkeleton from "../Skeleton/TableSkeleton";
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 5; // Number of items per page
+const DEBOUNCE_DELAY = 500; // Delay in ms for debouncing
 export default function EventsTable() {
   const tableHeaders = [
     "#",
@@ -109,134 +110,245 @@ export default function EventsTable() {
   // useEffect(() => {
   //   handleSearch();
   // }, [searchTerm]);
-  const [results, setResults] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [lastVisible, setLastVisible] = useState(null); // Tracks the last document for pagination
-  const [firstVisible, setFirstVisible] = useState(null); // Tracks the first document for previous pagination
+  //////////////////////////////////////////////////////
+  // const [results, setResults] = useState([]);
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [lastVisible, setLastVisible] = useState(null); // Tracks the last document for pagination
+  // const [firstVisible, setFirstVisible] = useState(null); // Tracks the first document for previous pagination
   // const [isNextAvailable, setIsNextAvailable] = useState(false); // To check if the next page exists
   // const [isPrevAvailable, setIsPrevAvailable] = useState(false); // To check if the previous page exists
+  // const [page, setPage] = useState(1);
+  // const [totalPages, setTotalPages] = useState(0);
+  // const [skeletonLoading, setSkeletonLoading] = useState(true);
+
+  // // Fetch total count of documents to calculate total pages
+  // const fetchTotalPages = async (q) => {
+  //   setPage(1);
+  //   const qq = q
+  //     ? q
+  //     : query(collection(db, "events"), where("isDeleted", "==", false)); // Fetch all docs
+  //   const snapshot = await getDocs(qq);
+  //   const totalDocs = snapshot.size;
+  //   const pages = Math.ceil(totalDocs / ITEMS_PER_PAGE);
+  //   console.log(pages);
+
+  //   setTotalPages(pages); // Calculate total number of pages
+  // };
+
+  // // Fetch results depending on search input (empty or not)
+  // const fetchResults = async (direction) => {
+  //   let q;
+
+  //   // If search term is empty, fetch all documents
+  //   if (!searchTerm.trim()) {
+  //     setPage(1);
+  //     q = query(
+  //       collection(db, "events"),
+  //       orderBy("title"),
+  //       where("isDeleted", "==", false),
+  //       limit(ITEMS_PER_PAGE)
+  //     );
+  //     fetchTotalPages();
+  //   } else {
+  //     setPage(1);
+  //     // If search term is not empty, fetch filtered documents
+  //     q = query(
+  //       collection(db, "events"),
+  //       where("isDeleted", "==", false),
+  //       where("title", ">=", searchTerm.toLowerCase()),
+  //       where("title", "<=", searchTerm.toLocaleLowerCase() + "\uf8ff"),
+  //       limit(ITEMS_PER_PAGE)
+  //     );
+  //     fetchTotalPages(
+  //       query(
+  //         collection(db, "events"),
+  //         where("isDeleted", "==", false),
+  //         where("title", ">=", searchTerm.toLowerCase()),
+  //         where("title", "<=", searchTerm.toLocaleLowerCase() + "\uf8ff")
+  //       )
+  //     );
+  //   }
+  //   if (direction === "next" && lastVisible) {
+  //     q = query(q, startAfter(lastVisible));
+  //   } else if (direction === "prev" && firstVisible) {
+  //     q = query(q, endBefore(firstVisible));
+  //   }
+  //   const querySnapshot = await getDocs(q);
+  //   const docs = querySnapshot.docs.map((doc) => ({
+  //     id: doc.id,
+  //     ...doc.data(),
+  //   }));
+  //   console.log(docs);
+
+  //   setResults(docs);
+  //   setSkeletonLoading(false);
+  //   setFirstVisible(querySnapshot.docs[0]);
+  //   console.log(docs[0]);
+
+  //   setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+  //   console.log(docs[docs.length - 1]);
+
+  //   // setIsNextAvailable(querySnapshot.docs.length === ITEMS_PER_PAGE);
+  //   // setIsPrevAvailable(querySnapshot.docs.length > 0);
+  // };
+  // // Handle searching (initial fetch or search query)
+  // // const handleSearch = async () => {
+  // //   await fetchResults();
+  // // };
+  // // Handle searching (debounced)
+  // const handleSearch = debounce(async () => {
+  //   await fetchResults();
+  // }, 500); // Adjust debounce delay (500ms here)
+
+  // // Handle pagination
+  // const handleNextPage = async () => {
+  //   setSkeletonLoading(true);
+  //   if (page < totalPages) {
+  //     await fetchResults("next");
+  //     setPage(page + 1);
+  //   }
+  // };
+  // const handleChangePage = (page) => {
+  //   setPage(page);
+  // };
+  // const handlePrevPage = async () => {
+  //   setSkeletonLoading(true);
+  //   // if (page > 1) {
+  //   //   await fetchResults("prev");
+  //   //   setPage(page - 1);
+  //   // }
+  //   if (page > 1) {
+  //     await fetchResults("prev");
+  //     setPage(1);
+  //   }
+  // };
+  // // // Fetch the total number of pages when the component loads
+  // useEffect(() => {
+  //   fetchTotalPages();
+  // }, []);
+  // // Fetch all items or search results on search term change
+  // // useEffect(() => {
+  // //   handleSearch();
+  // // }, [searchTerm]);
+  // // Debounce search term input
+  // useEffect(() => {
+  //   setSkeletonLoading(true)
+  //   handleSearch();
+  //   return () => {
+  //     handleSearch.cancel(); // Cleanup the debounce on unmount
+  //   };
+  // }, [searchTerm]);
+  // // Generate an array of page numbers
+  // const pageNumbers = generateArrayFromNumber(totalPages);
+  /////////////////////////////////////////////////////////////////////
+  const [results, setResults] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [skeletonLoading, setSkeletonLoading] = useState(true);
+  const [documentSnapshots, setDocumentSnapshots] = useState([]);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(""); // Debounced search term
 
-  // Fetch total count of documents to calculate total pages
-  const fetchTotalPages = async (q) => {
-    setPage(1);
-    const qq = q
-      ? q
-      : query(collection(db, "events"), where("isDeleted", "==", false)); // Fetch all docs
-    const snapshot = await getDocs(qq);
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, DEBOUNCE_DELAY);
+     // Cleanup the timeout if the search term changes (before the delay completes)
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  const fetchTotalDocuments = async (search = "") => {
+    let q;
+    let snapshot;
+
+    q = query(collection(db, "events"), where("isDeleted", "==", false));
+    if (search) {
+      q = query(
+        q,
+        where("title", ">=", search.toLowerCase()),
+        where("title", "<=", search.toLowerCase() + "\uf8ff")
+      );
+      snapshot = await getDocs(q);
+    } else {
+      snapshot = await getDocs(q);
+    }
+
     const totalDocs = snapshot.size;
-    const pages = Math.ceil(totalDocs / ITEMS_PER_PAGE);
-    console.log(pages);
-
-    setTotalPages(pages); // Calculate total number of pages
+    setTotalPages(Math.ceil(totalDocs / ITEMS_PER_PAGE));
   };
 
-  // Fetch results depending on search input (empty or not)
-  const fetchResults = async (direction) => {
+  const fetchPage = async (targetPage, search = "") => {
     let q;
 
-    // If search term is empty, fetch all documents
-    if (!searchTerm.trim()) {
-      setPage(1);
-      q = query(
-        collection(db, "events"),
-        orderBy("title"),
-        where("isDeleted", "==", false),
-        limit(ITEMS_PER_PAGE)
-      );
-      fetchTotalPages();
-    } else {
-      setPage(1);
-      // If search term is not empty, fetch filtered documents
-      q = query(
-        collection(db, "events"),
-        where("isDeleted", "==", false),
-        where("title", ">=", searchTerm.toLowerCase()),
-        where("title", "<=", searchTerm.toLocaleLowerCase() + "\uf8ff"),
-        limit(ITEMS_PER_PAGE)
-      );
-      fetchTotalPages(
-        query(
-          collection(db, "events"),
-          where("isDeleted", "==", false),
-          where("title", ">=", searchTerm.toLowerCase()),
-          where("title", "<=", searchTerm.toLocaleLowerCase() + "\uf8ff")
-        )
-      );
+    if (targetPage === 1) {
+      // Query for the first page
+      q = search
+        ? query(
+            collection(db, "events"),
+            where("title", ">=", search.toLowerCase()),
+            where("title", "<=", search.toLowerCase() + "\uf8ff"),
+            where("isDeleted", "==", false),
+            orderBy("title"),
+            limit(ITEMS_PER_PAGE)
+          )
+        : query(
+            collection(db, "events"),
+            orderBy("title"),
+            where("isDeleted", "==", false),
+            limit(ITEMS_PER_PAGE)
+          );
+    } else if (documentSnapshots[targetPage - 2]) {
+      // Use cached last document from the previous page
+      q = search
+        ? query(
+            collection(db, "events"),
+            where("title", ">=", search),
+            where("title", "<=", search + "\uf8ff"),
+            orderBy("title"),
+            where("isDeleted", "==", false),
+            startAfter(documentSnapshots[targetPage - 2]),
+            limit(ITEMS_PER_PAGE)
+          )
+        : query(
+            collection(db, "events"),
+            orderBy("title"),
+            startAfter(documentSnapshots[targetPage - 2]),
+            limit(ITEMS_PER_PAGE)
+          );
     }
-    if (direction === "next" && lastVisible) {
-      q = query(q, startAfter(lastVisible));
-    } else if (direction === "prev" && firstVisible) {
-      q = query(q, endBefore(firstVisible));
-    }
-    const querySnapshot = await getDocs(q);
-    const docs = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    console.log(docs);
+    const snapshot = await getDocs(q);
+    const docs = snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
 
     setResults(docs);
     setSkeletonLoading(false);
-    setFirstVisible(querySnapshot.docs[0]);
-    console.log(docs[0]);
-
-    setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
-    console.log(docs[docs.length - 1]);
-
-    // setIsNextAvailable(querySnapshot.docs.length === ITEMS_PER_PAGE);
-    // setIsPrevAvailable(querySnapshot.docs.length > 0);
-  };
-  // Handle searching (initial fetch or search query)
-  // const handleSearch = async () => {
-  //   await fetchResults();
-  // };
-  // Handle searching (debounced)
-  const handleSearch = debounce(async () => {
-    await fetchResults();
-  }, 500); // Adjust debounce delay (500ms here)
-
-  // Handle pagination
-  const handleNextPage = async () => {
-    setSkeletonLoading(true);
-    if (page < totalPages) {
-      await fetchResults("next");
-      setPage(page + 1);
+    // Cache the last document of the current page
+    if (snapshot.docs.length > 0) {
+      documentSnapshots[targetPage - 1] =
+        snapshot.docs[snapshot.docs.length - 1];
+      setDocumentSnapshots([...documentSnapshots]);
     }
   };
-  const handleChangePage = (page) => {
-    setPage(page);
-  };
-  const handlePrevPage = async () => {
-    setSkeletonLoading(true);
-    // if (page > 1) {
-    //   await fetchResults("prev");
-    //   setPage(page - 1);
-    // }
-    if (page > 1) {
-      await fetchResults("prev");
-      setPage(1);
-    }
-  };
-  // // Fetch the total number of pages when the component loads
   useEffect(() => {
-    fetchTotalPages();
-  }, []);
-  // Fetch all items or search results on search term change
-  // useEffect(() => {
-  //   handleSearch();
-  // }, [searchTerm]);
-  // Debounce search term input
-  useEffect(() => {
-    handleSearch();
-    return () => {
-      handleSearch.cancel(); // Cleanup the debounce on unmount
-    };
-  }, [searchTerm]);
-  // Generate an array of page numbers
+    setSkeletonLoading(true)
+    fetchTotalDocuments(debouncedSearchTerm);
+    fetchPage(1, debouncedSearchTerm); // Initially fetch the first page based on search term
+    setPage(1); // Reset page to 1 on new search
+    setDocumentSnapshots([]); // Clear cached documents when search term changes
+  }, [debouncedSearchTerm]);
+
+  const handlePageClick = (pageNum) => {
+    setPage(pageNum);
+    fetchPage(pageNum, debouncedSearchTerm);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
   const pageNumbers = generateArrayFromNumber(totalPages);
+
   return (
     <>
       <div className="self-stretch md:justify-between md:items-center gap-4 flex flex-col md:flex-row p-10 overflow-x-auto whitespace-nowrap">
@@ -246,8 +358,10 @@ export default function EventsTable() {
         <div className="flex gap-2 md:gap-4 w-full md:justify-end">
           <div className="relative w-[480px] md:w-[346px] flex items-center">
             <input
+              // value={searchTerm}
+              // onChange={(e) => setSearchTerm(e.target.value)}
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange}
               type="search"
               className="w-full h-[43px] px-4 py-2 text-white bg-[#c9c9c9]/20 rounded-lg outline-none focus:outline-offset-0 focus:outline-main-color "
               style={{ caretColor: "#4FE0D2" }}
@@ -364,10 +478,10 @@ export default function EventsTable() {
         <div className="flex justify-center">
           <Pagination
             currentPage={page}
-            handleChangePage={handleChangePage}
+            // handleChangePage={handleChangePage}
             pages={pageNumbers}
-            handelPaginationNextBtn={handleNextPage}
-            handelPaginationPrevBtn={handlePrevPage}
+            handelPaginationNextBtn={() => handlePageClick(page + 1)}
+            handelPaginationPrevBtn={() => handlePageClick(page - 1)}
           />
         </div>
         {/* <BackTop /> */}

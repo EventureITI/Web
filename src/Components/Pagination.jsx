@@ -3,7 +3,7 @@ import { appContext } from "../context/AppContext";
 
 export default function Pagination({
   currentPage,
-  handleChangePage,
+  // handleChangePage,
   pages,
   handelPaginationNextBtn,
   handelPaginationPrevBtn,

@@ -81,7 +81,8 @@ export default function EventsPage() {
       countQuery = query(
         countQuery,
         where("title", ">=", searchTerm.toLowerCase()),
-        where("title", "<=", searchTerm.toLowerCase() + "\uf8ff")
+        where("title", "<=", searchTerm.toLowerCase() + "\uf8ff"),
+        where("isDeleted", "==", false)
       );
     } // Add category filter
     if (category !== "all") {
@@ -100,7 +101,7 @@ export default function EventsPage() {
     setTotalPages(totalPages);
   };
   const handleCategoryAndSearch = async (direction) => {
-    setSkeletonLoading(true)
+    setSkeletonLoading(true);
     try {
       let searchQuery = collection(db, "events");
 
