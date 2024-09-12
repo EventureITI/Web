@@ -14,7 +14,7 @@ import convertTo24HourFormat from "../utils/formatTimeTo24Hrs";
 export default function CreateEvent() {
   const { id } = useParams();
   console.log(id);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const mode = id === "new" ? "add" : "edit";
   console.log(mode);
 
@@ -146,16 +146,28 @@ export default function CreateEvent() {
       }));
       // e.target.blur();
     }
-    try {    
+    console.log(eventForm.startDate);
+    console.log(name, value);
+    console.log(eventForm.startDate < value);
+    try {
       await eventSchema.validateAt(name, { [name]: value });
+
       setErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
     } catch (err) {
-      setErrors((prevErrors) => ({ ...prevErrors, [name]: err.message }));
+      if (
+        (name === "endDate" && eventForm.startDate <= value) ||
+        (name === "eventDate" && eventForm.endDate <= value)
+      ) {
+        setErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
+      } else {
+        setErrors((prevErrors) => ({ ...prevErrors, [name]: err.message }));
+      }
     }
   };
 
   // create or update an event depends on mode
   const handleCreateEvent = async (e) => {
+    setIsSubmitting(true);
     e.preventDefault();
     setErrors((prevErrors) => ({
       title: null,
@@ -246,13 +258,14 @@ export default function CreateEvent() {
           ...prevForm,
           imgUrl: url,
         }));
-
+        setErrors((prevErrors) => ({ ...prevErrors, imgUrl: null }));
         setLoading(false);
       });
     });
   };
   console.log(eventForm);
   console.log(errors);
+console.log(isSubmitting);
 
   return (
     <div className="bg-bg-main px-6 pt-8 pb-4">
@@ -668,7 +681,7 @@ export default function CreateEvent() {
             >
               Cancel
             </button>
-            <button className=" w-[320px] transition duration-300 ease-in-out bg-main-color hover:bg-main-hover text-white font-bold py-2 px-6 rounded-2xl">
+            <button disabled={isSubmitting} className=" w-[320px] transition duration-300 ease-in-out bg-main-color hover:bg-main-hover text-white font-bold py-2 px-6 rounded-2xl">
               {mode === "add" ? "Create" : "Edit"} Event
             </button>
           </div>

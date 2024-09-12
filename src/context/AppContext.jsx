@@ -9,15 +9,17 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
+import { formatDate } from "../utils/formatDateInYMD";
 export const appContext = createContext();
 export default function AppContextProvider({ children }) {
   const [loading, setLoading] = useState(false);
   const [events, setEvents] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [users, setUsers] = useState([]);
   const eventsCollectionRef = collection(db, "events");
   const categoriesCollectionRef = collection(db, "categories");
-  const [user ,setUser] = useState([]);
- 
+  const [user, setUser] = useState([]);
+  const usersCollectionRef = collection(db, "user");
 
   // update ui after add a new event
   const handleAddEventsUI = (newEvent) => {
@@ -42,9 +44,23 @@ export default function AppContextProvider({ children }) {
     setEvents(newEvents);
   };
 
+  //update ui after delete a user
+  const handleDeleteUserUI = (id) => {
+    let newUsers = [...users];
+    newUsers = newUsers.filter((u) => u.id !== id);
+    console.log(newUsers);
+
+    setUsers(newUsers);
+  };
+
   // resotre events after fauilure of delete
   const restoreEvents = (events) => {
     setEvents(events);
+  };
+
+  // resotre users after fauilure of delete
+  const restoreUsers = (users) => {
+    setUsers(users);
   };
 
   // get All Events
@@ -84,8 +100,9 @@ export default function AppContextProvider({ children }) {
       }
     };
     const updateExpiredEvents = async () => {
-      const currentDate = new Date().toISOString().split('T')[0];
-      console.log(currentDate);      
+      // const currentDate = new Date().toISOString().split("T")[0];
+      const currentDate = formatDate(new Date());
+      console.log(currentDate);
       // get events where endDate has passed and isDeleted is false
       const q = query(
         collection(db, "events"),
@@ -93,10 +110,8 @@ export default function AppContextProvider({ children }) {
         where("isDeleted", "==", false)
       );
       try {
-        console.log("bb");
-
         const querySnapshot = await getDocs(q);
-
+        console.log(querySnapshot.size);
         querySnapshot.forEach(async (docSnapshot) => {
           const eventRef = doc(db, "events", docSnapshot.id);
           console.log(eventRef);
@@ -110,22 +125,37 @@ export default function AppContextProvider({ children }) {
         console.error("Error updating documents: ", error);
       }
     };
-    
-    // the add all user
 
-    const getDataOfUser = async () =>{
-      const data = await getDocs(collection(db , "user"));
-      const userData = data.docs.map((doc) => ({...doc.data() ,id:doc.id}));
+    // the add all user
+    const getDataOfUser = async () => {
+      const data = await getDocs(collection(db, "user"));
+      const userData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
       const userInfo = userData.filter(
         (e) => e.email == auth.currentUser.email
       );
       setUser(userInfo);
-      
-    }
+    };
     updateExpiredEvents();
     getAllEvents();
     getAllCategories();
-    getDataOfUser()
+    getDataOfUser();
+
+    const getAllUsers = async () => {
+      try {
+        const data = await getDocs(usersCollectionRef);
+        const usersData = data.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+        setUsers(usersData);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    updateExpiredEvents();
+    getAllEvents();
+    getAllCategories();
+    getAllUsers();
   }, []);
 
   return (
@@ -139,6 +169,9 @@ export default function AppContextProvider({ children }) {
         handleEditEventUI,
         categories,
         user,
+        users,
+        restoreUsers,
+        handleDeleteUserUI,
       }}
     >
       {children}

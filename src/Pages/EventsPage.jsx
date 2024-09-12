@@ -8,167 +8,174 @@ import { useParams } from "react-router-dom";
 import generateArrayFromNumber from "../utils/generateArrayFromNumber";
 import {
   collection,
+  endBefore,
   getDocs,
+  limit,
   onSnapshot,
+  orderBy,
   query,
+  startAfter,
   where,
 } from "firebase/firestore";
 import { db } from "../firebase/firebase-config";
+import CardsSkeleton from "../Components/Skeleton/CardsSkeleton";
+const ITEMS_PER_PAGE = 5;
 
 export default function EventsPage() {
-  // const [currentPage, setCurrentPage] = useState(1);
   const { categories } = useContext(appContext);
-  // const { events, categories } = useContext(appContext);
   const { category } = useParams();
   console.log(category);
 
-  // const [filteredSearch, setFilteredSearch] = useState(events);
-  // const [searchWord, SetSearchWord] = useState("");
-  // const [categorizedEvents, setCategorizedEvents] = useState([]);
-  // const categorizedEvents =
-  //   category === "all"
-  //     ? filteredSearch.sort(
-  //         (a, b) => new Date(a.startDate) - new Date(b.startDate)
-  //       )
-  //     : filteredSearch.filter(
-  //         (e) =>
-  //           e.categoryId === categories.find((cat) => cat.name === category).id
+  // const [searchTerm, setSearchTerm] = useState("");
+  // const [searchResults, setSearchResults] = useState([]);
+  // const handleCategoryAndSearch = async () => {
+  //   try {
+  //     let searchQuery = collection(db, "events");
+  //     // Add filters to the query
+  //     if (searchTerm) {
+  //       searchQuery = query(
+  //         searchQuery,
+  //         // where("isDeleted", "==", false),
+  //         where("title", ">=", searchTerm.toLowerCase()),
+  //         where("title", "<=", searchTerm.toLowerCase() + "\uf8ff")
   //       );
-
-  // const filteredSearchEvents = !searchWord
-  //   ? categorizedEvents
-  //   : categorizedEvents.filter((event) =>
-  //       event.title.toLowerCase().includes(searchWord.toLowerCase())
-  //     );
-
-  // const pageSize = 6;
-  // const pages = generateArrayFromNumber(
-  //   Math.ceil(filteredSearchEvents.length / pageSize)
-  // );
-  // console.log(pages);
-
-  // const pageToStart = (currentPage - 1) * pageSize;
-  // console.log(pageToStart);
-
-  // const paginatedEvents = filteredSearchEvents.slice(
-  //   pageToStart,
-  //   pageToStart + pageSize
-  // );
-
-  // In-page Search
-  // function searchEvents(e) {
-  //   SetSearchWord(e.target.value);
-  // }
-
-  // useEffect(() => {
-  //   const data = events.filter((e) =>
-  //     e.title?.toLowerCase().includes(searchWord?.toLowerCase())
-  //   );
-  //   setFilteredSearch(data);
-  //   console.log(filteredSearch);
-  // }, [searchWord, events]);
-
-  // useEffect(() => {
-  //   const getEventsByCategory = async () => {
-  //     try {
+  //     }
+  //     if (category == "all") {
+  //       searchQuery = query(searchQuery, where("isDeleted", "==", false));
+  //     } else {
   //       const categoryId = categories.find((cat) => cat.name === category).id;
-  //       const q = query(
-  //         collection(db, "events"),
+  //       searchQuery = query(
+  //         searchQuery,
   //         where("categoryId", "==", categoryId),
   //         where("isDeleted", "==", false)
   //       );
-  //       const data = onSnapshot(q, (QuerySnapshot) => {
-  //         let eventsArr = [];
-  //         QuerySnapshot.forEach((doc) => {
-  //           eventsArr.push({ ...doc.data(), id: doc.id });
-  //         });
-  //         console.log(eventsArr);
-  //         setCategorizedEvents(eventsArr);
-  //       });
-  //       return () => data;
-  //     } catch (error) {
-  //       console.log(error);
   //     }
-  //   };
-  //   const getAllEvents = async () => {
-  //     try {
-  //       const q = query(
-  //         collection(db, "events"),
-  //         where("isDeleted", "==", false)
-  //       );
-  //       const data = onSnapshot(q, (QuerySnapshot) => {
-  //         let eventsArr = [];
-  //         QuerySnapshot.forEach((doc) => {
-  //           eventsArr.push({ ...doc.data(), id: doc.id });
-  //         });
-  //         console.log(eventsArr);
-  //         setCategorizedEvents(eventsArr);
-  //       });
-  //       return () => data;
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   if (category === "all") {
-  //     getAllEvents();
-  //   } else {
-  //     getEventsByCategory();
+  //     const querySnapshot = await getDocs(searchQuery);
+  //     const data = querySnapshot.docs.map((doc) => ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     }));
+  //     setSearchResults(data);
+  //   } catch (error) {
+  //     console.error("Error fetching documents: ", error);
   //   }
-  // }, [category]);
-
-  // const handleChangePage = (page) => {
-  //   setCurrentPage(page);
   // };
-  // const handelPaginationNextBtn = () => {
-  //   setCurrentPage(currentPage + 1);
-  // };
-  // const handelPaginationPrevBtn = () => {
-  //   setCurrentPage(currentPage - 1);
-  // };
-  // console.log(filteredSearch);
+  // useEffect(() => {
+  //   handleCategoryAndSearch();
+  // }, [searchTerm, category]);
+  // console.log(searchResults);
+  //////////////////////////////////////////////last
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const handleCategoryAndSearch = async () => {
+  const [lastVisible, setLastVisible] = useState(null); // Tracks the last document for pagination
+  const [firstVisible, setFirstVisible] = useState(null); // Tracks the first document for previous pagination
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [skeletonLoading, setSkeletonLoading] = useState(true);
+
+  // Function to get the total number of pages
+  const calculateTotalPages = async () => {
+    let countQuery = collection(db, "events");
+    // Add search term filter
+    if (searchTerm) {
+      countQuery = query(
+        countQuery,
+        where("title", ">=", searchTerm.toLowerCase()),
+        where("title", "<=", searchTerm.toLowerCase() + "\uf8ff")
+      );
+    } // Add category filter
+    if (category !== "all") {
+      const categoryId = categories.find((cat) => cat.name === category).id;
+      countQuery = query(
+        countQuery,
+        where("categoryId", "==", categoryId),
+        where("isDeleted", "==", false)
+      );
+    } else {
+      countQuery = query(countQuery, where("isDeleted", "==", false));
+    }
+    const totalSnapshot = await getDocs(countQuery);
+    const totalDocuments = totalSnapshot.size;
+    const totalPages = Math.ceil(totalDocuments / ITEMS_PER_PAGE); // Calculate total pages
+    setTotalPages(totalPages);
+  };
+  const handleCategoryAndSearch = async (direction) => {
+    setSkeletonLoading(true)
     try {
       let searchQuery = collection(db, "events");
 
-      // Add filters to the query
+      // Add search term filter
       if (searchTerm) {
         searchQuery = query(
           searchQuery,
-          // where("isDeleted", "==", false),
-          where("title", ">=", searchTerm),
-          where("title", "<=", searchTerm + "\uf8ff")
+          where("title", ">=", searchTerm.toLowerCase()),
+          where("title", "<=", searchTerm.toLowerCase() + "\uf8ff")
         );
-      }
-      if (category == "all") {
-        searchQuery = query(searchQuery, where("isDeleted", "==", false));
-      } else {
-        console.log(categories);
-        console.log(category);
+      } // Add category filter
+      if (category !== "all") {
         const categoryId = categories.find((cat) => cat.name === category).id;
         searchQuery = query(
           searchQuery,
           where("categoryId", "==", categoryId),
           where("isDeleted", "==", false)
         );
+      } else {
+        searchQuery = query(searchQuery, where("isDeleted", "==", false));
       }
+      // Pagination logic
+      searchQuery = query(searchQuery, orderBy("title"), limit(ITEMS_PER_PAGE));
+
+      if (direction === "next" && lastVisible) {
+        searchQuery = query(searchQuery, startAfter(lastVisible));
+      } else if (direction === "prev" && firstVisible) {
+        searchQuery = query(searchQuery, endBefore(firstVisible));
+      }
+
       const querySnapshot = await getDocs(searchQuery);
+
       const data = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
+
       setSearchResults(data);
+      setSkeletonLoading(false);
+      setFirstVisible(querySnapshot.docs[0]);
+      console.log(data[0]);
+      setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
+      console.log(data[data.length - 1]);
     } catch (error) {
       console.error("Error fetching documents: ", error);
     }
   };
+  const handleNextPage = async () => {
+    setSkeletonLoading(true);
+    if (page < totalPages) {
+      await handleCategoryAndSearch("next");
+      setPage(page + 1);
+    }
+  };
+
+  const handleChangePage = (page) => {
+    setPage(page);
+  };
+  const handlePrevPage = async () => {
+    setSkeletonLoading(true);
+    // if (page > 1) {
+    //   await fetchResults("prev");
+    //   setPage(page - 1);
+    // }
+    if (page > 1) {
+      await handleCategoryAndSearch("prev");
+      setPage(1);
+    }
+  };
   useEffect(() => {
+    setPage(1); // Reset to first page on search/category change
+    calculateTotalPages(); // Calculate total pages on search or category change
     handleCategoryAndSearch();
   }, [searchTerm, category]);
-  console.log(searchResults);
-  // console.log(categorizedEvents);
-
+  const pageNumbers = generateArrayFromNumber(totalPages);
   return (
     <div className="w-full bg-bg-main min-h-screen relative">
       <div className="md:container md:mx-auto mx-8 md:px-4 pt-28">
@@ -207,37 +214,40 @@ export default function EventsPage() {
             ))}
           </div>
           {/* Searched Events */}
-          <div
-            className={`grid grid-cols-1 gap-5 mb-5 2xl:grid-cols-4
+          {skeletonLoading ? (
+            <CardsSkeleton />
+          ) : (
+            <div
+              className={`grid grid-cols-1 gap-5 mb-5 2xl:grid-cols-4
                 ${
                   searchResults.length > 0
                     ? "sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3"
                     : "sm:w-full"
                 } `}
-          >
-            {searchResults.length > 0 ? (
-              <>
-                {searchResults.map((e) => (
-                  <EventCard key={e.id} event={e} />
-                ))}
-              </>
-            ) : (
-              <h2 className="text-white font-Inter font-400 text-center flex justify-center my-20 ">
-                No Events
-              </h2>
-            )}
-          </div>
+            >
+              {searchResults.length > 0 ? (
+                <>
+                  {searchResults.map((e) => (
+                    <EventCard key={e.id} event={e} />
+                  ))}
+                </>
+              ) : (
+                <h2 className="text-white font-Inter font-400 text-center flex justify-center my-20 ">
+                  No Events
+                </h2>
+              )}
+            </div>
+          )}
         </div>
-        {/* Search */}
       </div>
       <div className="py-10 flex justify-center">
-        {/* <Pagination
-          currentPage={currentPage}
+        <Pagination
+          currentPage={page}
           handleChangePage={handleChangePage}
-          pages={pages}
-          handelPaginationNextBtn={handelPaginationNextBtn}
-          handelPaginationPrevBtn={handelPaginationPrevBtn}
-        /> */}
+          pages={pageNumbers}
+          handelPaginationNextBtn={handleNextPage}
+          handelPaginationPrevBtn={handlePrevPage}
+        />
       </div>
       <BackTop />
     </div>
