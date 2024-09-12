@@ -281,6 +281,7 @@ export default function EventsTable() {
   };
 
   const fetchPage = async (targetPage, search = "") => {
+    setSkeletonLoading(true)
     let q;
 
     if (targetPage === 1) {
