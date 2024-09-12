@@ -65,182 +65,6 @@ export default function EventsTable() {
     }
   };
 
-  // const [searchResults, setSearchResults] = useState([]);
-  // const handleSearch = async () => {
-  //   console.log(searchTerm);
-
-  //   if (searchTerm) {
-  //     try {
-  //       const q = query(
-  //         collection(db, "events"),
-  //         where("isDeleted", "==", false),
-  //         where("title", ">=", searchTerm.toLowerCase()),
-  //         where("title", "<=", searchTerm.toLowerCase() + "\uf8ff") // Range query for matching search terms
-  //       );
-  //       const querySnapshot = await getDocs(q);
-  //       const data = querySnapshot.docs.map((doc) => ({
-  //         id: doc.id,
-  //         ...doc.data(),
-  //       }));
-  //       setSearchResults((prev) => data);
-  //     } catch (error) {
-  //       console.error("Error fetching documents: ", error);
-  //     }
-  //   } else {
-  //     console.log("empty");
-  //     try {
-  //       const q = query(
-  //         collection(db, "events"),
-  //         where("isDeleted", "==", false)
-  //       );
-  //       const data = onSnapshot(q, (QuerySnapshot) => {
-  //         let eventsArr = [];
-  //         QuerySnapshot.forEach((doc) => {
-  //           eventsArr.push({ ...doc.data(), id: doc.id });
-  //         });
-  //         console.log(eventsArr);
-  //         setSearchResults((prev) => eventsArr);
-  //       });
-  //       return () => data;
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  // };
-  // useEffect(() => {
-  //   handleSearch();
-  // }, [searchTerm]);
-  //////////////////////////////////////////////////////
-  // const [results, setResults] = useState([]);
-  // const [searchTerm, setSearchTerm] = useState("");
-  // const [lastVisible, setLastVisible] = useState(null); // Tracks the last document for pagination
-  // const [firstVisible, setFirstVisible] = useState(null); // Tracks the first document for previous pagination
-  // const [isNextAvailable, setIsNextAvailable] = useState(false); // To check if the next page exists
-  // const [isPrevAvailable, setIsPrevAvailable] = useState(false); // To check if the previous page exists
-  // const [page, setPage] = useState(1);
-  // const [totalPages, setTotalPages] = useState(0);
-  // const [skeletonLoading, setSkeletonLoading] = useState(true);
-
-  // // Fetch total count of documents to calculate total pages
-  // const fetchTotalPages = async (q) => {
-  //   setPage(1);
-  //   const qq = q
-  //     ? q
-  //     : query(collection(db, "events"), where("isDeleted", "==", false)); // Fetch all docs
-  //   const snapshot = await getDocs(qq);
-  //   const totalDocs = snapshot.size;
-  //   const pages = Math.ceil(totalDocs / ITEMS_PER_PAGE);
-  //   console.log(pages);
-
-  //   setTotalPages(pages); // Calculate total number of pages
-  // };
-
-  // // Fetch results depending on search input (empty or not)
-  // const fetchResults = async (direction) => {
-  //   let q;
-
-  //   // If search term is empty, fetch all documents
-  //   if (!searchTerm.trim()) {
-  //     setPage(1);
-  //     q = query(
-  //       collection(db, "events"),
-  //       orderBy("title"),
-  //       where("isDeleted", "==", false),
-  //       limit(ITEMS_PER_PAGE)
-  //     );
-  //     fetchTotalPages();
-  //   } else {
-  //     setPage(1);
-  //     // If search term is not empty, fetch filtered documents
-  //     q = query(
-  //       collection(db, "events"),
-  //       where("isDeleted", "==", false),
-  //       where("title", ">=", searchTerm.toLowerCase()),
-  //       where("title", "<=", searchTerm.toLocaleLowerCase() + "\uf8ff"),
-  //       limit(ITEMS_PER_PAGE)
-  //     );
-  //     fetchTotalPages(
-  //       query(
-  //         collection(db, "events"),
-  //         where("isDeleted", "==", false),
-  //         where("title", ">=", searchTerm.toLowerCase()),
-  //         where("title", "<=", searchTerm.toLocaleLowerCase() + "\uf8ff")
-  //       )
-  //     );
-  //   }
-  //   if (direction === "next" && lastVisible) {
-  //     q = query(q, startAfter(lastVisible));
-  //   } else if (direction === "prev" && firstVisible) {
-  //     q = query(q, endBefore(firstVisible));
-  //   }
-  //   const querySnapshot = await getDocs(q);
-  //   const docs = querySnapshot.docs.map((doc) => ({
-  //     id: doc.id,
-  //     ...doc.data(),
-  //   }));
-  //   console.log(docs);
-
-  //   setResults(docs);
-  //   setSkeletonLoading(false);
-  //   setFirstVisible(querySnapshot.docs[0]);
-  //   console.log(docs[0]);
-
-  //   setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
-  //   console.log(docs[docs.length - 1]);
-
-  //   // setIsNextAvailable(querySnapshot.docs.length === ITEMS_PER_PAGE);
-  //   // setIsPrevAvailable(querySnapshot.docs.length > 0);
-  // };
-  // // Handle searching (initial fetch or search query)
-  // // const handleSearch = async () => {
-  // //   await fetchResults();
-  // // };
-  // // Handle searching (debounced)
-  // const handleSearch = debounce(async () => {
-  //   await fetchResults();
-  // }, 500); // Adjust debounce delay (500ms here)
-
-  // // Handle pagination
-  // const handleNextPage = async () => {
-  //   setSkeletonLoading(true);
-  //   if (page < totalPages) {
-  //     await fetchResults("next");
-  //     setPage(page + 1);
-  //   }
-  // };
-  // const handleChangePage = (page) => {
-  //   setPage(page);
-  // };
-  // const handlePrevPage = async () => {
-  //   setSkeletonLoading(true);
-  //   // if (page > 1) {
-  //   //   await fetchResults("prev");
-  //   //   setPage(page - 1);
-  //   // }
-  //   if (page > 1) {
-  //     await fetchResults("prev");
-  //     setPage(1);
-  //   }
-  // };
-  // // // Fetch the total number of pages when the component loads
-  // useEffect(() => {
-  //   fetchTotalPages();
-  // }, []);
-  // // Fetch all items or search results on search term change
-  // // useEffect(() => {
-  // //   handleSearch();
-  // // }, [searchTerm]);
-  // // Debounce search term input
-  // useEffect(() => {
-  //   setSkeletonLoading(true)
-  //   handleSearch();
-  //   return () => {
-  //     handleSearch.cancel(); // Cleanup the debounce on unmount
-  //   };
-  // }, [searchTerm]);
-  // // Generate an array of page numbers
-  // const pageNumbers = generateArrayFromNumber(totalPages);
-  /////////////////////////////////////////////////////////////////////
   const [results, setResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -254,7 +78,7 @@ export default function EventsTable() {
     const handler = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
     }, DEBOUNCE_DELAY);
-     // Cleanup the timeout if the search term changes (before the delay completes)
+    // Cleanup the timeout if the search term changes (before the delay completes)
     return () => {
       clearTimeout(handler);
     };
@@ -263,7 +87,6 @@ export default function EventsTable() {
   const fetchTotalDocuments = async (search = "") => {
     let q;
     let snapshot;
-
     q = query(collection(db, "events"), where("isDeleted", "==", false));
     if (search) {
       q = query(
@@ -281,7 +104,7 @@ export default function EventsTable() {
   };
 
   const fetchPage = async (targetPage, search = "") => {
-    setSkeletonLoading(true)
+    setSkeletonLoading(true);
     let q;
 
     if (targetPage === 1) {
@@ -306,8 +129,8 @@ export default function EventsTable() {
       q = search
         ? query(
             collection(db, "events"),
-            where("title", ">=", search),
-            where("title", "<=", search + "\uf8ff"),
+            where("title", ">=", search.toLowerCase()),
+            where("title", "<=", search.toLowerCase() + "\uf8ff"),
             orderBy("title"),
             where("isDeleted", "==", false),
             startAfter(documentSnapshots[targetPage - 2]),
@@ -333,7 +156,7 @@ export default function EventsTable() {
     }
   };
   useEffect(() => {
-    setSkeletonLoading(true)
+    setSkeletonLoading(true);
     fetchTotalDocuments(debouncedSearchTerm);
     fetchPage(1, debouncedSearchTerm); // Initially fetch the first page based on search term
     setPage(1); // Reset page to 1 on new search
