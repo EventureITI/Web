@@ -16,11 +16,11 @@ export default function AuthDetailsContext({ children }) {
       }
       setTimeout(() => {
         setLoading(false)
-      },1000);
+      }, 1000);
     });
     return () => {
       authenticate(); // to unmount function
     };
   }, []);
-  return <AuthDetails.Provider value={{auther,loading}}>{children}</AuthDetails.Provider>;
+  return <AuthDetails.Provider value={{auther,loading,setLoading}}>{children}</AuthDetails.Provider>;
 }
