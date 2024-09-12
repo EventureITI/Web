@@ -36,35 +36,6 @@ export default function EventsTable() {
     "Tickets",
     "",
   ];
-  const { events, handleDeleteEventUI, restoreEvents } = useContext(appContext);
-  const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-
-  const handleOpenModal = (event) => {
-    setSelectedEvent(event);
-    setIsModalOpen(true);
-  };
-  const handleCloseModal = () => {
-    setSelectedEvent(null);
-    setIsModalOpen(false);
-  };
-  const handleDeleteEvent = async () => {
-    const id = selectedEvent.id;
-    console.log(id);
-    const eventsBeforeDelete = events;
-    try {
-      handleDeleteEventUI(id);
-      setIsModalOpen(false);
-      const eventToBeDeletedDoc = doc(db, "events", id);
-      await updateDoc(eventToBeDeletedDoc, { isDeleted: true });
-      toast.success("Event deleted successfully");
-    } catch (err) {
-      restoreEvents(eventsBeforeDelete);
-      toast.error("Failed to delete event");
-    }
-  };
-
   const [results, setResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -73,6 +44,52 @@ export default function EventsTable() {
   const [skeletonLoading, setSkeletonLoading] = useState(true);
   const [documentSnapshots, setDocumentSnapshots] = useState([]);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(""); // Debounced search term
+  // const { events, restoreEvents } = useContext(appContext);
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const handleDeleteEventUI = (id) => {
+    console.log("deleted");
+    let newEvents = [...results];
+    newEvents = newEvents.filter((e) => e.id !== id);
+    console.log(newEvents);
+    setResults(newEvents);
+  };
+  const restoreEvents = (events) => {
+    setResults(events);
+  };
+  const handleOpenModal = (event) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
+  };
+  const handleCloseModal = () => {
+    setSelectedEvent(null);
+    setIsModalOpen(false);
+  };
+  console.log(results);
+
+  const handleDeleteEvent = async () => {
+    const id = selectedEvent.id;
+    console.log(id);
+    const eventsBeforeDelete = results;
+    console.log(eventsBeforeDelete);
+
+    try {
+      handleDeleteEventUI(id);
+      setIsModalOpen(false);
+      const eventToBeDeletedDoc = doc(db, "events", id);
+      await updateDoc(eventToBeDeletedDoc, { isDeleted: true });
+      fetchTotalDocuments();
+      if (eventsBeforeDelete.length == 1) {
+        fetchPage(1, debouncedSearchTerm);
+        setPage(1);
+      }
+      toast.success("Event deleted successfully");
+    } catch (err) {
+      restoreEvents(eventsBeforeDelete);
+      toast.error("Failed to delete event");
+    }
+  };
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -139,6 +156,7 @@ export default function EventsTable() {
         : query(
             collection(db, "events"),
             orderBy("title"),
+            where("isDeleted", "==", false),
             startAfter(documentSnapshots[targetPage - 2]),
             limit(ITEMS_PER_PAGE)
           );
