@@ -6,13 +6,14 @@ import { AuthDetails } from "../../context/Authentication/AuthDetailsContext";
 
 export default function RoleAuthentication({ children }) {
   const [role, setRole] = useState();
-  const { auther, loading } = useContext(AuthDetails);
+  const { auther, loading ,setLoading} = useContext(AuthDetails);
   useEffect(() => {
     const getData = async () => {
       const data = await getDocs(collection(db, "user"));
       const info = data.docs.map((doc) => ({ ...doc.data() }));
       const userInfo = info.filter((e) => e.email == auth.currentUser?.email);
       setRole(userInfo[0].role);
+      // setLoading(false)
     };
     getData();
   }, []);
