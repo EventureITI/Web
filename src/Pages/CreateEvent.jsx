@@ -13,20 +13,16 @@ import convertTo24HourFormat from "../utils/formatTimeTo24Hrs";
 
 export default function CreateEvent() {
   const { id } = useParams();
-  console.log(id);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const mode = id === "new" ? "add" : "edit";
-  console.log(mode);
 
   const {
     handleAddEventsUI,
     events,
-    restoreEvents,
     handleEditEventUI,
     categories,
   } = useContext(appContext);
 
-  const [imgFile, setImgFile] = useState();
   const eventsCollectionRef = collection(db, "events");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -55,12 +51,10 @@ export default function CreateEvent() {
         }
       : events.find((e) => e.id === id)
   );
-  console.log(events, eventForm);
 
   useEffect(() => {
     if (mode === "edit") {
       const getEventById = async () => {
-        console.log("again");
         try {
           const docRef = doc(db, "events", id);
           const docSnap = await getDoc(docRef);
@@ -72,7 +66,6 @@ export default function CreateEvent() {
               eventForm?.startTime.includes("PM")
             ) {
               let startTime24F = convertTo24HourFormat(eventForm.startTime);
-              console.log(startTime24F);
               setEventForm((prevForm) => ({
                 ...prevForm,
                 startTime: startTime24F,
@@ -99,10 +92,8 @@ export default function CreateEvent() {
         }
       };
       getEventById();
-      console.log(eventForm);
       if (eventForm) {
         let startTime24F = convertTo24HourFormat(eventForm.startTime);
-        console.log(startTime24F);
         setEventForm((prevForm) => ({
           ...prevForm,
           startTime: startTime24F,
@@ -263,9 +254,6 @@ export default function CreateEvent() {
       });
     });
   };
-  console.log(eventForm);
-  console.log(errors);
-console.log(isSubmitting);
 
   return (
     <div className="bg-bg-main px-6 pt-8 pb-4">

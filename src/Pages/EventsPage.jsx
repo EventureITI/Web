@@ -24,7 +24,6 @@ const ITEMS_PER_PAGE = 5;
 export default function EventsPage() {
   const { categories } = useContext(appContext);
   const { category } = useParams();
-  console.log(category);
 
   // const [searchTerm, setSearchTerm] = useState("");
   // const [searchResults, setSearchResults] = useState([]);

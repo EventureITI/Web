@@ -78,7 +78,6 @@ export default function AppContextProvider({ children }) {
           QuerySnapshot.forEach((doc) => {
             eventsArr.push({ ...doc.data(), id: doc.id });
           });
-          console.log(eventsArr);
           setEvents(eventsArr);
           setLoading(false);
         });
@@ -103,7 +102,6 @@ export default function AppContextProvider({ children }) {
     const updateExpiredEvents = async () => {
       // const currentDate = new Date().toISOString().split("T")[0];
       const currentDate = formatDate(new Date());
-      console.log(currentDate);
       // get events where endDate has passed and isDeleted is false
       const q = query(
         collection(db, "events"),
@@ -112,7 +110,6 @@ export default function AppContextProvider({ children }) {
       );
       try {
         const querySnapshot = await getDocs(q);
-        console.log(querySnapshot.size);
         querySnapshot.forEach(async (docSnapshot) => {
           const eventRef = doc(db, "events", docSnapshot.id);
           console.log(eventRef);
@@ -148,7 +145,7 @@ export default function AppContextProvider({ children }) {
         }));
 
         const userInfo = userData.filter(
-          (user) => user.email === auth.currentUser.email
+          (user) => user.email === auth.currentUser?.email
         );
 
         if (userInfo.length > 0) {

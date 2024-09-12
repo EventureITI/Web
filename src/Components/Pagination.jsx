@@ -8,9 +8,6 @@ export default function Pagination({
   handelPaginationNextBtn,
   handelPaginationPrevBtn,
 }) {
-  console.log(currentPage);
-  console.log(pages.length);
-
   if (pages.length <= 1) return null;
   return (
     <div>
