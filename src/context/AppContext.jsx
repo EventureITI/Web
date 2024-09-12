@@ -18,8 +18,9 @@ export default function AppContextProvider({ children }) {
   const [users, setUsers] = useState([]);
   const eventsCollectionRef = collection(db, "events");
   const categoriesCollectionRef = collection(db, "categories");
-  const [user, setUser] = useState([]);
   const usersCollectionRef = collection(db, "user");
+  const [user, setUser] = useState([]);
+  const [userEvents, setUserEvents] = useState([]);
 
   // update ui after add a new event
   const handleAddEventsUI = (newEvent) => {
@@ -135,6 +136,33 @@ export default function AppContextProvider({ children }) {
       );
       setUser(userInfo);
     };
+
+    // the det all events of user
+    const getEventsOfUser = async () => {
+      try {
+        const data = await getDocs(collection(db, "user"));
+
+        const userData = data.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+
+        const userInfo = userData.filter(
+          (user) => user.email === auth.currentUser.email
+        );
+
+        if (userInfo.length > 0) {
+          const user = userInfo[0];
+
+          const events = user.events;
+          setUserEvents(events);
+        } else {
+          console.error("No user found with the current email.");
+        }
+      } catch (error) {
+        console.error("Error getting events of user:", error);
+      }
+    };
     updateExpiredEvents();
     getAllEvents();
     getAllCategories();
@@ -156,6 +184,7 @@ export default function AppContextProvider({ children }) {
     getAllEvents();
     getAllCategories();
     getAllUsers();
+    getEventsOfUser();
   }, []);
 
   return (
@@ -172,6 +201,7 @@ export default function AppContextProvider({ children }) {
         users,
         restoreUsers,
         handleDeleteUserUI,
+        userEvents,
       }}
     >
       {children}
