@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import EventBookButton from "../Components/EventBookButton";
 import { useNavigate, useParams } from "react-router-dom";
-import { db } from "../firebase/firebase-config";
+import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import BackTop from "../Components/BackTop";
 import StripePayment from "../Components/StripePayment";
@@ -11,7 +11,7 @@ export default function EventDetails() {
   const [event, setEvent] = useState({});
   const navigate = useNavigate();
   const { id } = useParams();
-  // console.log(id);
+
 
   // async function makePayment (){
   //   const stripe = await loadStripe("pk_test_51Pw0DIKNB1qa5niHFcBfkGral2f1ZSbRuOaqvO5w2c3oqZDDaJKKPDHKSXdiQV56Iote19LpvN3gTUcQrDTGthHo008GwiI8CJ")
@@ -25,7 +25,7 @@ export default function EventDetails() {
       const docRef = doc(db, "events", id);
 
       const selectedEvent = await getDoc(docRef);
-      console.log(selectedEvent.data());
+
       setEvent(selectedEvent.data());
     };
     getEventById();

@@ -4,7 +4,7 @@ import EyeIcon from "../Components/Icons/EyeIcon";
 import EyeSlashIcon from "../Components/Icons/EyeSlashIcon";
 import { toast } from "react-toastify";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase/firebase-config";
+import { auth, db } from "../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { Validation } from "../context/Authentication/ValidationContext";
 import NameValidation from "../Components/validations/NameValidation";
@@ -62,7 +62,7 @@ export default function SignUp() {
       ) {
         setDisabled(true);
         await createUserWithEmailAndPassword(auth, userEmail, userPass);
-        await addDoc(collection(db, "user"), {
+        await addDoc(collection(db, "users"), {
           firstName: userFirstName,
           lastName: userLastName,
           email: userEmail,
@@ -83,7 +83,7 @@ export default function SignUp() {
         setConfirmPassState(true);
       }
     } catch (err) {
-      console.log(err);
+
       setDisabled(false);
       if (err.code === "auth/email-already-in-use") {
         toast.error(

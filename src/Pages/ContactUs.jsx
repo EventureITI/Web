@@ -80,7 +80,7 @@ export default function ContactUs() {
     
 
     if (validateForm()) {
-      console.log("vailde");
+
       
       // Form is valid
       emailjs.sendForm('service_3rt1bak', 'template_9s02qmv', form.current, {
@@ -89,11 +89,11 @@ export default function ContactUs() {
       .then(
         () => {
           goToSuccess();
-          console.log('SUCCESS!');
+
         },
         (error) => {
           notifyError()
-          console.log('FAILED...', error.text);
+
         },
       );
       setFormData({
@@ -103,7 +103,7 @@ export default function ContactUs() {
         description: '',
       })
     }else{
-      console.log("error");
+
       
     }
   };

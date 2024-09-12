@@ -17,14 +17,14 @@ import {
   startAfter,
   where,
 } from "firebase/firestore";
-import { db } from "../firebase/firebase-config";
+import { db } from "../firebase";
 import CardsSkeleton from "../Components/Skeleton/CardsSkeleton";
 const ITEMS_PER_PAGE = 5;
 
 export default function EventsPage() {
   const { categories } = useContext(appContext);
   const { category } = useParams();
-  console.log(category);
+
 
   // const [searchTerm, setSearchTerm] = useState("");
   // const [searchResults, setSearchResults] = useState([]);
@@ -63,7 +63,7 @@ export default function EventsPage() {
   // useEffect(() => {
   //   handleCategoryAndSearch();
   // }, [searchTerm, category]);
-  // console.log(searchResults);
+
   //////////////////////////////////////////////last
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -81,7 +81,8 @@ export default function EventsPage() {
       countQuery = query(
         countQuery,
         where("title", ">=", searchTerm.toLowerCase()),
-        where("title", "<=", searchTerm.toLowerCase() + "\uf8ff")
+        where("title", "<=", searchTerm.toLowerCase() + "\uf8ff"),
+        where("isDeleted", "==", false)
       );
     } // Add category filter
     if (category !== "all") {
@@ -100,7 +101,7 @@ export default function EventsPage() {
     setTotalPages(totalPages);
   };
   const handleCategoryAndSearch = async (direction) => {
-    setSkeletonLoading(true)
+    setSkeletonLoading(true);
     try {
       let searchQuery = collection(db, "events");
 
@@ -141,9 +142,9 @@ export default function EventsPage() {
       setSearchResults(data);
       setSkeletonLoading(false);
       setFirstVisible(querySnapshot.docs[0]);
-      console.log(data[0]);
+
       setLastVisible(querySnapshot.docs[querySnapshot.docs.length - 1]);
-      console.log(data[data.length - 1]);
+
     } catch (error) {
       console.error("Error fetching documents: ", error);
     }

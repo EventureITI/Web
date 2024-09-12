@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { db, storage } from "../firebase/firebase-config";
+import { db, storage } from "../firebase";
 import { addDoc, collection, doc, getDoc, updateDoc } from "firebase/firestore";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
@@ -13,10 +13,10 @@ import convertTo24HourFormat from "../utils/formatTimeTo24Hrs";
 
 export default function CreateEvent() {
   const { id } = useParams();
-  console.log(id);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const mode = id === "new" ? "add" : "edit";
-  console.log(mode);
+
 
   const {
     handleAddEventsUI,
@@ -55,12 +55,12 @@ export default function CreateEvent() {
         }
       : events.find((e) => e.id === id)
   );
-  console.log(events, eventForm);
+
 
   useEffect(() => {
     if (mode === "edit") {
       const getEventById = async () => {
-        console.log("again");
+
         try {
           const docRef = doc(db, "events", id);
           const docSnap = await getDoc(docRef);
@@ -72,7 +72,7 @@ export default function CreateEvent() {
               eventForm?.startTime.includes("PM")
             ) {
               let startTime24F = convertTo24HourFormat(eventForm.startTime);
-              console.log(startTime24F);
+
               setEventForm((prevForm) => ({
                 ...prevForm,
                 startTime: startTime24F,
@@ -83,7 +83,7 @@ export default function CreateEvent() {
               eventForm?.endTime.includes("AM") ||
               eventForm?.endTime.includes("PM")
             ) {
-              console.log("time");
+
 
               let endTime24F = convertTo24HourFormat(eventForm.endTime);
               setEventForm((prevForm) => ({
@@ -92,17 +92,17 @@ export default function CreateEvent() {
               }));
             }
           } else {
-            console.log("No such document");
+
           }
         } catch (err) {
           console.error("Error fetching document:", err);
         }
       };
       getEventById();
-      console.log(eventForm);
+
       if (eventForm) {
         let startTime24F = convertTo24HourFormat(eventForm.startTime);
-        console.log(startTime24F);
+
         setEventForm((prevForm) => ({
           ...prevForm,
           startTime: startTime24F,
@@ -146,9 +146,9 @@ export default function CreateEvent() {
       }));
       // e.target.blur();
     }
-    console.log(eventForm.startDate);
-    console.log(name, value);
-    console.log(eventForm.startDate < value);
+
+
+
     try {
       await eventSchema.validateAt(name, { [name]: value });
 
@@ -194,7 +194,7 @@ export default function CreateEvent() {
             endTime: formattedTime.endTime,
             title: eventForm.title.toLowerCase(),
           });
-          console.log(docRef);
+
           handleAddEventsUI({
             ...eventForm,
             id: docRef.id,
@@ -204,9 +204,9 @@ export default function CreateEvent() {
           });
           toast.success("Event added successfully");
         } else {
-          console.log(id);
-          console.log(formattedTime);
-          console.log(eventForm);
+
+
+
 
           const eventToBeUpdated = doc(db, "events", id);
           await updateDoc(eventToBeUpdated, {
@@ -248,11 +248,11 @@ export default function CreateEvent() {
   // take image file from input then convert it to url
   const handleUploadImage = (e) => {
     setLoading(true);
-    const imagesRef = ref(storage, `images/${uuid()}`);
+    const imagesRef = ref(storage, `eventImg/${uuid()}`);
     uploadBytes(imagesRef, e.target.files[0]).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
-        console.log(url);
-        console.log(typeof url);
+
+
         // setEventImg((prevUrl) => (prevUrl = url));
         setEventForm((prevForm) => ({
           ...prevForm,
@@ -263,9 +263,9 @@ export default function CreateEvent() {
       });
     });
   };
-  console.log(eventForm);
-  console.log(errors);
-console.log(isSubmitting);
+
+
+
 
   return (
     <div className="bg-bg-main px-6 pt-8 pb-4">

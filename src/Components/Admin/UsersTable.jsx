@@ -4,12 +4,12 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import DeleteIcon from "../Icons/DeleteIcon";
 import { deleteDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { db } from "../../firebase/firebase-config";
+import { db } from "../../firebase";
 
 export default function UsersTable() {
   const { users, restoreUsers, handleDeleteUserUI } = useContext(appContext);
   const tableHeaders = ["#", "Full Name", "Email"];
-  console.log(users);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const handleOpenModal = (user) => {
@@ -22,12 +22,12 @@ export default function UsersTable() {
   };
   const handleDeleteUser = async () => {
     const id = selectedUser.id;
-    console.log(id);
+
     const usersBeforeDelete = users;
     try {
       handleDeleteUserUI(id);
       setIsModalOpen(false);
-      const userToBeDeletedDoc = doc(db, "user", id);
+      const userToBeDeletedDoc = doc(db, "users", id);
       await deleteDoc(userToBeDeletedDoc);
       toast.success("User deleted successfully");
     } catch (err) {

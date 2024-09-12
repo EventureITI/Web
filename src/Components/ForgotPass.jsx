@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Validation } from "../context/Authentication/ValidationContext";
 import SignupEmailValidation from "./validations/SignupEmailValidation";
 import { fetchSignInMethodsForEmail, sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../firebase/firebase-config";
+import { auth } from "../firebase";
 import { toast } from "react-toastify";
 
 export default function ForgotPass() {
@@ -26,7 +26,7 @@ export default function ForgotPass() {
             setEmailState(true)
         }
     } catch (err) {
-      console.log(err);
+
       toast.error("Something went wrong, try again later", {
         icon: <img src="/images/carbon_user-avatar-filled.svg"></img>,
         progressStyle: { background: "white" },

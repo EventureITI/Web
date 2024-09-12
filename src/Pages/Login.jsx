@@ -4,7 +4,7 @@ import EyeIcon from "../Components/Icons/EyeIcon";
 import EyeSlashIcon from "../Components/Icons/EyeSlashIcon";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { toast } from "react-toastify";
-import { auth, db } from "../firebase/firebase-config";
+import { auth, db } from "../firebase";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +35,7 @@ export default function Login() {
     //get logged in user info
     // const data = await getDocs(collection(db,"user"))
     // const userInfo = data.docs.map((doc)=>({...doc.data()}))
-    // console.log(userInfo.filter((e)=>e.email == userEmail)[0].firstName);
+
     
     try {
       setDisabled(true)
@@ -48,7 +48,7 @@ export default function Login() {
       });
     } catch (err) {
       setDisabled(false)
-      console.log(err);
+
       if (err.code == "auth/missing-email") {
         setInvalid(true);
         setEmailErr(true);

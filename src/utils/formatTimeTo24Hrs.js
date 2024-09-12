@@ -1,9 +1,9 @@
 function convertTo24HourFormat(time12h) {
-  console.log(time12h);
+
   if (time12h.includes("AM") || time12h.includes("PM")) {
     const [time, modifier] = time12h.split(" "); // Split the time and the AM/PM modifier
     let [hours, minutes] = time.split(":"); // Split the hours and minutes
-    console.log(time, " |", modifier);
+
 
     if (hours === "12") {
       hours = "00"; // Convert 12 AM to 00 hours

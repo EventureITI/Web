@@ -6,7 +6,7 @@ import { appContext } from "./AppContext";
 export const searchEvents = createContext();
 export default function SearchEventsContext({ children }) {
   // const { event } = useContext(appContext);
-  // console.log(event)
+
 
   const events = [
     //   {
@@ -67,7 +67,7 @@ export default function SearchEventsContext({ children }) {
 
   const [searched, setSearched] = useState(events);
   const [searchWord, SetSearchWord] = useState("");
-  console.log(searched);
+
 
   function searchEvent(e) {
     SetSearchWord(e.target.value);
@@ -78,7 +78,7 @@ export default function SearchEventsContext({ children }) {
       e.title?.toLowerCase().includes(searchWord?.toLowerCase())
     );
     setSearched(data);
-    console.log(searched);
+
   }, [searchWord]);
 
   return (

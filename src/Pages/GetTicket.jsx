@@ -3,7 +3,7 @@ import AppContextProvider, { appContext } from '../context/AppContext';
 import { useParams } from 'react-router-dom';
 import formatDate from '../utils/formatDayAndYear';
 import { addDoc, arrayUnion, doc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
-import { auth, db} from '../firebase/firebase-config';
+import { auth, db} from '../firebase';
 import { AuthDetails } from '../context/Authentication/AuthDetailsContext';
 
 export default function GetTicket() {
@@ -39,7 +39,7 @@ export default function GetTicket() {
             await updateDoc(docRef, { 
                 events: arrayUnion(eventData)
               });
-            console.log('Events added to Firestore successfully!');
+
           } catch (error) {
             console.error('Error adding events: ', error);
           }

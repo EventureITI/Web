@@ -36,14 +36,14 @@ export default function DashboardAdmin() {
   //   : events.filter((event) =>
   //       event.title.toLowerCase().includes(searchAdminKey.toLowerCase())
   //     );
-  // console.log(filteredSearchAdminEvents);
+
   //pagination logic
   // const pageSize = 5;
   // // const pages = generateArrayFromNumber(
   // //   Math.ceil(filteredSearchAdminEvents.length / pageSize)
   // // );
   // const pageToStart = (currentPage - 1) * pageSize;
-  // console.log(pageToStart);
+
 
   // const paginatedEvents = filteredSearchAdminEvents.slice(
   //   pageToStart,
@@ -178,7 +178,7 @@ export default function DashboardAdmin() {
   // };
 
   // if (loading) return <TableSkeleton />;
-  // console.log("results", searchResults);
+
 
   return (
     <div className="bg-bg-main px-4 pt-16 pb-4 min-h-screen">

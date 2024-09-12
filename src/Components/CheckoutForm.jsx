@@ -27,8 +27,8 @@ export default function CheckoutForm() {
 
     if (result.error) {
       // Show error to your customer (for example, payment details incomplete)
-      console.log(result.error.message);
-      console.log("error");
+
+
       
     } else {
       // Your customer will be redirected to your `return_url`. For some payment

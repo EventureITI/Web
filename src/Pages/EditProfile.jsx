@@ -3,7 +3,7 @@ import EyeIcon from "../Components/Icons/EyeIcon";
 import EyeSlashIcon from "../Components/Icons/EyeSlashIcon";
 import { useNavigate } from "react-router-dom";
 import { Validation } from "../context/Authentication/ValidationContext";
-import { auth, db, storage } from "../firebase/firebase-config";
+import { auth, db, storage } from "../firebase";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
@@ -66,7 +66,7 @@ export default function EditProfile() {
         await sendEmailVerification(auth.currentUser)
         try{
           await updateEmail(auth.currentUser, userEmail);
-          await updateDoc(doc(db, "user", userInfoId), {
+          await updateDoc(doc(db, "users", userInfoId), {
             firstName: userFirstName,
             lastName: userLastName,
             email: userEmail,
@@ -80,7 +80,7 @@ export default function EditProfile() {
         });
         navigate("/");
       }catch(err){
-        console.log(err);
+
         
       }
       } else {
@@ -88,7 +88,7 @@ export default function EditProfile() {
         setEmailState(true);
       }
     } catch (err) {
-      console.log(err);
+
       toast.error("Something went wrong, try again later");
     }
   }
@@ -98,7 +98,7 @@ export default function EditProfile() {
     const imagesRef = ref(storage, `userImg/${uuid()}`);
     uploadBytes(imagesRef, e.target.files[0]).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
-        // console.log(url);
+
         setUserInfoImg(url);
       });
     });
@@ -106,7 +106,7 @@ export default function EditProfile() {
 
   useEffect(() => {
     const setData = async () => {
-      const data = await getDocs(collection(db, "user"));
+      const data = await getDocs(collection(db, "users"));
       const userData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
       const userInfo = userData.filter(
         (e) => e.email == auth.currentUser.email

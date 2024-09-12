@@ -10,7 +10,7 @@ export default function StripePayment() {
   const navigate = useNavigate()
     function onToken(token){
       navigate("/")
-      console.log(token);
+
     }
 
 

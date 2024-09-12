@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { auth, db } from "../../firebase/firebase-config";
+import { auth, db } from "../../firebase";
 import { Navigate, Outlet } from "react-router-dom";
 import { collection, getDocs } from "firebase/firestore";
 import { AuthDetails } from "../../context/Authentication/AuthDetailsContext";
@@ -9,7 +9,7 @@ export default function AdminAuthentication({ children }) {
   const { auther, loading } = useContext(AuthDetails);
   useEffect(() => {
     const getData = async () => {
-      const data = await getDocs(collection(db, "user"));
+      const data = await getDocs(collection(db, "users"));
       const info = data.docs.map((doc) => ({ ...doc.data() }));
       const userInfo = info.filter((e) => e.email == auth.currentUser?.email);
       setRole(userInfo[0].role);

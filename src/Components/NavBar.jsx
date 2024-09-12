@@ -8,12 +8,12 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import { db } from "../firebase/firebase-config";
+import { db } from "../firebase";
 import NavBtns from "./NavBtns";
 import { AuthDetails } from "../context/Authentication/AuthDetailsContext";
 import { signOut } from "firebase/auth";
 import { toast } from "react-toastify";
-import { auth } from "../firebase/firebase-config";
+import { auth } from "../firebase";
 
 export default function NavBar() {
   const [searchNavbarKey, setSearchNavbarKey] = useState("");
@@ -34,7 +34,7 @@ export default function NavBar() {
 
   useEffect(() => {
     const setData = async () => {
-      const data = await getDocs(collection(db, "user"));
+      const data = await getDocs(collection(db, "users"));
       const userData = data.docs.map((doc) => ({ ...doc.data() }));
       const userInfo = userData.filter(
         (e) => e.email == auth.currentUser?.email
@@ -58,7 +58,7 @@ export default function NavBar() {
         style: { backgroundColor: "#00796B", color: "white" },
       });
     } catch (err) {
-      console.log(err);
+
       toast.error("Something went wrong, try again later", {
         icon: <img src="/images/carbon_user-avatar-filled.svg"></img>,
         progressStyle: { background: "white" },
@@ -77,12 +77,12 @@ export default function NavBar() {
     } else {
       setItems(false);
     }
-    console.log(e.target);
-    console.log(items);
+
+
   });
 
   function allItems() {
-    console.log("hi");
+
 
     setItems(!items);
     setProfile(false);
@@ -100,7 +100,7 @@ export default function NavBar() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const handleSearch = async () => {
-    console.log(searchTerm);
+
 
     if (searchTerm) {
       try {
@@ -124,7 +124,7 @@ export default function NavBar() {
   useEffect(() => {
     handleSearch();
   }, [searchTerm]);
-  console.log("results", searchResults);
+
   return (
     <>
       {role == "admin" ? (

@@ -3,13 +3,13 @@ import { appContext } from "../context/AppContext";
 
 export default function Pagination({
   currentPage,
-  handleChangePage,
+  // handleChangePage,
   pages,
   handelPaginationNextBtn,
   handelPaginationPrevBtn,
 }) {
-  console.log(currentPage);
-  console.log(pages.length);
+
+
 
   if (pages.length <= 1) return null;
   return (

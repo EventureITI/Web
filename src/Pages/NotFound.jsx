@@ -1,7 +1,7 @@
 import { collection, getDocs } from "firebase/firestore";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "../firebase/firebase-config";
+import { auth, db } from "../firebase";
 
 export default function NotFound() {
   const navigate = useNavigate();
@@ -9,7 +9,7 @@ export default function NotFound() {
 
   useEffect(() => {
     const setData = async () => {
-      const data = await getDocs(collection(db, "user"));
+      const data = await getDocs(collection(db, "users"));
       const userData = data.docs.map((doc) => ({ ...doc.data() }));
       const userInfo = userData.filter(
         (e) => e.email == auth.currentUser?.email
