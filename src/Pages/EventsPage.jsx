@@ -19,7 +19,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import CardsSkeleton from "../Components/Skeleton/CardsSkeleton";
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 10;
 const DEBOUNCE_DELAY = 500; // Delay in ms for debouncing
 export default function EventsPage() {
   // const [searchTerm, setSearchTerm] = useState("");
