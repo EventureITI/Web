@@ -10,7 +10,7 @@ export default function Authenticated({ children }) {
 
   useEffect(() => {
     const getData = async () => {
-      const data = await getDocs(collection(db, "user"));
+      const data = await getDocs(collection(db, "users"));
       const info = data.docs.map((doc) => ({ ...doc.data() }));
       const userInfo = info.filter((e) => e.email == auth.currentUser?.email);
       setRole(userInfo[0]?.role);

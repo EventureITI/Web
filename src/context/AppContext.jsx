@@ -22,19 +22,16 @@ export default function AppContextProvider({ children }) {
   const usersCollectionRef = collection(db, "users");
   const [user, setUser] = useState([]);
   const [userEvents, setUserEvents] = useState([]);
-  const [eventBanner,setEventBanner]=useState(null)
-
+  const [eventBanner, setEventBanner] = useState(null);
 
   // update ui after add a new event
   const handleAddEventsUI = (newEvent) => {
-
     const newEvents = [...events, newEvent];
     setEvents(newEvents);
   };
 
   // update ui after edit an event
   const handleEditEventUI = (event) => {
-
     const newEvents = [...events];
     let index = newEvents.findIndex((e) => e.id === event.id);
     newEvents[index] = event;
@@ -52,7 +49,6 @@ export default function AppContextProvider({ children }) {
   const handleDeleteUserUI = (id) => {
     let newUsers = [...users];
     newUsers = newUsers.filter((u) => u.id !== id);
-
 
     setUsers(newUsers);
   };
@@ -75,7 +71,7 @@ export default function AppContextProvider({ children }) {
         const q = query(
           collection(db, "events"),
           where("isDeleted", "==", false),
-          orderBy("eventDate","asc")
+          orderBy("eventDate", "asc")
         );
         const data = onSnapshot(q, (QuerySnapshot) => {
           let eventsArr = [];
@@ -83,12 +79,11 @@ export default function AppContextProvider({ children }) {
             eventsArr.push({ ...doc.data(), id: doc.id });
           });
           setEvents(eventsArr);
-          setEventBanner(eventsArr[0])
+          setEventBanner(eventsArr[0]);
           setLoading(false);
         });
         return () => data;
       } catch (error) {
-
         setLoading(false);
       }
     };
@@ -100,9 +95,7 @@ export default function AppContextProvider({ children }) {
           id: doc.id,
         }));
         setCategories(categoriesData);
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
     const updateExpiredEvents = async () => {
       // const currentDate = new Date().toISOString().split("T")[0];
@@ -118,11 +111,9 @@ export default function AppContextProvider({ children }) {
         querySnapshot.forEach(async (docSnapshot) => {
           const eventRef = doc(db, "events", docSnapshot.id);
 
-
           await updateDoc(eventRef, {
             isDeleted: true,
           });
-
         });
       } catch (error) {
         console.error("Error updating documents: ", error);
@@ -159,10 +150,10 @@ export default function AppContextProvider({ children }) {
           const events = user.events;
           setUserEvents(events);
         } else {
-          console.error("No user found with the current email.");
+          // console.error("No user found with the current email.");
         }
       } catch (error) {
-        console.error("Error getting events of user:", error);
+        // console.error("Error getting events of user:", error);
       }
     };
     updateExpiredEvents();
@@ -178,9 +169,7 @@ export default function AppContextProvider({ children }) {
           id: doc.id,
         }));
         setUsers(usersData);
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
     updateExpiredEvents();
     getAllEvents();
@@ -204,7 +193,7 @@ export default function AppContextProvider({ children }) {
         restoreUsers,
         handleDeleteUserUI,
         userEvents,
-        eventBanner
+        eventBanner,
       }}
     >
       {children}

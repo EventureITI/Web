@@ -29,19 +29,19 @@ export default function NavBar() {
   const menuRef = useRef();
   const pathRef = useRef();
   const navigate = useNavigate();
-  const [loading,setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const setData = async () => {
-const data = await getDocs(collection(db, "users"));
-      setLoading(false)
+      const data = await getDocs(collection(db, "users"));
+      setLoading(false);
       const userData = data.docs.map((doc) => ({ ...doc.data() }));
       const userInfo = userData.filter(
         (e) => e.email == auth.currentUser?.email
       );
-      if(userInfo[0]?.imgURL == ""){
-        setUserImg("/images/carbon_user-avatar-filled.svg")
-      }else{
+      if (userInfo[0]?.imgURL == "") {
+        setUserImg("/images/carbon_user-avatar-filled.svg");
+      } else {
         setUserImg(userInfo[0]?.imgURL);
       }
       setRole(userInfo[0]?.role);
@@ -61,7 +61,6 @@ const data = await getDocs(collection(db, "users"));
         style: { backgroundColor: "#00796B", color: "white" },
       });
     } catch (err) {
-
       toast.error("Something went wrong, try again later", {
         icon: <img src="/images/carbon_user-avatar-filled.svg"></img>,
         progressStyle: { background: "white" },
@@ -117,8 +116,8 @@ const data = await getDocs(collection(db, "users"));
     handleSearch();
   }, [searchTerm]);
 
-  if(loading){
-    return (<div></div>)
+  if (loading) {
+    return <div></div>;
   }
 
   return (
@@ -168,7 +167,7 @@ const data = await getDocs(collection(db, "users"));
           className=" border-gray-200 fixed w-full z-30 dark:bg-gray-900 "
           style={{
             background:
-              "linear-gradient(180deg, rgba(26, 26, 26, 0.60) 50%, rgba(26, 26, 26, 0.00) 80%, rgba(26, 26, 26, 0.00) 10%)",
+              "linear-gradient(180deg, rgba(26, 26, 26, 0.70) 00%, rgba(26, 26, 26, 0.60) 50%, rgba(26, 26, 26, 0.00) 80%, rgba(26, 26, 26, 0.00) 10%)",
           }}
         >
           <div className="max-w-screen-xl flex flex-nowrap items-center justify-between mx-auto p-4">
@@ -290,7 +289,14 @@ const data = await getDocs(collection(db, "users"));
                       className="btn btn-ghost btn-circle avatar"
                     >
                       <div className="w-10 rounded-full">
-                        <img alt="profile img" src={loading? "/images/carbon_user-avatar-filled.svg":userImg} />
+                        <img
+                          alt="profile img"
+                          src={
+                            loading
+                              ? "/images/carbon_user-avatar-filled.svg"
+                              : userImg
+                          }
+                        />
                       </div>
                     </div>
                     {profile && (

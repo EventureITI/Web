@@ -63,7 +63,7 @@ export default function SignUp() {
         setDisabled(true);
         await createUserWithEmailAndPassword(auth, userEmail, userPass);
         await sendEmailVerification(auth.currentUser)
-        await addDoc(collection(db, "user"), {
+        await addDoc(collection(db, "users"), {
           firstName: userFirstName,
           lastName: userLastName,
           email: userEmail,
