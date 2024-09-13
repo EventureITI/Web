@@ -32,7 +32,7 @@ export default function GetTicket() {
   };
 
   const addEventsToFirestore = async (eventData) => {
-    const id = user[0]["id"];
+    const id = user.id;
     const docRef = doc(db, `users/${id}`);
     try {
       await updateDoc(docRef, {

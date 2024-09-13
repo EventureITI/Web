@@ -127,9 +127,10 @@ export default function AppContextProvider({ children }) {
       const userInfo = userData.filter(
         (e) => e.email == auth.currentUser?.email
       );
-      setUser(userInfo);
+      setUser(userInfo[0]);
+      console.log(userInfo);
+      
     };
-
     // the det all events of user
     const getEventsOfUser = async () => {
       try {
@@ -177,7 +178,9 @@ export default function AppContextProvider({ children }) {
     getAllUsers();
     getEventsOfUser();
   }, []);
-
+  // console.log(user);
+  // console.log(userEvents);
+  
   return (
     <appContext.Provider
       value={{
@@ -194,6 +197,8 @@ export default function AppContextProvider({ children }) {
         handleDeleteUserUI,
         userEvents,
         eventBanner,
+        setUserEvents
+        
       }}
     >
       {children}
