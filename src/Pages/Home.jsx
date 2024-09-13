@@ -9,6 +9,7 @@ import SeeMoreSkeleton from "../Components/Skeleton/SeeMoreSkeleton";
 import FooterSkeleton from "../Components/Skeleton/FooterSkeleton";
 import { appContext } from "../context/AppContext";
 import BackTop from "../Components/BackTop";
+import MainSkeleton from "../Components/Skeleton/MainSkeleton";
 
 export default function Home() {
   const [skeleton, setSkeleton] = useState(false);
@@ -33,6 +34,7 @@ export default function Home() {
         <div>
           <NavBarSkeleton />
           <div className="w-full h-full bg-bg-main">
+            <MainSkeleton/>
             <div className="container mx-auto px-4 pt-20">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <CardsSkeleton />
