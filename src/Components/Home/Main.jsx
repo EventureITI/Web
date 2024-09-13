@@ -33,7 +33,7 @@ export default function Main() {
         <div className="mb-4 md:mb-6 w-12">
           <CategoryBtn
             category={categoryName}
-            path={"/events-page/comedy"}
+            path={`/events-page/${categoryName}`}
             classes={"text-xs sm:text-sm"}
           />
         </div>
@@ -49,7 +49,7 @@ export default function Main() {
             </div>
           </div>
           <div className="mb-5 md:mb-16">
-            <BookButton />
+            <BookButton id={eventBanner.id} />
           </div>
         </div>
       </div>
