@@ -16,21 +16,23 @@ export default function PaymentSuccess() {
     }
   }, [location]);
 
-  const addEventsToFirestore = async (eventData) => {
-    const id = user[0]["id"];
-    const docRef = doc(db, `users/${id}`);
-    try {
-      await updateDoc(docRef, {
-        events: arrayUnion(eventData),
-      });
-    } catch (error) {
-      console.error("Error adding events: ", error);
-    }
-  };
+  /* ------------------------------ TESTING-START ----------------------------- */
+  // const addEventsToFirestore = async (eventData) => {
+  //   const id = user[0]["id"];
+  //   const docRef = doc(db, `users/${id}`);
+  //   try {
+  //     await updateDoc(docRef, {
+  //       events: arrayUnion(eventData),
+  //     });
+  //   } catch (error) {
+  //     console.error("Error adding events: ", error);
+  //   }
+  // };
 
-  if (eventData) {
-    addEventsToFirestore(eventData);
-  }
+  // if (eventData) {
+  //   addEventsToFirestore(eventData);
+  // }
+  /* ------------------------------- TESTING-END ------------------------------ */
 
   return (
     <div className="bg-bg-main min-h-screen px-20 pb-16 pt-[114px] flex-col justify-center items-center gap-8 flex">
@@ -46,10 +48,16 @@ export default function PaymentSuccess() {
         </div>
       </div>
       <div className="flex-col justify-center items-center gap-4 flex">
-        <Link to={"/profile"} className="w-[348px] h-[51px] flex justify-center items-center bg-main-color hover:bg-main-hover transition duration-300 ease-in-out text-white font-bold py-4 px-6 rounded-2xl">
+        <Link
+          to={"/profile"}
+          className="w-[348px] h-[51px] flex justify-center items-center bg-main-color hover:bg-main-hover transition duration-300 ease-in-out text-white font-bold py-4 px-6 rounded-2xl"
+        >
           View My Tickets
         </Link>
-        <Link to={`/event/${eventData.id}`} className=" w-[348px]   h-[51px]  flex justify-center items-center text-white font-bold py-4 px-6 transition duration-300 ease-in-out rounded-2xl border-2 border-teal-500 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500">
+        <Link
+          // to={`/event/${eventData.id}`}
+          className=" w-[348px]   h-[51px]  flex justify-center items-center text-white font-bold py-4 px-6 transition duration-300 ease-in-out rounded-2xl border-2 border-teal-500 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+        >
           Back To Event
         </Link>
       </div>
