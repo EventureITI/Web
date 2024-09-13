@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import StripePayment from "../Components/StripePayment";
 import { AuthDetails } from "../context/Authentication/AuthDetailsContext";
 
-export default function EventBookButton({ id }) {
+export default function EventBookButton({ id, price }) {
   const { auther } = useContext(AuthDetails);
 
   return (
@@ -11,11 +11,7 @@ export default function EventBookButton({ id }) {
       to={`/event-details/${id}/get-ticket`}
       className="w-full h-14 relative overflow-hidden text-white bg-main-color rounded-2xl flex justify-center items-center hover:bg-main-hover"
     >
-      {/* <div className='absolute w-full h-full'>
-        <StripePayment/>
-      </div> */}
-      {/* href={auther?"https://buy.stripe.com/test_dR6eWxeZZ23Fem4cMO":"/login"} */}
-      <a className="flex w-full justify-center">
+      <div className="flex w-full justify-center">
         <svg
           width="24"
           height="24"
@@ -36,8 +32,8 @@ export default function EventBookButton({ id }) {
             </clipPath>
           </defs>
         </svg>
-        <p className="mx-2">600 EGP</p>
-      </a>
+        <p className="mx-2">{price} EGP</p>
+      </div>
     </Link>
   );
 }

@@ -12,13 +12,6 @@ export default function EventDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // async function makePayment (){
-  //   const stripe = await loadStripe("pk_test_51Pw0DIKNB1qa5niHFcBfkGral2f1ZSbRuOaqvO5w2c3oqZDDaJKKPDHKSXdiQV56Iote19LpvN3gTUcQrDTGthHo008GwiI8CJ")
-
-  //   const body = {
-  //   }
-  // }
-
   useEffect(() => {
     const getEventById = async () => {
       const docRef = doc(db, "events", id);
@@ -32,14 +25,13 @@ export default function EventDetails() {
     <>
       <div className="w-full bg-bg-main">
         <div className="hidden md:block">
-          <div className="px-8 w-3/12 h-2/6 bg-[#292929] fixed z-10 right-10 top-40 rounded-lg shadow-lg flex flex-col justify-evenly min-w-72">
+          <div className="px-8 py-6 w-3/12 bg-[#292929] fixed z-10 right-10 top-40 rounded-lg shadow-lg flex flex-col gap-3 justify-evenly min-w-72">
             <p className="text-white text-xl font-bold">Book a Ticket</p>
             <div>
               <p className="capitalize text-[#909090]">{event.eventDate}</p>
               <p className="text-[#909090] uppercase">{event.startTime}</p>
             </div>
-            <EventBookButton id={id}></EventBookButton>
-            <div>{/* <StripePayment/> */}</div>
+            <EventBookButton id={id} price={event.price} />
           </div>
         </div>
 
