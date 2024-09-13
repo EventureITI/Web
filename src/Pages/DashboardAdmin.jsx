@@ -44,7 +44,6 @@ export default function DashboardAdmin() {
   // // );
   // const pageToStart = (currentPage - 1) * pageSize;
 
-
   // const paginatedEvents = filteredSearchAdminEvents.slice(
   //   pageToStart,
   //   pageToStart + pageSize
@@ -179,35 +178,15 @@ export default function DashboardAdmin() {
 
   // if (loading) return <TableSkeleton />;
 
-
   return (
     <div className="bg-bg-main px-4 pt-16 pb-4 min-h-screen">
       {loading ? (
         <DashboardSkeleton />
       ) : (
         <>
-          <Tabs className="p-10">
-            <TabList className="flex flex-wrap -m-4 text-center justify-center">
-              <Tab className="p-4 md:w-1/3 sm:w-1/2 w-full cursor-pointer">
-                <div className="bg-main-color transition duration-300 ease-in-out hover:bg-main-hover px-4 py-8 rounded-lg">
-                  <p className=" text-white font-bold">Events</p>
-                </div>
-              </Tab>
-              <Tab className="p-4 md:w-1/3 sm:w-1/2 w-full cursor-pointer">
-                <div className="bg-main-color transition duration-300 ease-in-out hover:bg-main-hover px-4 py-8 rounded-lg">
-                  <p className=" text-white font-bold">Users</p>
-                </div>
-              </Tab>
-            </TabList>
+          {/* <div className="justify-center items-end gap-8 flex mb-10"> */}
 
-            {/* <div className="justify-center items-end gap-8 flex mb-10"> */}
-            <TabPanel>
-              <EventsTable />
-            </TabPanel>
-            <TabPanel>
-              <UsersTable />
-            </TabPanel>
-          </Tabs>
+          <EventsTable />
         </>
       )}
     </div>
