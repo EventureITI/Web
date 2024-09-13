@@ -21,6 +21,7 @@ export default function EditProfile() {
   const [editPic, setEditPic] = useState(false);
   const [userInfoImg, setUserInfoImg] = useState("");
   const [userInfoId, setUserInfoId] = useState("");
+  const [loadImg, setLoadImg] = useState();
   const {loading,setLoading} = useContext(AuthDetails);
 
   useEffect(() => {
@@ -104,6 +105,7 @@ export default function EditProfile() {
 
   //Change img URL
   const handleUploadImage = (e) => {
+    setLoadImg(true)
     const imagesRef = ref(storage, `userImg/${uuid()}`);
     uploadBytes(imagesRef, e.target.files[0]).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
@@ -111,6 +113,9 @@ export default function EditProfile() {
         setUserInfoImg(url);
       });
     });
+    setTimeout(() => {
+      setLoadImg(false)
+    }, 3000);
   };
 
   useEffect(() => {
@@ -162,10 +167,11 @@ export default function EditProfile() {
             <div
               onMouseEnter={picHover}
               onMouseLeave={noPicHover}
-              className="rounded-full w-32 h-32 relative overflow-hidden"
+              className="rounded-full w-32 h-32 relative overflow-hidden border"
               style={{
-                backgroundImage: `url(${userInfoImg})`,
+                backgroundImage: `url(${loadImg?"/images/loading3.gif":userInfoImg})`,
                 backgroundSize: "cover",
+                backgroundPosition: "center"
               }}
             >
               <input
