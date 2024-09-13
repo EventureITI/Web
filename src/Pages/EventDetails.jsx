@@ -4,8 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { db } from "../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import BackTop from "../Components/BackTop";
-import StripePayment from "../Components/StripePayment";
-import { loadStripe } from "@stripe/stripe-js";
 
 export default function EventDetails() {
   const [event, setEvent] = useState({});

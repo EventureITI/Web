@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import StripePayment from "../Components/StripePayment";
 import { AuthDetails } from "../context/Authentication/AuthDetailsContext";
 
 export default function EventBookButton({ id, price }) {
