@@ -22,7 +22,7 @@ export default function EditProfile() {
   const [userInfoImg, setUserInfoImg] = useState("");
   const [userInfoId, setUserInfoId] = useState("");
   const [loadImg, setLoadImg] = useState();
-  const {loading,setLoading} = useContext(AuthDetails);
+  const { loading, setLoading } = useContext(AuthDetails);
 
   useEffect(() => {
     if (auth.currentUser) {
@@ -75,7 +75,7 @@ export default function EditProfile() {
         // await sendEmailVerification(auth.currentUser)
         // try{
         // await updateEmail(auth.currentUser, userEmail);
-        await updateDoc(doc(db, "user", userInfoId), {
+        await updateDoc(doc(db, "users", userInfoId), {
           firstName: userFirstName,
           lastName: userLastName,
           email: userEmail,
@@ -103,7 +103,7 @@ export default function EditProfile() {
 
   //Change img URL
   const handleUploadImage = (e) => {
-    setLoadImg(true)
+    setLoadImg(true);
     const imagesRef = ref(storage, `userImg/${uuid()}`);
     uploadBytes(imagesRef, e.target.files[0]).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
@@ -111,7 +111,7 @@ export default function EditProfile() {
       });
     });
     setTimeout(() => {
-      setLoadImg(false)
+      setLoadImg(false);
     }, 3000);
   };
 
@@ -166,9 +166,11 @@ export default function EditProfile() {
               onMouseLeave={noPicHover}
               className="rounded-full w-32 h-32 relative overflow-hidden border"
               style={{
-                backgroundImage: `url(${loadImg?"/images/loading3.gif":userInfoImg})`,
+                backgroundImage: `url(${
+                  loadImg ? "/images/loading3.gif" : userInfoImg
+                })`,
                 backgroundSize: "cover",
-                backgroundPosition: "center"
+                backgroundPosition: "center",
               }}
             >
               <input
