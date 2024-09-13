@@ -21,12 +21,11 @@ export default function EditProfile() {
   const [editPic, setEditPic] = useState(false);
   const [userInfoImg, setUserInfoImg] = useState("");
   const [userInfoId, setUserInfoId] = useState("");
-  const {loading,setLoading} = useContext(AuthDetails);
+  const { loading, setLoading } = useContext(AuthDetails);
 
   useEffect(() => {
     if (auth.currentUser) {
-      console.log(auth.currentUser.emailVerified);
-       // Check if the email is verified
+      // Check if the email is verified
     }
   }, []);
 
@@ -59,7 +58,7 @@ export default function EditProfile() {
     handleConfirmPass,
   } = useContext(Validation);
   const navigate = useNavigate();
-  const [role,setRole] = useState();
+  const [role, setRole] = useState();
 
   // save profile edits
   async function handleEditProfile(e) {
@@ -74,11 +73,11 @@ export default function EditProfile() {
       ) {
         // await sendEmailVerification(auth.currentUser)
         // try{
-          // await updateEmail(auth.currentUser, userEmail);
-          await updateDoc(doc(db, "user", userInfoId), {
-            firstName: userFirstName,
-            lastName: userLastName,
-            email: userEmail,
+        // await updateEmail(auth.currentUser, userEmail);
+        await updateDoc(doc(db, "user", userInfoId), {
+          firstName: userFirstName,
+          lastName: userLastName,
+          email: userEmail,
           imgURL: userInfoImg,
         });
         await updatePassword(auth.currentUser, userPass);
@@ -88,16 +87,15 @@ export default function EditProfile() {
           style: { backgroundColor: "#00796B", color: "white" },
         });
         navigate("/");
-      // }catch(err){
-      //   console.log(err);
-        
-      // }
+        // }catch(err){
+        //   console.log(err);
+
+        // }
       } else {
         setNameState(true);
         setEmailState(true);
       }
     } catch (err) {
-
       toast.error("Something went wrong, try again later");
     }
   }
@@ -107,7 +105,6 @@ export default function EditProfile() {
     const imagesRef = ref(storage, `userImg/${uuid()}`);
     uploadBytes(imagesRef, e.target.files[0]).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
-
         setUserInfoImg(url);
       });
     });
@@ -125,7 +122,7 @@ export default function EditProfile() {
       setUserLastName(userInfo[0].lastName);
       setUserEmail(userInfo[0].email);
       setRole(userInfo[0].role);
-      setLoading(false)
+      setLoading(false);
       {
         userInfo[0].imgURL != ""
           ? setUserInfoImg(userInfo[0].imgURL)
@@ -143,8 +140,8 @@ export default function EditProfile() {
     setEditPic(false);
   }
 
-  if(loading){
-    return <div></div>
+  if (loading) {
+    return <div></div>;
   }
   return (
     <div className=" bg-bg-main px-50">

@@ -242,7 +242,7 @@ const data = await getDocs(collection(db, "users"));
                                   navigate(`/event-details/${event.id}`)
                                 }
                               >
-                                <div className="flex items-center gap-2">
+                                <div className="flex items-center gap-2 capitalize">
                                   <img
                                     className="w-10"
                                     src={event.imgUrl}

@@ -16,12 +16,8 @@ export default function CreateEvent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const mode = id === "new" ? "add" : "edit";
 
-  const {
-    handleAddEventsUI,
-    events,
-    handleEditEventUI,
-    categories,
-  } = useContext(appContext);
+  const { handleAddEventsUI, events, handleEditEventUI, categories } =
+    useContext(appContext);
 
   const eventsCollectionRef = collection(db, "events");
   const navigate = useNavigate();
@@ -76,8 +72,6 @@ export default function CreateEvent() {
               eventForm?.endTime.includes("AM") ||
               eventForm?.endTime.includes("PM")
             ) {
-
-
               let endTime24F = convertTo24HourFormat(eventForm.endTime);
               setEventForm((prevForm) => ({
                 ...prevForm,
@@ -85,7 +79,6 @@ export default function CreateEvent() {
               }));
             }
           } else {
-
           }
         } catch (err) {
           console.error("Error fetching document:", err);
@@ -138,8 +131,6 @@ export default function CreateEvent() {
       // e.target.blur();
     }
 
-
-
     try {
       await eventSchema.validateAt(name, { [name]: value });
 
@@ -177,6 +168,7 @@ export default function CreateEvent() {
     // const eventsBeforeAdd = events;
     try {
       eventSchema.validateSync(eventForm, { abortEarly: false });
+      setIsSubmitting(true);
       try {
         if (mode === "add") {
           const docRef = await addDoc(eventsCollectionRef, {
@@ -195,10 +187,6 @@ export default function CreateEvent() {
           });
           toast.success("Event added successfully");
         } else {
-
-
-
-
           const eventToBeUpdated = doc(db, "events", id);
           await updateDoc(eventToBeUpdated, {
             ...eventForm,
@@ -229,6 +217,7 @@ export default function CreateEvent() {
         else toast.error("Failed to edit event");
       }
     } catch (error) {
+      setIsSubmitting(false);
       error.inner.forEach((err) => {
         setErrors((prevErrors) => ({ ...prevErrors, [err.path]: err.message }));
       });
@@ -242,8 +231,6 @@ export default function CreateEvent() {
     const imagesRef = ref(storage, `eventImg/${uuid()}`);
     uploadBytes(imagesRef, e.target.files[0]).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
-
-
         // setEventImg((prevUrl) => (prevUrl = url));
         setEventForm((prevForm) => ({
           ...prevForm,
@@ -669,7 +656,10 @@ export default function CreateEvent() {
             >
               Cancel
             </button>
-            <button disabled={isSubmitting} className=" w-[320px] transition duration-300 ease-in-out bg-main-color hover:bg-main-hover text-white font-bold py-2 px-6 rounded-2xl">
+            <button
+              disabled={isSubmitting}
+              className=" w-[320px] transition duration-300 ease-in-out bg-main-color hover:bg-main-hover text-white font-bold py-2 px-6 rounded-2xl"
+            >
               {mode === "add" ? "Create" : "Edit"} Event
             </button>
           </div>

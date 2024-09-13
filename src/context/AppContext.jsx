@@ -5,6 +5,7 @@ import {
   doc,
   getDocs,
   onSnapshot,
+  orderBy,
   query,
   updateDoc,
   where,
@@ -21,6 +22,8 @@ export default function AppContextProvider({ children }) {
   const usersCollectionRef = collection(db, "users");
   const [user, setUser] = useState([]);
   const [userEvents, setUserEvents] = useState([]);
+  const [eventBanner,setEventBanner]=useState(null)
+
 
   // update ui after add a new event
   const handleAddEventsUI = (newEvent) => {
@@ -71,7 +74,8 @@ export default function AppContextProvider({ children }) {
       try {
         const q = query(
           collection(db, "events"),
-          where("isDeleted", "==", false)
+          where("isDeleted", "==", false),
+          orderBy("eventDate","asc")
         );
         const data = onSnapshot(q, (QuerySnapshot) => {
           let eventsArr = [];
@@ -79,6 +83,7 @@ export default function AppContextProvider({ children }) {
             eventsArr.push({ ...doc.data(), id: doc.id });
           });
           setEvents(eventsArr);
+          setEventBanner(eventsArr[0])
           setLoading(false);
         });
         return () => data;
@@ -199,6 +204,7 @@ export default function AppContextProvider({ children }) {
         restoreUsers,
         handleDeleteUserUI,
         userEvents,
+        eventBanner
       }}
     >
       {children}
