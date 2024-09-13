@@ -39,7 +39,7 @@ export default function Main() {
         </div>
         <div className="flex justify-between md:flex-col">
           <div>
-            <p className="text-2xl sm:text-3xl text-white mb-1 md:mb-3 font-bold">
+            <p className="text-2xl sm:text-3xl text-white mb-1 md:mb-3 font-bold capitalize">
               {eventBanner.title}
             </p>
             <div className="flex flex-col relative mb-4 md:mb-6 sm:flex-row">

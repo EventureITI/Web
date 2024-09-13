@@ -32,7 +32,7 @@ export default function GetTicket() {
           <div className="self-stretch text-white text-lg font-normal font-['Inter']">
             Select Ticket
           </div>
-          <div className="self-stretch h-[77px] pb-3 flex-col justify-start items-start gap-2 flex">
+          <div className="self-stretch h-[77px] pb-3 flex-col justify-start items-start gap-2 flex capitalize">
             <div className="self-stretch text-white text-base font-normal font-['Inter']">
               {title}
             </div>

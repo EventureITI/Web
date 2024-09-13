@@ -308,7 +308,7 @@ export default function CreateEvent() {
               Event Title
             </label>
             <input
-              className={`w-full px-4 py-3 bg-input text-white rounded-xl ${
+              className={`w-full px-4 py-3 bg-input text-white rounded-xl capitalize ${
                 errors.title
                   ? "border border-red-600 outline-none"
                   : "focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -348,7 +348,7 @@ export default function CreateEvent() {
               name="host"
               value={eventForm?.host}
               onChange={(e) => handleChange(e)}
-              placeholder="Enter event title"
+              placeholder="Enter event host"
               style={{ caretColor: "#4FE0D2" }}
             />
             {errors.host && (
