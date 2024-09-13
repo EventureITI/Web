@@ -1,11 +1,13 @@
 import { collection, getDocs } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
+import { AuthDetails } from "../context/Authentication/AuthDetailsContext";
 
 export default function NotFound() {
   const navigate = useNavigate();
   const [role,setRole] = useState();
+  const {loading,setLoading} = useContext(AuthDetails)
 
   useEffect(() => {
     const setData = async () => {
@@ -15,9 +17,11 @@ export default function NotFound() {
         (e) => e.email == auth.currentUser?.email
       );
       setRole(userInfo[0].role);
+      setLoading(false)
     };
     setData();
   }, []);
+
   return (
     <div
       className="w-full h-screen flex justify-center items-center flex-col"
@@ -31,10 +35,10 @@ export default function NotFound() {
         PAGE NOT FOUND
       </p>
     
-      <button onClick={() => navigate("/")} className="p-2 w-36 rounded-lg text-white font-600 relative border border-main-color">
+      {!loading && <button onClick={role == "admin" ? () => navigate("/admin") : () => navigate("/")} className="p-2 w-36 rounded-lg text-white font-600 relative border border-main-color">
           <div className="absolute inset-0 bg-sec-color hover:opacity-100 transition duration-300 ease-in-out opacity-50 rounded-lg"></div>
           <span className="relative z-10">{role == "admin" ? "DashBoard" :"Back to Home"}</span>
-      </button>
+      </button>}
     </div>
   );
 }

@@ -25,7 +25,6 @@ export default function EventsPage() {
   const { categories } = useContext(appContext);
   const { category } = useParams();
 
-
   // const [searchTerm, setSearchTerm] = useState("");
   // const [searchResults, setSearchResults] = useState([]);
   // const handleCategoryAndSearch = async () => {

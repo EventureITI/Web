@@ -6,14 +6,14 @@ import { Validation } from "../context/Authentication/ValidationContext";
 import { auth, db, storage } from "../firebase";
 import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
-import { sendEmailVerification, updateEmail, updatePassword } from "firebase/auth";
+import { updatePassword } from "firebase/auth";
 import { v4 as uuid } from "uuid";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import NameValidation from "../Components/validations/NameValidation";
 import EmailValidation from "../Components/validations/EmailValidation";
 import PassValidation from "../Components/validations/PassValidation";
 import ConfirmPassValidation from "../Components/validations/ConfirmPassValidation";
-import SignupPassValidation from "../Components/validations/SignupPassValidation";
+import { AuthDetails } from "../context/Authentication/AuthDetailsContext";
 
 export default function EditProfile() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +21,14 @@ export default function EditProfile() {
   const [editPic, setEditPic] = useState(false);
   const [userInfoImg, setUserInfoImg] = useState("");
   const [userInfoId, setUserInfoId] = useState("");
+  const {loading,setLoading} = useContext(AuthDetails);
+
+  useEffect(() => {
+    if (auth.currentUser) {
+      console.log(auth.currentUser.emailVerified);
+       // Check if the email is verified
+    }
+  }, []);
 
   const {
     userEmail,
@@ -51,6 +59,7 @@ export default function EditProfile() {
     handleConfirmPass,
   } = useContext(Validation);
   const navigate = useNavigate();
+  const [role,setRole] = useState();
 
   // save profile edits
   async function handleEditProfile(e) {
@@ -63,10 +72,10 @@ export default function EditProfile() {
         !editEmailRequireState &&
         !correctEmailState
       ) {
-        await sendEmailVerification(auth.currentUser)
-        try{
-          await updateEmail(auth.currentUser, userEmail);
-          await updateDoc(doc(db, "users", userInfoId), {
+        // await sendEmailVerification(auth.currentUser)
+        // try{
+          // await updateEmail(auth.currentUser, userEmail);
+          await updateDoc(doc(db, "user", userInfoId), {
             firstName: userFirstName,
             lastName: userLastName,
             email: userEmail,
@@ -79,10 +88,10 @@ export default function EditProfile() {
           style: { backgroundColor: "#00796B", color: "white" },
         });
         navigate("/");
-      }catch(err){
-
+      // }catch(err){
+      //   console.log(err);
         
-      }
+      // }
       } else {
         setNameState(true);
         setEmailState(true);
@@ -115,8 +124,10 @@ export default function EditProfile() {
       setUserFirstName(userInfo[0].firstName);
       setUserLastName(userInfo[0].lastName);
       setUserEmail(userInfo[0].email);
+      setRole(userInfo[0].role);
+      setLoading(false)
       {
-        userInfo[0].imgURL != " "
+        userInfo[0].imgURL != ""
           ? setUserInfoImg(userInfo[0].imgURL)
           : setUserInfoImg("/images/carbon_user-avatar-filled.svg");
       }
@@ -132,6 +143,9 @@ export default function EditProfile() {
     setEditPic(false);
   }
 
+  if(loading){
+    return <div></div>
+  }
   return (
     <div className=" bg-bg-main px-50">
       <div className="w-full max-w-xx rounded-lg px-4 container mx-auto pt-20 pb-8">
@@ -239,7 +253,7 @@ export default function EditProfile() {
                 Email
               </label>
               <input
-                className={`w-full px-4 py-3 bg-input  text-white rounded-xl focus:outline-none focus:ring-2 ${
+                className={`w-full px-4 py-3 bg-input opacity-50 text-white rounded-xl focus:outline-none focus:ring-2 ${
                   !editEmailRequireState && !correctEmailState
                     ? "focus:border-main-color focus:ring-main-color border-0"
                     : `focus:border-red-800 focus:ring-red-800 ${
@@ -248,6 +262,7 @@ export default function EditProfile() {
                 }`}
                 type="email"
                 id="email"
+                disabled
                 value={userEmail}
                 onChange={handleEmail}
                 placeholder="example@email.com"

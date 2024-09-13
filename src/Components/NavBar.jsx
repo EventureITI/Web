@@ -21,32 +21,35 @@ export default function NavBar() {
   const [userImg, setUserImg] = useState();
   const [role, setRole] = useState();
   const [name, setName] = useState();
-
-  const handleSearchNavbarKeyChanges = (key) => {
-    setSearchNavbarKey(key);
-  };
   const { events } = useContext(appContext);
   const [profile, setProfile] = useState(false);
   const [items, setItems] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const menuRef = useRef();
   const pathRef = useRef();
   const navigate = useNavigate();
+  const [loading,setLoading] = useState(true);
 
   useEffect(() => {
     const setData = async () => {
-      const data = await getDocs(collection(db, "users"));
+const data = await getDocs(collection(db, "users"));
+      setLoading(false)
       const userData = data.docs.map((doc) => ({ ...doc.data() }));
       const userInfo = userData.filter(
         (e) => e.email == auth.currentUser?.email
       );
-      setUserImg(userInfo[0].imgURL);
-      setRole(userInfo[0].role);
-      setName(userInfo[0].firstName + " " + userInfo[0].lastName);
+      if(userInfo[0]?.imgURL == ""){
+        setUserImg("/images/carbon_user-avatar-filled.svg")
+      }else{
+        setUserImg(userInfo[0]?.imgURL);
+      }
+      setRole(userInfo[0]?.role);
+      setName(userInfo[0]?.firstName + " " + userInfo[0]?.lastName);
     };
     setData();
   }, []);
 
-  
   async function handleLogout() {
     try {
       await signOut(auth);
@@ -77,13 +80,9 @@ export default function NavBar() {
     } else {
       setItems(false);
     }
-
-
   });
 
   function allItems() {
-
-
     setItems(!items);
     setProfile(false);
   }
@@ -92,16 +91,8 @@ export default function NavBar() {
     setProfile(!profile);
     setItems(false);
   }
-  const filteredSearchNavbarEvents = !searchNavbarKey
-    ? events
-    : events.filter((event) =>
-        event.title.toLowerCase().includes(searchNavbarKey.toLowerCase())
-      );
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+
   const handleSearch = async () => {
-
-
     if (searchTerm) {
       try {
         const q = query(
@@ -121,9 +112,14 @@ export default function NavBar() {
       }
     }
   };
+
   useEffect(() => {
     handleSearch();
   }, [searchTerm]);
+
+  if(loading){
+    return (<div></div>)
+  }
 
   return (
     <>
@@ -145,27 +141,26 @@ export default function NavBar() {
               </span>
             </a>
 
-<div className="flex ">
+            <div className="flex ">
+              <div className="hidden sm:flex items-center mr-10 space-x-3 md:space-x-0 rtl:space-x-reverse">
+                <p className="text-white font-Inter font-400"> {name}</p>
+              </div>
 
-            <div className="hidden sm:flex items-center mr-10 space-x-3 md:space-x-0 rtl:space-x-reverse">
-              <p className="text-white font-Inter font-400"> {name}</p>
+              <div>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="text-white flex justify-center items-center bg-sec-color bg-opacity-50 border-[1px] border-main-color hover:bg-main-color hover:bg-opacity-80 transition-all duration-300 ease-in-out font-medium rounded-lg text-sm px-3 py-2 text-center "
+                >
+                  <img
+                    className="w-5 mr-3"
+                    src="/images/carbon_user-avatar-filled.svg"
+                    alt="loginIcon"
+                  />
+                  Logout
+                </button>
+              </div>
             </div>
-
-            <div>
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="text-white flex justify-center items-center bg-sec-color bg-opacity-50 border-[1px] border-main-color hover:bg-main-color hover:bg-opacity-80 transition-all duration-300 ease-in-out font-medium rounded-lg text-sm px-3 py-2 text-center "
-              >
-                <img
-                  className="w-5 mr-3"
-                  src="/images/carbon_user-avatar-filled.svg"
-                  alt="loginIcon"
-                />
-                Logout
-              </button>
-            </div>
-</div>
           </div>
         </nav>
       ) : (
@@ -295,7 +290,7 @@ export default function NavBar() {
                       className="btn btn-ghost btn-circle avatar"
                     >
                       <div className="w-10 rounded-full">
-                        <img alt="profile img" src={userImg} />
+                        <img alt="profile img" src={loading? "/images/carbon_user-avatar-filled.svg":userImg} />
                       </div>
                     </div>
                     {profile && (

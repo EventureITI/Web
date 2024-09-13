@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import EyeIcon from "../Components/Icons/EyeIcon";
 import EyeSlashIcon from "../Components/Icons/EyeSlashIcon";
 import { toast } from "react-toastify";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { Validation } from "../context/Authentication/ValidationContext";
@@ -62,12 +62,13 @@ export default function SignUp() {
       ) {
         setDisabled(true);
         await createUserWithEmailAndPassword(auth, userEmail, userPass);
-        await addDoc(collection(db, "users"), {
+        await sendEmailVerification(auth.currentUser)
+        await addDoc(collection(db, "user"), {
           firstName: userFirstName,
           lastName: userLastName,
           email: userEmail,
           authId: auth.currentUser.uid,
-          imgURL: "/images/carbon_user-avatar-filled.svg",
+          imgURL: "",
           role: "user",
         });
         navigate("/");

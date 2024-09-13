@@ -15,7 +15,6 @@ export default function Home() {
   const [home, setHome] = useState(false);
   const { events } = useContext(appContext);
 
-
   useEffect(() => {
     setSkeleton(true);
     setTimeout(() => {
@@ -27,7 +26,6 @@ export default function Home() {
   const sortedEvents = events.sort(
     (a, b) => new Date(a.startDate) - new Date(b.startDate)
   );
-
 
   return (
     <div>

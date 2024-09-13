@@ -23,7 +23,7 @@ import { toast } from "react-toastify";
 import generateArrayFromNumber from "../../utils/generateArrayFromNumber";
 import Pagination from "../Pagination";
 import TableSkeleton from "../Skeleton/TableSkeleton";
-const ITEMS_PER_PAGE = 5; // Number of items per page
+const ITEMS_PER_PAGE = 6; // Number of items per page
 const DEBOUNCE_DELAY = 500; // Delay in ms for debouncing
 export default function EventsTable() {
   const tableHeaders = [

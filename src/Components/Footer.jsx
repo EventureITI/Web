@@ -1,11 +1,13 @@
 import { collection, getDocs } from "firebase/firestore";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebase";
+import { AuthDetails } from "../context/Authentication/AuthDetailsContext";
 
 export default function Footer() {
   const navigate = useNavigate();
   const [role,setRole] = useState();
+  const {loading,setLoading} = useContext(AuthDetails);
   useEffect(() => {
     const setData = async () => {
       const data = await getDocs(collection(db, "users"));
@@ -13,12 +15,15 @@ export default function Footer() {
       const userInfo = userData.filter(
         (e) => e.email == auth.currentUser?.email
       );
-      setRole(userInfo[0].role);
-
-      
+      setRole(userInfo[0]?.role);      
+      setLoading(false);
     };
     setData();
   }, []);
+
+  if(loading){
+    return (<div></div>)
+  }
   return (
     <>
     {role == "admin" ? <div></div> :<div
