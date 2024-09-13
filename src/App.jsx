@@ -29,10 +29,15 @@ import Authenticated from "./Components/ProtectedRoutes/Authenticated";
 import ForgotPass from "./Components/ForgotPass";
 import RoleAuthentication from "./Components/ProtectedRoutes/RoleAuthentication";
 import AdminAuthentication from "./Components/ProtectedRoutes/AdminAuthentication";
+import Payment from "./Pages/payment/Payment";
 
 function App() {
   const location = useLocation();
-  const hideNavbarRoutes = ["/", "*", "/login", "/signup"]; // here you will add the desired route that you do not want to render navbar with
+
+  // Add routes to be rednered without a navbar
+  const hideNavbarRoutes = ["/", "*", "/login", "/signup", "/payment"];
+
+  // Add routes to be rednered without a footer
   const hideFooterRoutes = [
     "/404",
     "/admin",
@@ -40,7 +45,8 @@ function App() {
     "/login",
     "/signup",
     "/",
-  ]; // here you will add the desired route that you do not want to render footer with
+    "/payment",
+  ];
 
   return (
     <>
@@ -91,11 +97,21 @@ function App() {
           <Route
             path="/event-details/:id/get-ticket"
             element={
-                <AdminAuthentication>
-              <NotAuthenticated>
+              <AdminAuthentication>
+                <NotAuthenticated>
                   <GetTicket />
-              </NotAuthenticated>
-                </AdminAuthentication>
+                </NotAuthenticated>
+              </AdminAuthentication>
+            }
+          />
+          <Route
+            path="/payment"
+            element={
+              <AdminAuthentication>
+                <NotAuthenticated>
+                  <Payment />
+                </NotAuthenticated>
+              </AdminAuthentication>
             }
           />
           <Route
@@ -109,51 +125,51 @@ function App() {
           <Route
             path="/payment-success"
             element={
-                <AdminAuthentication>
-              <NotAuthenticated>
+              <AdminAuthentication>
+                <NotAuthenticated>
                   <PaymentSuccess />
-              </NotAuthenticated>
-                </AdminAuthentication>
+                </NotAuthenticated>
+              </AdminAuthentication>
             }
           />
           <Route
             path="/payment-failed"
             element={
               <AdminAuthentication>
-                  <NotAuthenticated>
+                <NotAuthenticated>
                   <PaymentFailed />
-              </NotAuthenticated>
-                </AdminAuthentication>
+                </NotAuthenticated>
+              </AdminAuthentication>
             }
           />
           <Route
             path="/success-email"
             element={
               <AdminAuthentication>
-                  <NotAuthenticated>
+                <NotAuthenticated>
                   <SuccessEmail />
-              </NotAuthenticated>
-                </AdminAuthentication>
+                </NotAuthenticated>
+              </AdminAuthentication>
             }
           />
           <Route
             path="/profile"
             element={
               <AdminAuthentication>
-                  <NotAuthenticated>
+                <NotAuthenticated>
                   <Profile />
-              </NotAuthenticated>
-                </AdminAuthentication>
+                </NotAuthenticated>
+              </AdminAuthentication>
             }
           />
           <Route
             path="/edit-profile"
             element={
               <AdminAuthentication>
-                  <NotAuthenticated>
+                <NotAuthenticated>
                   <EditProfile />
-              </NotAuthenticated>
-                </AdminAuthentication>
+                </NotAuthenticated>
+              </AdminAuthentication>
             }
           />
           <Route

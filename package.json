@@ -15,6 +15,7 @@
     "@material-tailwind/react": "^2.1.9",
     "@stripe/react-stripe-js": "^2.8.0",
     "@stripe/stripe-js": "^4.4.0",
+    "axios": "^1.7.7",
     "browser-router": "^0.2.0",
     "firebase": "^10.13.0",
     "firebase-admin": "^12.4.0",
