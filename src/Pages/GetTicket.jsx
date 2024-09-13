@@ -26,7 +26,7 @@ export default function GetTicket() {
   };
 
   return (
-    <div className="flex justify-center pt-28 pb-10 px-20">
+    <div className="bg-bg-main flex justify-center pt-28 pb-10 px-20">
       <div className="w-[600px] h-[600px] px-8 py-6 bg-ticket rounded-2xl flex-col justify-center items-center gap-4 flex">
         <div className="self-stretch h-[175px] pb-4 border-b border-white/10 flex-col justify-start items-start gap-4 flex">
           <div className="self-stretch text-white text-lg font-normal font-['Inter']">
