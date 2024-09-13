@@ -206,7 +206,6 @@ export default function NavBar() {
               <ul className=" flex flex-col p-2 md:p-0 mt-4 bg-[#292929] md:bg-transparent shadow-md md:shadow-none rounded-lg md:max-lg:space-x-0 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 lg:space-x-6   dark:border-gray-700">
                 <NavBtns path={"/"} text={"Home"} />
                 <NavBtns path={"/contact"} text={"Hosting an Event?"} />
-                <NavBtns path={"/events-page"} text={"About"} />
               </ul>
             </div>
 
