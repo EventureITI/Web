@@ -6,14 +6,9 @@ export default function NavBtns({ path, text, menuRef }) {
     <li className="hover:bg-[#0d9988] rounded-lg md:hover:bg-transparent md:hover:rounded-none">
       <NavLink
         to={path}
-        className={({ isActive }) =>
-          `block text-sm py-1 px-3 ${
-            isActive ? "text-main-color rounded-lg" : "text-white"
-          } rounded md:hover:text-main-hover hover:opacity-100 `
+        className={({}) =>
+          `block text-sm py-1 px-3 text-white rounded md:hover:text-main-hover hover:opacity-100 `
         }
-        // className={({}) =>
-        //   `block text-sm py-1 px-3 text-white rounded md:hover:text-main-hover hover:opacity-100 `
-        // }
       >
         <p ref={menuRef}>{text}</p>
       </NavLink>
