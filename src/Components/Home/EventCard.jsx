@@ -61,7 +61,7 @@ export default function EventCard({ event }) {
           </p>
           <p>{event.location}</p>
         </div>
-        <EventPrice price={event.price} />
+        <EventPrice price={event.price} id={event.id} />
       </div>
     </div>
   );
