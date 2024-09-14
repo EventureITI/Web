@@ -7,7 +7,7 @@ export default function NavBtns({ path, text, menuRef }) {
       <NavLink
         to={path}
         className={({}) =>
-          `block text-sm py-1 px-3 text-white rounded md:hover:text-main-hover hover:opacity-100 `
+          `block text-sm py-1 px-3 text-white rounded md:hover:text-main-color hover:opacity-100 `
         }
       >
         <p ref={menuRef}>{text}</p>
