@@ -1,15 +1,26 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AppContextProvider, { appContext } from "../context/AppContext";
 import { useNavigate, useParams } from "react-router-dom";
 import formatDate from "../utils/formatDayAndYear";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
-import { db } from "../firebase";
+import { arrayUnion, collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
 
 export default function GetTicket() {
   const [count, setCount] = useState(1);
-  const { events, user } = useContext(appContext);
+  const { events, user,setUser } = useContext(appContext);
   const { id } = useParams();
   const navigate = useNavigate();
+  useEffect(()=>{
+    const getDataOfUser = async () => {
+      const data = await getDocs(collection(db, "users"));
+      const userData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      const userInfo = userData.filter(
+        (e) => e.email == auth.currentUser?.email
+      );
+      setUser(userInfo[0]);
+    };
+    getDataOfUser()
+  },[])
 
   const event = events.find((event) => event.id === id) || {};
 

@@ -193,6 +193,7 @@ export default function AppContextProvider({ children }) {
         userEvents,
         eventBanner,
         setUserEvents,
+        setUser
       }}
     >
       {children}
