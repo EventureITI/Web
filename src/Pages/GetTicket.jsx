@@ -29,9 +29,14 @@ export default function GetTicket() {
       title: title,
       totalPrice: count * price,
       numberOfTickets: count,
+      availableTickets: event.tickets,
     };
-    navigate(`/payment`, { state: eventData });
 
+    // if (count > event.tickets || count > 10) {
+    // navigate(`/payment-failed`, { state: eventData.id });
+    // } else {
+    navigate(`/payment`, { state: eventData });
+    // }
     // /* ------------------------------ TESTING-START ----------------------------- */
     // addEventsToFirestore(eventData);
     // navigate("/payment-success")
@@ -106,6 +111,7 @@ export default function GetTicket() {
         <button
           onClick={handleClick}
           className="w-[348px] h-[51px] flex justify-center items-center bg-main-color hover:bg-main-hover transition duration-300 ease-in-out text-white font-bold py-4 px-6 rounded-2xl"
+          disabled={count > event.tickets || count > 10}
         >
           Proceed to Pay {price * count} EGP
         </button>

@@ -28,9 +28,9 @@ export default function PaymentSuccess() {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const eventDataParam = queryParams.get("eventData");
-    if (eventDataParam) {
-      setEventData(JSON.parse(decodeURIComponent(eventDataParam)));
+    const eventData = queryParams.get("eventData");
+    if (eventData) {
+      setEventData(JSON.parse(decodeURIComponent(eventData)));
     }
   }, [location]);
 
@@ -73,7 +73,7 @@ export default function PaymentSuccess() {
           View My Tickets
         </Link>
         <Link
-          // to={`/event/${eventData.id}`}
+          to={`/event-details/${eventData.id}`}
           className=" w-[348px]   h-[51px]  flex justify-center items-center text-white font-bold py-4 px-6 transition duration-300 ease-in-out rounded-2xl border-2 border-teal-500 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
         >
           Back To Event

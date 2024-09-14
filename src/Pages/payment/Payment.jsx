@@ -13,6 +13,8 @@ export default function Payment() {
   const [clientSecret, setClientSecret] = useState("");
   const server = "http://localhost:5252";
   const stripeAmount = eventData.totalPrice * 100;
+  const availableTickets = eventData.availableTickets;
+  const numberOfTickets = eventData.numberOfTickets;
 
   // Fetch publishable key from server
   useEffect(() => {
@@ -32,7 +34,11 @@ export default function Payment() {
     // Create a payment intent
     if (stripePromise) {
       axios
-        .post(`${server}/create-payment-intent`, { stripeAmount })
+        .post(`${server}/create-payment-intent`, {
+          stripeAmount,
+          availableTickets,
+          numberOfTickets,
+        })
         .then((response) => {
           const { clientSecret } = response.data;
           setClientSecret(clientSecret);
