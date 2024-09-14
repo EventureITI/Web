@@ -1,12 +1,30 @@
 import React, { useContext, useEffect, useState } from "react";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
+import {
+  arrayUnion,
+  collection,
+  doc,
+  getDocs,
+  updateDoc,
+} from "firebase/firestore";
 import { appContext } from "../../context/AppContext";
-import { db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { Link } from "react-router-dom";
 
 export default function PaymentSuccess() {
   const [eventData, setEventData] = useState(null);
-  const { user } = useContext(appContext);
+  const { events, user, setUser } = useContext(appContext);
+
+  useEffect(() => {
+    const getDataOfUser = async () => {
+      const data = await getDocs(collection(db, "users"));
+      const userData = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
+      const userInfo = userData.filter(
+        (e) => e.email == auth.currentUser?.email
+      );
+      setUser(userInfo[0]);
+    };
+    getDataOfUser();
+  }, []);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -17,21 +35,21 @@ export default function PaymentSuccess() {
   }, [location]);
 
   /* ------------------------------ TESTING-START ----------------------------- */
-  // const addEventsToFirestore = async (eventData) => {
-  //   const id = user[0]["id"];
-  //   const docRef = doc(db, `users/${id}`);
-  //   try {
-  //     await updateDoc(docRef, {
-  //       events: arrayUnion(eventData),
-  //     });
-  //   } catch (error) {
-  //     console.error("Error adding events: ", error);
-  //   }
-  // };
+  const addEventsToFirestore = async (eventData) => {
+    const id = user.id;
+    const docRef = doc(db, `users/${id}`);
+    try {
+      await updateDoc(docRef, {
+        events: arrayUnion(eventData),
+      });
+    } catch (error) {
+      console.error("Error adding events: ", error);
+    }
+  };
 
-  // if (eventData) {
-  //   addEventsToFirestore(eventData);
-  // }
+  if (eventData) {
+    addEventsToFirestore(eventData);
+  }
   /* ------------------------------- TESTING-END ------------------------------ */
 
   return (
