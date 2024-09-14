@@ -258,15 +258,15 @@ export default function EventsTable() {
                           {index + 1}
                         </td>
                         <td className="px-4 sm:px-6 py-2 border-r-2 border-opacity-60 border-input">
-                          <p className="truncate w-20 custom-sm:w-40 sm:w-full capitalize">
+                          <p className="truncate w-60 capitalize">
                             {event.title}
                           </p>
                         </td>
-                        <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden lg:table-cell">
-                          {event.host}
+                        <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden lg:table-cell truncate w-0">
+                          <p className="truncate w-32">{event.host}</p>
                         </td>
                         <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden xl:table-cell">
-                          {event.startTime} - {event.endTime}
+                          {event.startTime}
                         </td>
                         <td className="px-6 py-2 border-r-2 border-opacity-60 border-input hidden lg:table-cell">
                           {event.startDate}
